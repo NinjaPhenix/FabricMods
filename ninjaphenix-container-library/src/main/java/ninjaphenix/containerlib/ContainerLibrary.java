@@ -5,12 +5,14 @@ import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import ninjaphenix.containerlib.inventory.ScrollableContainer;
+import ninjaphenix.containerlib.inventory.CContainer;
 
 public final class ContainerLibrary implements ModInitializer
 {
@@ -48,7 +50,16 @@ public final class ContainerLibrary implements ModInitializer
             final Block block = state.getBlock();
             if (block instanceof InventoryProvider)
             {
-                return new ScrollableContainer(syncId, player.inventory, ((InventoryProvider) block).getInventory(state, world, pos), name);
+                //return new ScrollableContainer(syncId, player.inventory, ((InventoryProvider) block).getInventory(state, world, pos), name);
+                return new CContainer(null, syncId, ((InventoryProvider) block).getInventory(state, world, pos), player, name, 9, 6);
+            }
+            else
+            {
+                final BlockEntity entity = world.getBlockEntity(pos);
+                if (entity instanceof Inventory)
+                {
+                    return new CContainer(null, syncId, (Inventory) entity, player, name, 9, 6);
+                }
             }
             return null;
         });

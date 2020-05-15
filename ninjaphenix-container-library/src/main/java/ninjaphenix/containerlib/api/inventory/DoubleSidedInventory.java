@@ -1,4 +1,4 @@
-package ninjaphenix.containerlib.inventory;
+package ninjaphenix.containerlib.api.inventory;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;

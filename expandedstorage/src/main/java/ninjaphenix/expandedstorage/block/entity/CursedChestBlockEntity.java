@@ -20,7 +20,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import ninjaphenix.containerlib.inventory.DoubleSidedInventory;
+import ninjaphenix.containerlib.api.inventory.DoubleSidedInventory;
 import ninjaphenix.containerlib.inventory.ScrollableContainer;
 import ninjaphenix.expandedstorage.ExpandedStorage;
 import ninjaphenix.expandedstorage.api.Registries;

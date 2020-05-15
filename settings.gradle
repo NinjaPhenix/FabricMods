@@ -9,7 +9,6 @@ pluginManagement {
 }
 
 include 'chainmail'
-include 'chainmail-tests'
 include 'torcherino'
 include 'ninjaphenix-container-library'
 include 'expandedstorage'
@@ -18,3 +17,5 @@ include 'ninjatips'
 include 'creativebuttonmover'
 include 'userdefinedadditions'
 include 'fatexperienceorbs'
+include 'chainmail-tests'
+include 'ninjaphenix-container-library-tests'

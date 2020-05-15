@@ -1,6 +1,7 @@
 package ninjaphenix.containerlib.client;
 
 import me.shedaniel.math.api.Rectangle;
+import me.shedaniel.rei.api.BaseBoundsHandler;
 import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.fabricmc.api.EnvType;
@@ -26,7 +27,8 @@ public final class ContainerLibREIPlugin implements REIPluginV0
     @SuppressWarnings("ConstantConditions")
     public void registerBounds(DisplayHelper displayHelper)
     {
-        displayHelper.getBaseBoundsHandler().registerExclusionZones(ScrollableScreen.class, () ->
+        // todo: update for new screen code.
+        BaseBoundsHandler.getInstance().registerExclusionZones(ScrollableScreen.class, () ->
         {
             final ScrollableScreen screen = (ScrollableScreen) MinecraftClient.getInstance().currentScreen;
             final ArrayList<Rectangle> rv = new ArrayList<>(1);

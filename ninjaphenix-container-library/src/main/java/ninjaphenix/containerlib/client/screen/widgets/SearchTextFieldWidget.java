@@ -1,4 +1,4 @@
-package ninjaphenix.containerlib.client.gui.widget;
+package ninjaphenix.containerlib.client.screen.widgets;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "containerlib-tests",
+  "version": "${mod_version}",
+  "name": "Container Library Test Mod",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ninjaphenix.tests.containerlib.Main::INSTANCE"
+    ]
+  }
+}

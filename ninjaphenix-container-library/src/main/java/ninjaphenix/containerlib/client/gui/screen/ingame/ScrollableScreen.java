@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import ninjaphenix.containerlib.client.ContainerLibraryClient;
-import ninjaphenix.containerlib.client.gui.widget.SearchTextFieldWidget;
+import ninjaphenix.containerlib.client.screen.widgets.SearchTextFieldWidget;
 import ninjaphenix.containerlib.inventory.ScrollableContainer;
 
 import java.util.Optional;

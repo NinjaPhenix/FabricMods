@@ -10,6 +10,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import ninjaphenix.containerlib.api.inventory.AreaAwareSlotFactory;
+import ninjaphenix.containerlib.api.inventory.SlotFactory;
 
 import java.util.Arrays;
 
