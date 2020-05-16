@@ -50,16 +50,12 @@ public final class ContainerLibrary implements ModInitializer
             final Block block = state.getBlock();
             if (block instanceof InventoryProvider)
             {
-                //return new ScrollableContainer(syncId, player.inventory, ((InventoryProvider) block).getInventory(state, world, pos), name);
-                return new CContainer(null, syncId, ((InventoryProvider) block).getInventory(state, world, pos), player, name, 9, 6);
+                return new CContainer(null, syncId, ((InventoryProvider) block).getInventory(state, world, pos), player, name);
             }
             else
             {
                 final BlockEntity entity = world.getBlockEntity(pos);
-                if (entity instanceof Inventory)
-                {
-                    return new CContainer(null, syncId, (Inventory) entity, player, name, 9, 6);
-                }
+                if (entity instanceof Inventory) { return new CContainer(null, syncId, (Inventory) entity, player, name); }
             }
             return null;
         });
