@@ -2,28 +2,29 @@ package ninjaphenix.containerlib.inventory;
 
 import net.minecraft.container.Container;
 import net.minecraft.container.ContainerType;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.text.LiteralText;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import ninjaphenix.containerlib.ContainerSizing;
+import ninjaphenix.containerlib.ScreenSizing;
 
 import java.util.HashMap;
 
 public class CContainer extends Container
 {
-    private static final HashMap<Integer, ContainerSizing> SIZES;
+    private static final HashMap<Integer, ScreenSizing> SIZES;
 
     static
     {
         SIZES = new HashMap<>();
-        SIZES.put(27, new ContainerSizing(9, 3));
-        SIZES.put(54, new ContainerSizing(9, 6));
-        SIZES.put(81, new ContainerSizing(9, 9));
-        SIZES.put(108, new ContainerSizing(12, 9, 9, 6, 12, 9, 6, 2));
-        SIZES.put(162, new ContainerSizing(18, 9, 9, 6, 18, 9, 6, 3));
-        SIZES.put(216, new ContainerSizing(24, 9, 12, 6, 18, 12, 6, 3));
+        SIZES.put(27, new ScreenSizing.Builder().fixedParams(9, 3, null).build());
+        SIZES.put(54, new ScreenSizing.Builder().fixedParams(9, 6, null).build());
+        SIZES.put(81, new ScreenSizing.Builder().fixedParams(9, 9, null).build());
+        SIZES.put(108, new ScreenSizing.Builder().fixedParams(12, 9, null).scrollParams(9, 6, null, 12).pagedParams(9, 6, null, 2).build());
+        SIZES.put(162, new ScreenSizing.Builder().fixedParams(18, 9, null).scrollParams(9, 6, null, 18).pagedParams(9, 6, null, 3).build());
+        SIZES.put(216, new ScreenSizing.Builder().fixedParams(24, 9, null).scrollParams(12, 6, null, 18).pagedParams(12, 6, null, 3).build());
         /*
 
         def Factors(x: int):
@@ -37,7 +38,7 @@ public class CContainer extends Container
     }
 
     public final PlayerInventory PLAYER_INVENTORY;
-    public final ContainerSizing SIZING;
+    public final ScreenSizing SIZING;
     private final Text DISPLAY_NAME;
     private final Inventory INVENTORY;
 
@@ -48,18 +49,29 @@ public class CContainer extends Container
         PLAYER_INVENTORY = player.inventory;
         DISPLAY_NAME = displayName;
         SIZING = SIZES.get(inventory.getInvSize());
-
-        player.sendMessage(new LiteralText("Opening container: ").append(SIZING.FIXED_WIDTH + " ").append(SIZING.FIXED_HEIGHT + ""));
+        for (int i = 0; i < inventory.getInvSize(); i++) { this.addSlot(new Slot(inventory, i, 0, 0)); }
+        for (int i = 0; i < 36; i++) { this.addSlot(new Slot(PLAYER_INVENTORY, i, 0, 0)); }
     }
 
     @Override
-    public boolean canUse(PlayerEntity player)
-    {
-        return INVENTORY.canPlayerUseInv(player);
-    }
+    public boolean canUse(PlayerEntity player) { return INVENTORY.canPlayerUseInv(player); }
 
-    public Text getDisplayName()
+    public Text getDisplayName() { return DISPLAY_NAME.deepCopy(); }
+
+    @Override
+    public ItemStack transferSlot(PlayerEntity player, int slotIndex)
     {
-        return DISPLAY_NAME.deepCopy();
+        ItemStack stack = ItemStack.EMPTY;
+        final Slot slot = slots.get(slotIndex);
+        if (slot != null && slot.hasStack())
+        {
+            final ItemStack slotStack = slot.getStack();
+            stack = slotStack.copy();
+            if (slotIndex < INVENTORY.getInvSize()) { if (!insertItem(slotStack, INVENTORY.getInvSize(), slots.size(), true)) { return ItemStack.EMPTY; } }
+            else if (!insertItem(slotStack, 0, INVENTORY.getInvSize(), false)) { return ItemStack.EMPTY; }
+            if (slotStack.isEmpty()) { slot.setStack(ItemStack.EMPTY); }
+            else { slot.markDirty(); }
+        }
+        return stack;
     }
 }
