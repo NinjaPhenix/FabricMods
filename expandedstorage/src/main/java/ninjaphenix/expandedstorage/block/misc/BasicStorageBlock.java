@@ -6,8 +6,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.container.Container;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,10 +21,13 @@ public abstract class BasicStorageBlock extends Block implements BlockEntityProv
     public boolean hasComparatorOutput(BlockState state) { return true; }
 
     @Override
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) { return Container.calculateComparatorOutput(getInventory(state, world, pos)); }
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos)
+    {
+        return ScreenHandler.calculateComparatorOutput(getInventory(state, world, pos));
+    }
 
     @Override
-    public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved)
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved)
     {
         if (state.getBlock() != newState.getBlock())
         {
@@ -32,9 +35,9 @@ public abstract class BasicStorageBlock extends Block implements BlockEntityProv
             if (blockEntity instanceof Inventory)
             {
                 ItemScatterer.spawn(world, pos, (Inventory) blockEntity);
-                world.updateNeighbors(pos, this);
+                world.updateComparators(pos, this);
             }
-            super.onBlockRemoved(state, world, pos, newState, moved);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
 

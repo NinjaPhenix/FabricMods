@@ -2,17 +2,18 @@ package ninjaphenix.expandedstorage.block.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import ninjaphenix.expandedstorage.block.misc.Nameable;
 
@@ -46,35 +47,37 @@ public abstract class AbstractChestBlockEntity extends LootableContainerBlockEnt
     public void setInvStackList(DefaultedList<ItemStack> inventory) { this.inventory = inventory; }
 
     @Override
-    protected Container createContainer(int i, PlayerInventory playerInventory) { return null; }
+    protected ScreenHandler createScreenHandler(int i, PlayerInventory playerInventory) { return null; }
 
     @Override
-    public int[] getInvAvailableSlots(Direction side) { return SLOTS; }
+    public int[] getAvailableSlots(Direction side) { return SLOTS; }
 
     @Override
-    public boolean canInsertInvStack(int slot, ItemStack stack, Direction direction) { return this.isValidInvStack(slot, stack); }
+    public boolean canInsert(int slot, ItemStack stack, Direction direction) { return this.isValid(slot, stack); }
 
     @Override
-    public boolean canExtractInvStack(int slot, ItemStack stack, Direction direction) { return true; }
+    public boolean canExtract(int slot, ItemStack stack, Direction direction) { return true; }
 
     @Override
-    public int getInvSize() { return inventorySize; }
+    public int size() { return inventorySize; }
 
     @Override
     protected Text getContainerName() { return defaultContainerName; }
 
     @Override
-    public boolean isInvEmpty()
+    public boolean isEmpty()
     {
         for (ItemStack stack : inventory)
         { if (!stack.isEmpty()) { return false; } }
         return true;
     }
 
+
+    // todo: can I use the new state to remove need for type?
     @Override
-    public void fromTag(CompoundTag tag)
+    public void fromTag(BlockState state, CompoundTag tag)
     {
-        super.fromTag(tag);
+        super.fromTag(state, tag);
         Identifier id = new Identifier(tag.getString("type"));
         this.initialize(id);
         if (!deserializeLootTable(tag)) { Inventories.fromTag(tag, inventory); }

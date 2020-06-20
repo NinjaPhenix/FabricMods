@@ -16,7 +16,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "ninjaphenix.creativebuttonmover.client.CreativeButtonMover::loadValues"
+      "ninjaphenix.creativebuttonmover.client.CreativeButtonMover"
     ],
     "modmenu": [
       "ninjaphenix.creativebuttonmover.client.CreativeButtonMoverModMenuPlugin"

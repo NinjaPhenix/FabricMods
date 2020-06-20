@@ -1,8 +1,8 @@
 package ninjaphenix.containerlib.impl.inventory;
 
-import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import ninjaphenix.containerlib.api.screen.SingleScreenMeta;
@@ -12,17 +12,17 @@ import ninjaphenix.containerlib.api.inventory.AreaAwareSlotFactory;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public final class SingleContainer extends AbstractContainer<SingleScreenMeta>
+public final class SingleScreenHandler extends AbstractContainer<SingleScreenMeta>
 {
     private static final HashMap<Integer, SingleScreenMeta> SIZES = new HashMap<>();
 
     public static void onScreenSizeRegistered(SingleScreenMeta meta) { SIZES.put(meta.TOTAL_SLOTS, meta); }
 
-    public SingleContainer(ContainerType<?> type, int syncId, BlockPos pos, Inventory inventory,
+    public SingleScreenHandler(ScreenHandlerType<?> type, int syncId, BlockPos pos, Inventory inventory,
             PlayerEntity player, Text displayName, AreaAwareSlotFactory slotFactory)
     {
-        super(type, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getInvSize()));
-        for (int i = 0; i < inventory.getInvSize(); i++)
+        super(type, syncId, pos, inventory, player, displayName, getNearestSize(inventory.size()));
+        for (int i = 0; i < inventory.size(); i++)
         {
             final int x = i % SCREEN_META.WIDTH;
             final int y = (i - x) / SCREEN_META.WIDTH;

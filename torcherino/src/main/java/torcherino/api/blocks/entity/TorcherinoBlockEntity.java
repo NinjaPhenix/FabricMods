@@ -4,13 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Nameable;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -162,9 +162,9 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
     }
 
     @Override
-    public void fromTag(CompoundTag tag)
+    public void fromTag(BlockState state, CompoundTag tag)
     {
-        super.fromTag(tag);
+        super.fromTag(state, tag);
         if (tag.contains("CustomName", 8)) { setCustomName(Text.Serializer.fromJson(tag.getString("CustomName"))); }
         xRange = tag.getInt("XRange");
         zRange = tag.getInt("ZRange");

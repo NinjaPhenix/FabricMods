@@ -1,7 +1,7 @@
 {
   "variants": {
     "hanging=true": {
-      "model": "torcherino:block/double_compressed_hanging_lantern"
+      "model": "torcherino:block/double_compressed_lantern_hanging"
     },
     "hanging=false": {
       "model": "torcherino:block/double_compressed_lantern"

@@ -3,8 +3,8 @@ package ninjaphenix.expandedstorage.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -33,7 +33,7 @@ public class CursedChestBlock extends FluidLoggableChestBlock
     public BlockEntity createBlockEntity(BlockView view) { return new CursedChestBlockEntity(Registry.BLOCK.getId(this)); }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext context)
+    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context)
     {
         CursedChestType type = state.get(TYPE);
         if (type == SINGLE) { return SINGLE_SHAPE; }

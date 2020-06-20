@@ -10,12 +10,10 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -23,7 +21,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class NbtCommand
 {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean isDedicated)
     {
         dispatcher.register(literal("nbt")
                 .then(literal("block").then(CommandManager.argument("pos", BlockPosArgumentType.blockPos()).executes(context ->
@@ -54,30 +52,29 @@ public class NbtCommand
 
     private static int dumpItemStackNbt(ItemStack stack, ServerPlayerEntity player)
     {
-        final Text ninjaTips = new LiteralText("").append(new LiteralText("[Ninja Tips] ").formatted(Formatting.BLUE));
+        final MutableText ninjaTips = new LiteralText("").append(new LiteralText("[Ninja Tips] ").formatted(Formatting.BLUE));
         if (stack.isEmpty())
         {
-            player.sendChatMessage(ninjaTips.append(new TranslatableText("ninjatips.text.handempty")), MessageType.CHAT);
+            player.sendMessage(ninjaTips.append(new TranslatableText("ninjatips.text.handempty")), MessageType.CHAT, Util.NIL_UUID);
             return SINGLE_SUCCESS;
         }
         if (!stack.hasTag())
         {
-            player.sendChatMessage(ninjaTips.append(new TranslatableText("ninjatips.text.handnonbt")), MessageType.CHAT);
+            player.sendMessage(ninjaTips.append(new TranslatableText("ninjatips.text.handnonbt")), MessageType.CHAT, Util.NIL_UUID);
             return SINGLE_SUCCESS;
         }
-        player.sendChatMessage(ninjaTips.append(getItemText(stack, true)), MessageType.CHAT);
+        player.sendMessage(ninjaTips.append(getItemText(stack, true)), MessageType.CHAT, Util.NIL_UUID);
         return SINGLE_SUCCESS;
     }
 
     private static Text getItemText(ItemStack stack, boolean copyText)
     {
-        Text text = new LiteralText("").append(stack.toHoverableText());
+        MutableText text = new LiteralText("").append(stack.toHoverableText());
         if (copyText && !stack.getTag().isEmpty())
         {
             text.append(new LiteralText(" ")
-                    .append(new TranslatableText("ninjatips.text.clicktocopy").formatted(Formatting.UNDERLINE, Formatting.ITALIC).styled((style) -> {
-                        style.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stack.getTag().asString()));
-                    })));
+                    .append(new TranslatableText("ninjatips.text.clicktocopy").formatted(Formatting.UNDERLINE, Formatting.ITALIC).styled(
+                            style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stack.getTag().asString())))));
         }
         return text;
     }
@@ -88,8 +85,8 @@ public class NbtCommand
         final ItemStack stack = new ItemStack(world.getBlockState(pos).getBlock(), 1);
         final BlockEntity entity = world.getBlockEntity(pos);
         stack.setTag(entity != null ? entity.toTag(new CompoundTag()) : new CompoundTag());
-        player.sendChatMessage(new LiteralText("").append(new LiteralText("[Ninja Tips] ").formatted(Formatting.BLUE)).
-                append(getItemText(stack, true)), MessageType.CHAT);
+        player.sendMessage(new LiteralText("").append(new LiteralText("[Ninja Tips] ").formatted(Formatting.BLUE)).
+                append(getItemText(stack, true)), MessageType.CHAT, Util.NIL_UUID);
         return SINGLE_SUCCESS;
     }
 }

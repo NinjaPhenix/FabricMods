@@ -1,3 +1,7 @@
+minecraft {
+    accessWidener = file('src/main/resources/expandedstorage.accesswidener')
+}
+
 dependencies {
     compile project(path: ":ninjaphenix-container-library"), withoutUnwanted
     compile project(path: ":chainmail"), withoutUnwanted

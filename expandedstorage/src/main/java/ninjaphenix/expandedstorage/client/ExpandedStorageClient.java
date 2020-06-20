@@ -60,7 +60,7 @@ public class ExpandedStorageClient implements ClientModInitializer
                 })
         );
         BlockEntityRendererRegistry.INSTANCE.register(ExpandedStorage.CHEST, CursedChestBlockEntityRenderer::new);
-        ChainmailRendering.INSTANCE.registerBlockEntityItemStackRenderer(ExpandedStorage.CHEST, (itemStack, matrixStack, consumerProvider, light, overlay) ->
+        ChainmailRendering.INSTANCE.registerBlockEntityItemStackRenderer(ExpandedStorage.CHEST, (itemStack, mode, matrixStack, consumerProvider, light, overlay) ->
         {
             CURSED_CHEST_RENDER_ENTITY.setBlock(Registry.BLOCK.getId(((BlockItem) itemStack.getItem()).getBlock()));
             BlockEntityRenderDispatcher.INSTANCE.renderEntity(CURSED_CHEST_RENDER_ENTITY, matrixStack, consumerProvider, light, overlay);

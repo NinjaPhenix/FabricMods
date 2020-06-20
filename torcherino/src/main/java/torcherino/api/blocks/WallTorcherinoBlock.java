@@ -1,14 +1,12 @@
 package torcherino.api.blocks;
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -16,8 +14,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import torcherino.api.TierSupplier;
@@ -30,15 +26,11 @@ import java.util.Random;
 public class WallTorcherinoBlock extends WallTorchBlock implements BlockEntityProvider, TierSupplier
 {
     private final Identifier tierID;
-    private final DefaultParticleType flameParticle;
 
-    public WallTorcherinoBlock(Identifier tier, Identifier dropID)
+    public WallTorcherinoBlock(Identifier tier, TorcherinoBlock torcherinoBlock, ParticleEffect particleEffect)
     {
-        super(FabricBlockSettings.copy(Blocks.WALL_TORCH).drops(dropID).build());
+        super(Block.Settings.copy(Blocks.WALL_TORCH).dropsLike(torcherinoBlock), particleEffect);
         this.tierID = tier;
-        String path = tier.getPath() + "_flame";
-        if (path.equals("normal_flame")) { path = "flame"; }
-        flameParticle = (DefaultParticleType) Registry.PARTICLE_TYPE.get(new Identifier(tier.getNamespace(), path));
     }
 
     @Override
@@ -79,17 +71,5 @@ public class WallTorcherinoBlock extends WallTorchBlock implements BlockEntityPr
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
         TorcherinoLogic.onPlaced(world, pos, state, placer, stack, this);
-    }
-
-    @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random rnd)
-    {
-        Direction direction = state.get(FACING);
-        double d = pos.getX() + 0.5D;
-        double e = pos.getY() + 0.7D;
-        double f = pos.getZ() + 0.5D;
-        Direction direction2 = direction.getOpposite();
-        world.addParticle(ParticleTypes.SMOKE, d + 0.27D * direction2.getOffsetX(), e + 0.22D, f + 0.27D * direction2.getOffsetZ(), 0.0D, 0.0D, 0.0D);
-        world.addParticle(flameParticle, d + 0.27D * direction2.getOffsetX(), e + 0.22D, f + 0.27D * direction2.getOffsetZ(), 0.0D, 0.0D, 0.0D);
     }
 }

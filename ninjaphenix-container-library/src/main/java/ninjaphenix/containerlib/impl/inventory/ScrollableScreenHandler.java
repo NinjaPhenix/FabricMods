@@ -1,8 +1,8 @@
 package ninjaphenix.containerlib.impl.inventory;
 
-import net.minecraft.container.ContainerType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -15,16 +15,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.IntUnaryOperator;
 
-public final class ScrollableContainer extends AbstractContainer<ScrollableScreenMeta>
+public final class ScrollableScreenHandler extends AbstractContainer<ScrollableScreenMeta>
 {
     private static final HashMap<Integer, ScrollableScreenMeta> SIZES = new HashMap<>();
 
     public static void onScreenSizeRegistered(ScrollableScreenMeta meta) { SIZES.put(meta.TOTAL_SLOTS, meta); }
 
-    public ScrollableContainer(ContainerType<?> type, int syncId, BlockPos pos, Inventory inventory,
+    public ScrollableScreenHandler(ScreenHandlerType<?> type, int syncId, BlockPos pos, Inventory inventory,
             PlayerEntity player, Text displayName, AreaAwareSlotFactory slotFactory)
     {
-        super(type, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getInvSize()));
+        super(type, syncId, pos, inventory, player, displayName, getNearestSize(inventory.size()));
         resetSlotPositions(slotFactory);
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
@@ -40,13 +40,13 @@ public final class ScrollableContainer extends AbstractContainer<ScrollableScree
 
     private void resetSlotPositions(@Nullable AreaAwareSlotFactory slotFactory)
     {
-        for (int i = 0; i < INVENTORY.getInvSize(); i++)
+        for (int i = 0; i < INVENTORY.size(); i++)
         {
             final int x = i % SCREEN_META.WIDTH;
             int y = MathHelper.ceil((((double) (i - x)) / SCREEN_META.WIDTH));
             if(y >= SCREEN_META.HEIGHT) { y = - 2000; }else {y = y * 18 + 18;}
             if(slotFactory != null) { this.addSlot(slotFactory.create(INVENTORY, "inventory", i, x * 18 + 8, y)); }
-            else { slots.get(i).yPosition = y; }
+            else { slots.get(i).y = y; }
         }
     }
 
@@ -62,6 +62,6 @@ public final class ScrollableContainer extends AbstractContainer<ScrollableScree
         throw new RuntimeException("No screen can show an inventory of size " + invSize + "."); // make this more obvious?
     }
 
-    public void moveSlotRange(int min, int max, int yChange) { for (int i = min; i < max; i++) { slots.get(i).yPosition += yChange; } }
-    public void setSlotRange(int min, int max, IntUnaryOperator yPos) { for (int i = min; i < max; i++) { slots.get(i).yPosition = yPos.applyAsInt(i); } }
+    public void moveSlotRange(int min, int max, int yChange) { for (int i = min; i < max; i++) { slots.get(i).y += yChange; } }
+    public void setSlotRange(int min, int max, IntUnaryOperator yPos) { for (int i = min; i < max; i++) { slots.get(i).y = yPos.applyAsInt(i); } }
 }

@@ -10,6 +10,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import ninjaphenix.expandedstorage.ExpandedStorage;
 import ninjaphenix.expandedstorage.api.Registries;
+import ninjaphenix.expandedstorage.api.Registries.ChestTierData;
+import ninjaphenix.expandedstorage.api.Registries.TierData;
 import ninjaphenix.expandedstorage.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.block.OldChestBlock;
 
@@ -28,12 +30,14 @@ public final class ModBlocks
         chest(Blocks.GOLD_BLOCK, "gold_chest", 9);
         diamond_chest = chest(Blocks.DIAMOND_BLOCK, "diamond_chest", 12);
         chest(Blocks.OBSIDIAN, "obsidian_chest", 12);
+        chest(Blocks.NETHERITE_BLOCK, "netherite_chest", 15);
 
         old(Blocks.OAK_PLANKS, "wood_chest", 3);
         old(Blocks.IRON_BLOCK, "iron_chest", 6);
         old(Blocks.GOLD_BLOCK, "gold_chest", 9);
         old(Blocks.DIAMOND_BLOCK, "diamond_chest", 12);
         old(Blocks.OBSIDIAN, "obsidian_chest", 12);
+        old(Blocks.NETHERITE_BLOCK, "netherite_chest", 15);
     }
 
     private ModBlocks() {}
@@ -45,7 +49,7 @@ public final class ModBlocks
         final Identifier id = ExpandedStorage.getId("old_" + name);
         Registry.register(Registry.BLOCK, id, block);
         Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ExpandedStorage.group)));
-        Registries.OLD_CHEST.add(ExpandedStorage.getId(name), new Registries.TierData(rows * 9, containerName, id));
+        Registry.register(Registries.OLD_CHEST, ExpandedStorage.getId(name), new TierData(rows * 9, containerName, id));
         return block;
     }
 
@@ -60,7 +64,7 @@ public final class ModBlocks
         final Identifier id = ExpandedStorage.getId(name);
         Registry.register(Registry.BLOCK, id, block);
         Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ExpandedStorage.group)));
-        Registries.CHEST.add(id, new Registries.ChestTierData(rows * 9, containerName, id, singleTexture, vanillaTexture, tallTexture, longTexture));
+        Registry.register(Registries.CHEST, id, new ChestTierData(rows * 9, containerName, id, singleTexture, vanillaTexture, tallTexture, longTexture));
         return block;
     }
 

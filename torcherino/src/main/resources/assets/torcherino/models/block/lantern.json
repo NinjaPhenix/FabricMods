@@ -2,6 +2,6 @@
   "parent": "block/lantern",
   "textures": {
     "particle": "torcherino:blocks/lantern",
-    "all": "torcherino:blocks/lantern"
+    "lantern": "torcherino:blocks/lantern"
   }
 }

@@ -22,7 +22,7 @@ public class Main implements ModInitializer
     @Override
     public void onInitialize()
     {
-        final Block TEST_BLOCK = Registry.register(Registry.BLOCK, new Identifier("test_a", "test_block"), new TestBlock(Block.Settings.of(Material.CLAY)));
+        final Block TEST_BLOCK = Registry.register(Registry.BLOCK, new Identifier("test_a", "test_block"), new TestBlock(Block.Settings.of(Material.BAMBOO)));
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("test_a", "test_block_entity"),
                 BlockEntityType.Builder.create(TestBlockEntity::new, TEST_BLOCK).build(null));
         Registry.register(Registry.ITEM, new Identifier("test_a", "test_block"), new BlockItem(TEST_BLOCK, new Item.Settings()));

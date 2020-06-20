@@ -2,6 +2,7 @@ package ninjaphenix.chainmail.mixins;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import ninjaphenix.chainmail.api.client.render.ItemStackRenderFunction;
@@ -20,12 +21,13 @@ public abstract class BuiltinModelItemRendererMixin implements BuiltinModelItemR
     private final HashMap<Predicate<ItemStack>, ItemStackRenderFunction> chainmail_renderers = new HashMap<>();
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void chainmail_render(ItemStack stack, MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, CallbackInfo ci)
+    private void chainmail_render(ItemStack stack, Mode mode, MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, int light, int overlay,
+            CallbackInfo ci)
     {
         chainmail_renderers.forEach((predicate, renderer) -> {
             if (predicate.test(stack))
             {
-                renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
+                renderer.render(stack, mode, matrix, vertexConsumerProvider, light, overlay);
                 ci.cancel();
                 return;
             }

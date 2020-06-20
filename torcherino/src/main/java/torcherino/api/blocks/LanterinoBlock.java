@@ -1,6 +1,5 @@
 package torcherino.api.blocks;
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
@@ -29,7 +28,7 @@ public class LanterinoBlock extends LanternBlock implements BlockEntityProvider,
 
     public LanterinoBlock(Identifier tier)
     {
-        super(FabricBlockSettings.copy(Blocks.LANTERN).build());
+        super(Block.Settings.copy(Blocks.LANTERN));
         this.tierID = tier;
     }
 
