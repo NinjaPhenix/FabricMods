@@ -21,11 +21,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
@@ -81,7 +77,7 @@ public class ChestMutatorItem extends ChestModifierItem
                                     world.setBlockState(mainBlockPos, mainState.with(TYPE, mainChestType));
                                     world.setBlockState(pos, world.getBlockState(pos).with(TYPE, mainChestType.getOpposite()));
                                     tag.remove("pos");
-                                    player.sendMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_end"), true);
+                                    player.addChatMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_end"), true);
                                     player.getItemCooldownManager().set(this, 5);
                                     return ActionResult.SUCCESS;
                                 }
@@ -96,7 +92,7 @@ public class ChestMutatorItem extends ChestModifierItem
                     if (mainState.get(TYPE) == CursedChestType.SINGLE)
                     {
                         tag.put("pos", NbtHelper.fromBlockPos(mainBlockPos));
-                        player.sendMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_start"), true);
+                        player.addChatMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_start"), true);
                         player.getItemCooldownManager().set(this, 5);
                         return ActionResult.SUCCESS;
                     }
@@ -187,7 +183,7 @@ public class ChestMutatorItem extends ChestModifierItem
                                     world.removeBlockEntity(mainPos);
                                     world.setBlockState(mainPos, defState.with(WATERLOGGED, state.get(WATERLOGGED)).with(TYPE, mainChestType));
                                     blockEntity = world.getBlockEntity(mainPos);
-                                    blockEntity.fromTag(world.getBlockState(mainPos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), invData));
+                                    blockEntity.fromTag(Inventories.toTag(blockEntity.toTag(new CompoundTag()), invData));
 
                                     blockEntity = world.getBlockEntity(otherPos);
                                     invData = DefaultedList.ofSize(entry.getSlotCount(), ItemStack.EMPTY);
@@ -195,10 +191,10 @@ public class ChestMutatorItem extends ChestModifierItem
                                     world.removeBlockEntity(otherPos);
                                     world.setBlockState(otherPos, defState.with(WATERLOGGED, state.get(WATERLOGGED)).with(TYPE, mainChestType.getOpposite()));
                                     blockEntity = world.getBlockEntity(otherPos);
-                                    blockEntity.fromTag(world.getBlockState(otherPos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), invData));
+                                    blockEntity.fromTag(Inventories.toTag(blockEntity.toTag(new CompoundTag()), invData));
 
                                     tag.remove("pos");
-                                    player.sendMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_end"), true);
+                                    player.addChatMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_end"), true);
                                     player.getItemCooldownManager().set(this, 5);
                                 }
                                 return ActionResult.SUCCESS;
@@ -212,7 +208,7 @@ public class ChestMutatorItem extends ChestModifierItem
                     if (state.get(ChestBlock.CHEST_TYPE) == ChestType.SINGLE)
                     {
                         tag.put("pos", NbtHelper.fromBlockPos(mainPos));
-                        player.sendMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_start"), true);
+                        player.addChatMessage(new TranslatableText("tooltip.expandedstorage.chest_mutator.merge_start"), true);
                         player.getItemCooldownManager().set(this, 5);
                         return ActionResult.SUCCESS;
                     }
@@ -293,7 +289,7 @@ public class ChestMutatorItem extends ChestModifierItem
             CompoundTag tag = stack.getOrCreateTag();
             tag.putByte("mode", getMode(stack).next);
             if (tag.contains("pos")) { tag.remove("pos"); }
-            if (!world.isClient) { player.sendMessage(getMode(stack).translation, true); }
+            if (!world.isClient) { player.addChatMessage(getMode(stack).translation, true); }
             return TypedActionResult.success(stack);
         }
         return super.useModifierInAir(world, player, hand);

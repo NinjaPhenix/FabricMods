@@ -12,9 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -51,9 +51,9 @@ public class CursedChestBlockEntity extends AbstractChestBlockEntity implements 
         final List<PlayerEntity> playersInRange = world.getNonSpectatingEntities(PlayerEntity.class, new Box(x - 5, y - 5, z - 5, x + 6, y + 6, z + 6));
         for (PlayerEntity player : playersInRange)
         {
-            if (player.currentScreenHandler instanceof AbstractContainer)
+            if (player.container instanceof AbstractContainer)
             {
-                final Inventory inventory = ((AbstractContainer<?>) player.currentScreenHandler).getInventory();
+                final Inventory inventory = ((AbstractContainer<?>) player.container).getInventory();
                 if (inventory == instance || inventory instanceof DoubleSidedInventory && ((DoubleSidedInventory) inventory).isPart(instance)) {viewers++;}
             }
         }
@@ -73,14 +73,14 @@ public class CursedChestBlockEntity extends AbstractChestBlockEntity implements 
     }
 
     @Override
-    public boolean onSyncedBlockEvent(int actionId, int value)
+    public boolean onBlockAction(int actionId, int value)
     {
         if (actionId == 1)
         {
             viewerCount = value;
             return true;
         }
-        else { return super.onSyncedBlockEvent(actionId, value); }
+        else { return super.onBlockAction(actionId, value); }
     }
 
     @Environment(EnvType.CLIENT)
@@ -112,13 +112,13 @@ public class CursedChestBlockEntity extends AbstractChestBlockEntity implements 
         double zOffset = 0.5;
         if (chestType == CursedChestType.BOTTOM) { zOffset = 1; }
         BlockPos otherPos = CursedChestBlock.getPairedPos(world, pos);
-        Vec3d center = Vec3d.of(pos).add(Vec3d.of(otherPos == null ? pos : otherPos));
+        Vec3d center = new Vec3d(pos).add(new Vec3d(otherPos == null ? pos : otherPos));
         world.playSound(null, center.getX() / 2 + 0.5D, center.getY() / 2 + 0.5D, center.getZ() / 2 + zOffset, soundEvent, SoundCategory.BLOCKS, 0.5F,
                 world.random.nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
-    public void onOpen(PlayerEntity player)
+    public void onInvOpen(PlayerEntity player)
     {
         if (player.isSpectator()) { return; }
         if (viewerCount < 0) { viewerCount = 0; }
@@ -127,7 +127,7 @@ public class CursedChestBlockEntity extends AbstractChestBlockEntity implements 
     }
 
     @Override
-    public void onClose(PlayerEntity player)
+    public void onInvClose(PlayerEntity player)
     {
         if (player.isSpectator()) { return; }
         viewerCount--;
@@ -140,7 +140,7 @@ public class CursedChestBlockEntity extends AbstractChestBlockEntity implements 
         Block block = getCachedState().getBlock();
         if (block instanceof CursedChestBlock)
         {
-            world.addSyncedBlockEvent(pos, block, 1, viewerCount);
+            world.addBlockAction(pos, block, 1, viewerCount);
             world.updateNeighborsAlways(pos, block);
         }
     }

@@ -12,4 +12,10 @@ public class TestBlock extends Block implements BlockEntityProvider
 
     @Override
     public BlockEntity createBlockEntity(BlockView view) { return new TestBlockEntity(); }
+
+    @Override
+    public boolean hasBlockEntity()
+    {
+        return true;
+    }
 }

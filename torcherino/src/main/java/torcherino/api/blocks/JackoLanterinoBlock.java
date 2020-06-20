@@ -1,5 +1,6 @@
 package torcherino.api.blocks;
 
+import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
@@ -27,7 +28,7 @@ public class JackoLanterinoBlock extends CarvedPumpkinBlock implements BlockEnti
 
     public JackoLanterinoBlock(Identifier tier)
     {
-        super(Block.Settings.copy(Blocks.JACK_O_LANTERN));
+        super(FabricBlockSettings.copy(Blocks.JACK_O_LANTERN).build());
         this.tierID = tier;
     }
 

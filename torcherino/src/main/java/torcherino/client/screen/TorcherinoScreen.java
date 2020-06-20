@@ -6,13 +6,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import torcherino.Torcherino;
 import torcherino.api.Tier;
@@ -30,7 +29,7 @@ public class TorcherinoScreen extends Screen
 
     private final BlockPos blockPos;
     private final Tier tier;
-    private final Text cached_title;
+    private final String cached_title;
     private int xRange, zRange, yRange, speed, redstoneMode, left, top;
 
     public TorcherinoScreen(Text title, int xRange, int zRange, int yRange, int speed, int redstoneMode, BlockPos pos, Identifier tierID)
@@ -43,7 +42,7 @@ public class TorcherinoScreen extends Screen
         this.yRange = yRange;
         this.speed = speed == 0 ? 1 : speed;
         this.redstoneMode = redstoneMode;
-        this.cached_title = title;
+        this.cached_title = title.asString();
     }
 
     @Override
@@ -57,7 +56,7 @@ public class TorcherinoScreen extends Screen
         addButton(new FixedSliderWidget(left + 8, top + 20, 205, (double) (speed - 1) / (tier.getMaxSpeed() - 1), tier.getMaxSpeed())
         {
             @Override
-            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.speed", 100 * TorcherinoScreen.this.speed)); }
+            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.speed", 100 * TorcherinoScreen.this.speed).asString()); }
 
             @Override
             protected void applyValue()
@@ -69,7 +68,7 @@ public class TorcherinoScreen extends Screen
         addButton(new FixedSliderWidget(left + 8, top + 45, 205, (double) xRange / tier.getXZRange(), tier.getXZRange())
         {
             @Override
-            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.x_range", TorcherinoScreen.this.xRange * 2 + 1)); }
+            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.x_range", TorcherinoScreen.this.xRange * 2 + 1).asString()); }
 
             @Override
             protected void applyValue()
@@ -81,7 +80,7 @@ public class TorcherinoScreen extends Screen
         this.addButton(new FixedSliderWidget(left + 8, top + 70, 205, (double) zRange / tier.getXZRange(), tier.getXZRange())
         {
             @Override
-            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.z_range", TorcherinoScreen.this.zRange * 2 + 1)); }
+            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.z_range", TorcherinoScreen.this.zRange * 2 + 1).asString()); }
 
             @Override
             protected void applyValue()
@@ -93,7 +92,7 @@ public class TorcherinoScreen extends Screen
         this.addButton(new FixedSliderWidget(left + 8, top + 95, 205, (double) yRange / tier.getYRange(), tier.getYRange())
         {
             @Override
-            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.y_range", TorcherinoScreen.this.yRange * 2 + 1)); }
+            protected void updateMessage() { setMessage(new TranslatableText("gui.torcherino.y_range", TorcherinoScreen.this.yRange * 2 + 1).asString()); }
 
             @Override
             protected void applyValue()
@@ -134,7 +133,7 @@ public class TorcherinoScreen extends Screen
                         translationKey = "gui.torcherino.mode.error";
                         break;
                 }
-                setNarrationMessage(new TranslatableText("gui.torcherino.mode", new TranslatableText(translationKey)));
+                setNarrationMessage(new TranslatableText("gui.torcherino.mode", new TranslatableText(translationKey)).asString());
             }
 
             private void setButtonIcon()
@@ -172,20 +171,20 @@ public class TorcherinoScreen extends Screen
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int x, int y, float partialTicks)
+    public void render(int x, int y, float partialTicks)
     {
-        fillGradient(matrixStack, 0, 0, this.width, this.height, -1072689136, -804253680);
-        client.getTextureManager().bindTexture(SCREEN_TEXTURE);
+        fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+        minecraft.getTextureManager().bindTexture(SCREEN_TEXTURE);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        drawTexture(matrixStack, left, top, 0, 0, screenWidth, screenHeight);
-        textRenderer.draw(matrixStack, cached_title, (width - textRenderer.getWidth(cached_title)) / 2.0f, top + 6, 4210752);
-        super.render(matrixStack, x, y, partialTicks);
+        blit(left, top, 0, 0, screenWidth, screenHeight);
+        font.draw(cached_title, (width - font.getStringWidth(cached_title)) / 2.0f, top + 6, 4210752);
+        super.render(x, y, partialTicks);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == 256 || client.options.keyInventory.matchesKey(keyCode, 0))
+        if (keyCode == 256 || minecraft.options.keyInventory.matchesKey(keyCode, 0))
         {
             this.onClose();
             return true;

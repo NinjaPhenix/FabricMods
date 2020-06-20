@@ -19,39 +19,39 @@ public class DoubleSidedInventory implements SidedInventory
     }
 
     @Override
-    public int[] getAvailableSlots(Direction direction)
+    public int[] getInvAvailableSlots(Direction direction)
     {
-        int[] firstSlots = first.getAvailableSlots(direction);
-        int[] secondSlots = second.getAvailableSlots(direction);
+        int[] firstSlots = first.getInvAvailableSlots(direction);
+        int[] secondSlots = second.getInvAvailableSlots(direction);
         int[] combined = new int[firstSlots.length + secondSlots.length];
         int index = 0;
         for (int slot : firstSlots) { combined[index++] = slot; }
-        for (int slot : secondSlots) { combined[index++] = slot + first.size(); }
+        for (int slot : secondSlots) { combined[index++] = slot + first.getInvSize(); }
         return combined;
     }
 
     @Override
-    public boolean canInsert(int slot, ItemStack stack, Direction direction)
+    public boolean canInsertInvStack(int slot, ItemStack stack, Direction direction)
     {
-        if (slot >= first.size()) { return second.canInsert(slot - first.size(), stack, direction); }
-        return first.canInsert(slot, stack, direction);
+        if (slot >= first.getInvSize()) { return second.canInsertInvStack(slot - first.getInvSize(), stack, direction); }
+        return first.canInsertInvStack(slot, stack, direction);
     }
 
     @Override
-    public boolean canExtract(int slot, ItemStack stack, Direction direction)
+    public boolean canExtractInvStack(int slot, ItemStack stack, Direction direction)
     {
-        if (slot >= first.size()) { return second.canExtract(slot - first.size(), stack, direction); }
-        return first.canExtract(slot, stack, direction);
+        if (slot >= first.getInvSize()) { return second.canExtractInvStack(slot - first.getInvSize(), stack, direction); }
+        return first.canExtractInvStack(slot, stack, direction);
     }
 
     @Override
-    public int size() { return first.size() + second.size(); }
+    public int getInvSize() { return first.getInvSize() + second.getInvSize(); }
 
     @Override
-    public boolean isEmpty() { return first.isEmpty() && second.isEmpty(); }
+    public boolean isInvEmpty() { return first.isInvEmpty() && second.isInvEmpty(); }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) { return first.canPlayerUse(player) && second.canPlayerUse(player); }
+    public boolean canPlayerUseInv(PlayerEntity player) { return first.canPlayerUseInv(player) && second.canPlayerUseInv(player); }
 
     @Override
     public void clear() { first.clear(); second.clear(); }
@@ -60,47 +60,47 @@ public class DoubleSidedInventory implements SidedInventory
     public void markDirty() { first.markDirty(); second.markDirty(); }
 
     @Override
-    public void onOpen(PlayerEntity player) { first.onOpen(player); second.onOpen(player); }
+    public void onInvOpen(PlayerEntity player) { first.onInvOpen(player); second.onInvOpen(player); }
 
     @Override
-    public void onClose(PlayerEntity player) { first.onClose(player); second.onClose(player); }
+    public void onInvClose(PlayerEntity player) { first.onInvClose(player); second.onInvClose(player); }
 
     public boolean isPart(SidedInventory inventory) { return first == inventory || second == inventory; }
 
-    public int getMaxCountPerStack() { return first.getMaxCountPerStack(); }
+    public int getInvMaxStackAmount() { return first.getInvMaxStackAmount(); }
 
     @Override
-    public ItemStack getStack(int slot)
+    public ItemStack getInvStack(int slot)
     {
-        if (slot >= first.size()) { return second.getStack(slot - first.size()); }
-        return first.getStack(slot);
+        if (slot >= first.getInvSize()) { return second.getInvStack(slot - first.getInvSize()); }
+        return first.getInvStack(slot);
     }
 
     @Override
-    public ItemStack removeStack(int slot, int amount)
+    public ItemStack takeInvStack(int slot, int amount)
     {
-        if (slot >= first.size()) { return second.removeStack(slot - first.size(), amount); }
-        return first.removeStack(slot, amount);
+        if (slot >= first.getInvSize()) { return second.takeInvStack(slot - first.getInvSize(), amount); }
+        return first.takeInvStack(slot, amount);
     }
 
     @Override
-    public ItemStack removeStack(int slot)
+    public ItemStack removeInvStack(int slot)
     {
-        if (slot >= first.size()) { return second.removeStack(slot - first.size()); }
-        return first.removeStack(slot);
+        if (slot >= first.getInvSize()) { return second.removeInvStack(slot - first.getInvSize()); }
+        return first.removeInvStack(slot);
     }
 
     @Override
-    public void setStack(int slot, ItemStack stack)
+    public void setInvStack(int slot, ItemStack stack)
     {
-        if (slot >= first.size()) { second.setStack(slot - first.size(), stack); }
-        else { first.setStack(slot, stack); }
+        if (slot >= first.getInvSize()) { second.setInvStack(slot - first.getInvSize(), stack); }
+        else { first.setInvStack(slot, stack); }
     }
 
     @Override
-    public boolean isValid(int slot, ItemStack stack)
+    public boolean isValidInvStack(int slot, ItemStack stack)
     {
-        if (slot >= first.size()) { return second.isValid(slot - first.size(), stack); }
-        return first.isValid(slot, stack);
+        if (slot >= first.getInvSize()) { return second.isValidInvStack(slot - first.getInvSize(), stack); }
+        return first.isValidInvStack(slot, stack);
     }
 }

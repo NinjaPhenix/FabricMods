@@ -8,8 +8,8 @@ import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import ninjaphenix.chainmail.api.config.JanksonConfigParser;
 import ninjaphenix.containerlib.api.Constants;
 import ninjaphenix.containerlib.impl.ContainerLibraryImpl;
@@ -18,9 +18,9 @@ import ninjaphenix.containerlib.impl.client.screen.PagedScreen;
 import ninjaphenix.containerlib.impl.client.screen.ScrollableScreen;
 import ninjaphenix.containerlib.impl.client.screen.SelectContainerScreen;
 import ninjaphenix.containerlib.impl.client.screen.SingleScreen;
-import ninjaphenix.containerlib.impl.inventory.PagedScreenHandler;
-import ninjaphenix.containerlib.impl.inventory.ScrollableScreenHandler;
-import ninjaphenix.containerlib.impl.inventory.SingleScreenHandler;
+import ninjaphenix.containerlib.impl.inventory.PagedContainer;
+import ninjaphenix.containerlib.impl.inventory.ScrollableContainer;
+import ninjaphenix.containerlib.impl.inventory.SingleContainer;
 import org.apache.logging.log4j.MarkerManager;
 
 import java.nio.file.Path;
@@ -68,9 +68,9 @@ public final class ContainerLibraryClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.SINGLE_CONTAINER, (ContainerScreenFactory<SingleScreenHandler>) SingleScreen::new);
-        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.PAGED_CONTAINER, (ContainerScreenFactory<PagedScreenHandler>) PagedScreen::new);
-        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.SCROLLABLE_CONTAINER, (ContainerScreenFactory<ScrollableScreenHandler>) ScrollableScreen::new);
+        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.SINGLE_CONTAINER, (ContainerScreenFactory<SingleContainer>) SingleScreen::new);
+        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.PAGED_CONTAINER, (ContainerScreenFactory<PagedContainer>) PagedScreen::new);
+        ScreenProviderRegistry.INSTANCE.registerFactory(Constants.SCROLLABLE_CONTAINER, (ContainerScreenFactory<ScrollableContainer>) ScrollableScreen::new);
 
         ClientSidePacketRegistry.INSTANCE.register(SCREEN_SELECT, (context, buffer) ->
         {

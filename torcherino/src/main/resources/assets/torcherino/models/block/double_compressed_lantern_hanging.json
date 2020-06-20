@@ -1,7 +1,0 @@
-{
-  "parent": "block/lantern_hanging",
-  "textures": {
-    "particle": "torcherino:blocks/double_compressed_lantern",
-    "lantern": "torcherino:blocks/double_compressed_lantern"
-  }
-}

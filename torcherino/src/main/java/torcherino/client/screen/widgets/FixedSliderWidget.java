@@ -3,7 +3,6 @@ package torcherino.client.screen.widgets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -13,7 +12,7 @@ public abstract class FixedSliderWidget extends SliderWidget
 
     protected FixedSliderWidget(int x, int y, int width, double progress, int permutations)
     {
-        super(x, y, width, 20, new LiteralText(""), progress);
+        super(x, y, width, 20, progress);
         nudgeAmount = 1.0F / permutations;
         this.updateMessage();
     }

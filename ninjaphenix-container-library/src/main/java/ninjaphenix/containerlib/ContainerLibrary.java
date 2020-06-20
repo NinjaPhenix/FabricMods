@@ -9,15 +9,15 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
+import net.minecraft.container.Container;
+import net.minecraft.container.ContainerType;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import ninjaphenix.chainmail.api.events.PlayerDisconnectCallback;
@@ -27,9 +27,9 @@ import ninjaphenix.containerlib.api.ContainerLibraryExtension;
 import ninjaphenix.containerlib.api.inventory.AbstractContainer;
 import ninjaphenix.containerlib.api.inventory.AreaAwareSlotFactory;
 import ninjaphenix.containerlib.impl.ContainerLibraryImpl;
-import ninjaphenix.containerlib.impl.inventory.PagedScreenHandler;
-import ninjaphenix.containerlib.impl.inventory.ScrollableScreenHandler;
-import ninjaphenix.containerlib.impl.inventory.SingleScreenHandler;
+import ninjaphenix.containerlib.impl.inventory.PagedContainer;
+import ninjaphenix.containerlib.impl.inventory.ScrollableContainer;
+import ninjaphenix.containerlib.impl.inventory.SingleContainer;
 
 import java.util.List;
 import java.util.function.Function;
@@ -61,9 +61,9 @@ public final class ContainerLibrary implements ModInitializer
         List<ContainerLibraryExtension> extensions = FabricLoader.getInstance().getEntrypoints(Constants.ENTRY_POINT_ID, ContainerLibraryExtension.class);
         extensions.forEach(ContainerLibraryExtension::declareScreenSizeCallbacks);
         extensions.forEach(ContainerLibraryExtension::declareScreenSizes);
-        ContainerProviderRegistry.INSTANCE.registerFactory(SINGLE_CONTAINER, getContainerFactory(SingleScreenHandler::new));
-        ContainerProviderRegistry.INSTANCE.registerFactory(Constants.PAGED_CONTAINER, getContainerFactory(PagedScreenHandler::new));
-        ContainerProviderRegistry.INSTANCE.registerFactory(Constants.SCROLLABLE_CONTAINER, getContainerFactory(ScrollableScreenHandler::new));
+        ContainerProviderRegistry.INSTANCE.registerFactory(SINGLE_CONTAINER, getContainerFactory(SingleContainer::new));
+        ContainerProviderRegistry.INSTANCE.registerFactory(Constants.PAGED_CONTAINER, getContainerFactory(PagedContainer::new));
+        ContainerProviderRegistry.INSTANCE.registerFactory(Constants.SCROLLABLE_CONTAINER, getContainerFactory(ScrollableContainer::new));
         final Function<String, TranslatableText> nameFunc = (name) -> new TranslatableText(String.format("screen.%s.%s", LIBRARY_ID, name));
         IMPL.declareContainerType(SINGLE_CONTAINER, Constants.id("textures/gui/single_button.png"), nameFunc.apply("single_screen_type"));
         IMPL.declareContainerType(Constants.SCROLLABLE_CONTAINER, Constants.id("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen_type"));
@@ -82,7 +82,7 @@ public final class ContainerLibrary implements ModInitializer
     private void onReceiveOpenSelectScreenPacket(final PacketContext context, final PacketByteBuf buffer)
     {
         final ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
-        final ScreenHandler container = player.currentScreenHandler;
+        final Container container = player.container;
         if (container instanceof AbstractContainer)
         {
             final AbstractContainer<?> abstractContainer = (AbstractContainer<?>) container;
@@ -95,13 +95,13 @@ public final class ContainerLibrary implements ModInitializer
         }
     }
 
-    private interface containerConstructor<T extends ScreenHandler>
+    private interface containerConstructor<T extends Container>
     {
-        T create(ScreenHandlerType<T> type, int syncId, BlockPos pos, Inventory inventory,
+        T create(ContainerType<T> type, int syncId, BlockPos pos, Inventory inventory,
                 PlayerEntity player, Text containerName, AreaAwareSlotFactory slotFactory);
     }
 
-    private <T extends ScreenHandler> ContainerFactory<T> getContainerFactory(containerConstructor<T> newMethod)
+    private <T extends Container> ContainerFactory<T> getContainerFactory(containerConstructor<T> newMethod)
     {
         return (syncId, identifier, player, buffer) -> {
             final BlockPos pos = buffer.readBlockPos();

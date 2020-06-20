@@ -1,7 +1,6 @@
 package ninjaphenix.chainmail.api.client.render;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
@@ -11,5 +10,5 @@ import net.minecraft.item.ItemStack;
 @FunctionalInterface
 public interface ItemStackRenderFunction
 {
-    void render(ItemStack stack, Mode mode, MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, int light, int overlay);
+    void render(ItemStack stack, MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, int light, int overlay);
 }

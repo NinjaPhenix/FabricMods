@@ -75,7 +75,7 @@ public abstract class ChestModifierItem extends Item
     }
 
     @Override
-    public ActionResult useOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
+    public boolean useOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
     {
         return useModifierOnEntity(stack, player, entity, hand);
     }
@@ -94,7 +94,7 @@ public abstract class ChestModifierItem extends Item
 
     protected ActionResult useModifierOnBlock(ItemUsageContext context, BlockState state) { return ActionResult.PASS; }
 
-    protected ActionResult useModifierOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) { return ActionResult.PASS; }
+    protected boolean useModifierOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) { return false; }
 
     protected TypedActionResult<ItemStack> useModifierInAir(World world, PlayerEntity player, Hand hand)
     {

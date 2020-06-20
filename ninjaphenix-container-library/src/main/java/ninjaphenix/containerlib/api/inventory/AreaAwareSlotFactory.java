@@ -1,7 +1,7 @@
 package ninjaphenix.containerlib.api.inventory;
 
+import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.slot.Slot;
 
 /**
  * Represents a method which creates (custom) Slot objects.

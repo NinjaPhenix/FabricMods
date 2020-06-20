@@ -8,9 +8,8 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -24,6 +23,7 @@ import torcherino.api.blocks.entity.TorcherinoBlockEntity;
 import torcherino.api.entrypoints.TorcherinoInitializer;
 import torcherino.blocks.ModBlocks;
 import torcherino.config.Config;
+import torcherino.particle.DefaultParticleType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,12 +42,13 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
     public void onInitialize()
     {
         Config.initialize();
+        TorcherinoAPI.INSTANCE.registerTier(new Identifier("null"), 4, 4, 4);
         TorcherinoAPI.INSTANCE.getTiers().forEach((id, tier) ->
         {
             if (!id.getNamespace().equals(MOD_ID)) { return; }
             String path = id.getPath() + "_flame";
             if (path.equals("normal_flame")) { path = "flame"; }
-            particles.add(Registry.register(Registry.PARTICLE_TYPE, new Identifier(MOD_ID, path), new torcherino.particle.DefaultParticleType(false)));
+            particles.add(Registry.register(Registry.PARTICLE_TYPE, new Identifier(MOD_ID, path), new DefaultParticleType(false)));
         });
         ModBlocks.INSTANCE.initialize();
         ServerSidePacketRegistry.INSTANCE.register(new Identifier(Torcherino.MOD_ID, "utv"), (PacketContext context, PacketByteBuf buffer) ->
@@ -69,6 +70,7 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
             });
         });
         FabricLoader.getInstance().getEntrypoints("torcherinoInitializer", TorcherinoInitializer.class).forEach(TorcherinoInitializer::onTorcherinoInitialize);
+
         PlayerConnectCallback.EVENT.register(player ->
         {
             allowedUuids.add(player.getUuidAsString());
@@ -84,6 +86,7 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
             });
             ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, new Identifier(Torcherino.MOD_ID, "tts"), packetBuffer);
         });
+
         PlayerDisconnectCallback.EVENT.register(player ->
         {
             if (Config.INSTANCE.online_mode.equals("ONLINE")) { allowedUuids.remove(player.getUuidAsString()); }

@@ -1,15 +1,13 @@
 package ninjaphenix.ninjatips;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,14 +20,14 @@ public class NinjaTips implements ModInitializer
     @Override
     public void onInitialize()
     {
-        CommandRegistrationCallback.EVENT.register(NbtCommand::register);
+        CommandRegistry.INSTANCE.register(false, NbtCommand::register);
         ServerSidePacketRegistry.INSTANCE.register(ITEM_CHAT, (ctx, buf) -> {
             final ItemStack stack = buf.readItemStack();
             final PlayerEntity player = ctx.getPlayer();
-            final MutableText message = new LiteralText("<").append(player.getDisplayName()).append("> ");
+            final Text message = new LiteralText("<").append(player.getDisplayName()).append("> ");
             if (stack.isStackable()) { message.append(stack.getCount() + "x "); }
             message.append(stack.toHoverableText());
-            player.getServer().getPlayerManager().broadcastChatMessage(message, MessageType.CHAT, Util.NIL_UUID);
+            player.getServer().getPlayerManager().broadcastChatMessage(message, false);
         });
     }
 }

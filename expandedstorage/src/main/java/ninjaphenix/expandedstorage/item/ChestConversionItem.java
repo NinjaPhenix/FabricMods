@@ -13,8 +13,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -51,7 +51,7 @@ public class ChestConversionItem extends ChestModifierItem
         world.setBlockState(pos, newState.with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING))
                                          .with(CursedChestBlock.TYPE, state.get(CursedChestBlock.TYPE)));
         blockEntity = (AbstractChestBlockEntity) world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        blockEntity.fromTag(Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -66,7 +66,7 @@ public class ChestConversionItem extends ChestModifierItem
                                          .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))
                                          .with(CursedChestBlock.TYPE, CursedChestType.valueOf(state.get(Properties.CHEST_TYPE))));
         blockEntity = world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        blockEntity.fromTag(Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
     }
 
     @Override

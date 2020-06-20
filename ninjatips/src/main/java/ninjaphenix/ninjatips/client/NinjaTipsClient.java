@@ -8,12 +8,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class NinjaTipsClient implements ClientModInitializer
             if (Screen.hasControlDown())
             {
                 tooltip.add(new TranslatableText(getTranslationId("nbt"), "").formatted(GRAY));
-                @SuppressWarnings("ConstantConditions") final String[] lines = tag.toText().getString().split("\\n");
+                @SuppressWarnings("ConstantConditions") final String[] lines = tag.toText().asFormattedString().split("\\n");
                 for (String line : lines) { tooltip.add(new LiteralText(line)); }
             }
             else

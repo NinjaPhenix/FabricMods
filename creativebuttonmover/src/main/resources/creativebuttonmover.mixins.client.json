@@ -3,7 +3,7 @@
   "package": "ninjaphenix.creativebuttonmover.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CreativeInventoryScreenMixin"
+    "FabricCreativeGuiComponentsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

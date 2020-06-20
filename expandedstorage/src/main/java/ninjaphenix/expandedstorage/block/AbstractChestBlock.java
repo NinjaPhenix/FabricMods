@@ -26,10 +26,10 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import ninjaphenix.containerlib.ContainerLibrary;
-import ninjaphenix.containerlib.api.inventory.DoubleSidedInventory;
+import ninjaphenix.containerlib.inventory.DoubleSidedInventory;
 import ninjaphenix.expandedstorage.api.Registries;
 import ninjaphenix.expandedstorage.block.entity.AbstractChestBlockEntity;
 import ninjaphenix.expandedstorage.block.misc.BasicStorageBlock;
@@ -86,7 +86,7 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
         setDefaultState(getDefaultState().with(FACING, Direction.SOUTH).with(TYPE, CursedChestType.SINGLE));
     }
 
-    private static boolean isChestBlocked(WorldAccess world, BlockPos pos) { return hasBlockOnTop(world, pos) || hasOcelotOnTop(world, pos); }
+    private static boolean isChestBlocked(IWorld world, BlockPos pos) { return hasBlockOnTop(world, pos) || hasOcelotOnTop(world, pos); }
 
     public static CursedChestType getChestType(Direction facing, Direction offset)
     {
@@ -99,7 +99,7 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
         return CursedChestType.SINGLE;
     }
 
-    public static BlockPos getPairedPos(WorldAccess world, BlockPos pos)
+    public static BlockPos getPairedPos(IWorld world, BlockPos pos)
     {
         BlockState state = world.getBlockState(pos);
         CursedChestType chestType = state.get(TYPE);
@@ -112,7 +112,7 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
         else { return pos.offset(state.get(FACING)); }
     }
 
-    private static <T> T retrieve(BlockState clickedState, WorldAccess world, BlockPos clickedPos,
+    private static <T> T retrieve(BlockState clickedState, IWorld world, BlockPos clickedPos,
             DoubleBlockProperties.PropertyRetriever<AbstractChestBlockEntity, T> propertyRetriever)
     {
         BlockEntity clickedBlockEntity = world.getBlockEntity(clickedPos);
@@ -145,10 +145,10 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
     {
         BlockPos up = pos.up();
         BlockState state = view.getBlockState(up);
-        return state.isSolidBlock(view, up) && !(state.getBlock() instanceof AbstractChestBlock);
+        return state.isSimpleFullBlock(view, up) && !(state.getBlock() instanceof AbstractChestBlock);
     }
 
-    private static boolean hasOcelotOnTop(WorldAccess world, BlockPos pos)
+    private static boolean hasOcelotOnTop(IWorld world, BlockPos pos)
     {
         List<CatEntity> cats = world.getNonSpectatingEntities(CatEntity.class,
                 new Box(pos.getX(), pos.getY() + 1, pos.getZ(), pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1));
@@ -166,7 +166,7 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
     public BlockState mirror(BlockState state, BlockMirror mirror) { return state.rotate(mirror.getRotation(state.get(FACING))); }
 
     @Override
-    public SidedInventory getInventory(BlockState state, WorldAccess world, BlockPos pos)
+    public SidedInventory getInventory(BlockState state, IWorld world, BlockPos pos)
     {
         Optional<SidedInventory> inventory = retrieve(state, world, pos, INVENTORY_RETRIEVER);
         return inventory.orElse(null);
@@ -238,7 +238,7 @@ public abstract class AbstractChestBlock extends BasicStorageBlock
     }
 
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos,
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, IWorld world, BlockPos pos,
             BlockPos neighborPos)
     {
         CursedChestType type = state.get(TYPE);

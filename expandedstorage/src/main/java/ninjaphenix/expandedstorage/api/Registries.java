@@ -1,10 +1,7 @@
 package ninjaphenix.expandedstorage.api;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import ninjaphenix.expandedstorage.block.misc.CursedChestType;
 
@@ -17,18 +14,15 @@ import ninjaphenix.expandedstorage.block.misc.CursedChestType;
  */
 public final class Registries
 {
-    private static final RegistryKey<Registry<ChestTierData>> CHEST_KEY =
-            RegistryKey.of(new Identifier("expandedstorageapi", "root"), new Identifier("expandedstorageapi", "chest"));
     /**
      * This registry for CursedChestBlock data storage.
      */
-    public static final SimpleRegistry<ChestTierData> CHEST = new SimpleRegistry<>(CHEST_KEY, Lifecycle.experimental());
-    private static final RegistryKey<Registry<TierData>> OLD_CHEST_KEY =
-            RegistryKey.of(new Identifier("expandedstorageapi", "root"), new Identifier("expandedstorageapi", "old_chest"));
+    public static final SimpleRegistry<ChestTierData> CHEST = new SimpleRegistry<>();
+
     /**
      * This registry is for OldChestBlock data storage.
      */
-    public static final SimpleRegistry<TierData> OLD_CHEST = new SimpleRegistry<>(OLD_CHEST_KEY, Lifecycle.experimental());
+    public static final SimpleRegistry<TierData> OLD_CHEST = new SimpleRegistry<>();
 
     public static class ChestTierData extends TierData
     {
