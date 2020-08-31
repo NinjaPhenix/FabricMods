@@ -7,33 +7,25 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import ninjaphenix.container_library.impl.common.Const;
 
 public abstract class AbstractScreenHandler<T extends AbstractScreenHandler.ScreenMeta> extends ScreenHandler
 {
-    public final BlockPos ORIGIN;
     public final T SCREEN_META;
     protected final Inventory INVENTORY;
-    private final Text DISPLAY_NAME;
 
-    public AbstractScreenHandler(final ScreenHandlerType<?> type, final int syncId, final BlockPos pos, final Inventory inventory,
-                                 final PlayerEntity player, final Text displayName, final T meta)
+    public AbstractScreenHandler(final ScreenHandlerType<?> type, final int syncId, final Inventory inventory,
+                                 final PlayerEntity player, final T meta)
     {
         super(type, syncId);
-        ORIGIN = pos;
         INVENTORY = inventory;
-        DISPLAY_NAME = displayName;
         SCREEN_META = meta;
         inventory.onOpen(player);
     }
 
     @Override
     public boolean canUse(final PlayerEntity player) { return INVENTORY.canPlayerUse(player); }
-
-    public Text getDisplayName() { return DISPLAY_NAME.copy(); }
 
     @Override
     public ItemStack transferSlot(final PlayerEntity player, final int slotIndex)

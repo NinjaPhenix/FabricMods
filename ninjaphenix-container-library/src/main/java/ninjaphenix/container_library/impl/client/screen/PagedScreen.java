@@ -78,10 +78,10 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
     @Override
     protected void init()
     {
+        super.init();
         final FabricLoader instance = FabricLoader.getInstance();
         final boolean inventoryProfilesLoaded = instance.isModLoaded("inventoryprofiles");
         final boolean inventorySorterLoaded = instance.isModLoaded("inventorysorter");
-        super.init();
         final int settingsXOffset;
         if (inventoryProfilesLoaded) { settingsXOffset = -67; }
         else if (inventorySorterLoaded) { settingsXOffset = -37; }

@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import ninjaphenix.container_library.api.client.Config;
 import ninjaphenix.container_library.impl.client.screen.SelectContainerScreen;
 import ninjaphenix.container_library.impl.common.Const;
 import ninjaphenix.container_library.impl.common.Networking;
@@ -21,6 +22,7 @@ import static ninjaphenix.container_library.api.common.inventory.AbstractScreenH
 public class NewContainerLibraryClient
 {
     public static NewContainerLibraryClient INSTANCE = new NewContainerLibraryClient();
+    public final Config CONFIG = new Config(); // todo: load config
     private final Map<Identifier, Pair<Identifier, Text>> containerPickButtonOptions = new HashMap<>();
     private final Map<Identifier, Pair<Identifier, Text>> supportedPickButtonOptions = new HashMap<>();
     private Set<Identifier> supportedContainerTypes;
@@ -33,7 +35,7 @@ public class NewContainerLibraryClient
      */
     public void openContainer(final BlockState state, final World world, final BlockPos pos)
     {
-        final Identifier preference = ContainerLibraryClient.CONFIG.preferred_container_type;
+        final Identifier preference = CONFIG.preferred_container_type;
         if (Const.id("auto").equals(preference) || !supportedContainerTypes.contains(preference))
         {
             MinecraftClient.getInstance().openScreen(new SelectContainerScreen(supportedPickButtonOptions, id -> openContainer(state, world, pos, id)));
@@ -55,6 +57,7 @@ public class NewContainerLibraryClient
         }
     }
 
+    // Server should send this when a player connects
     public void setServerSupportedContainers(final Set<Identifier> serverContainerTypes)
     {
         final Set<Identifier> clientContainerTypes = NewContainerLibrary.INSTANCE.getContainerTypes();
@@ -68,6 +71,7 @@ public class NewContainerLibraryClient
 
     }
 
+    // for now this will be hard coded but will make it data driven
     public void setScreenSizes(final Map<Identifier, Map<Integer, ScreenMeta>> sizes) { screenSizes = sizes; }
 
     private <V extends ScreenMeta> V getNearestValue(final Map<Integer, V> map, final Integer searchKey)
@@ -84,5 +88,11 @@ public class NewContainerLibraryClient
     public void declareContainerPickButton(final Identifier id, final Identifier texture, final Text name)
     {
         containerPickButtonOptions.putIfAbsent(id, new Pair<>(texture, name));
+    }
+
+    public <T extends ScreenMeta> T getScreenSize(final Identifier id, final int inventorySize)
+    {
+        //noinspection unchecked
+        return (T) screenSizes.get(id).get(inventorySize);
     }
 }

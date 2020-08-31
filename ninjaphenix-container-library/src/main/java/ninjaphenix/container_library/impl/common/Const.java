@@ -12,6 +12,7 @@ public class Const
     public static final Identifier SINGLE_CONTAINER = id("single");
     public static final Identifier SCROLLABLE_CONTAINER = id("scrollable");
     public static final Identifier PAGED_CONTAINER = id("paged");
+    public static final Identifier RECEIVE_SERVER_CONTAINERS = id("receive_server_containers");
 
     public static Identifier id(final String path) { return new Identifier(MOD_ID, path); }
 

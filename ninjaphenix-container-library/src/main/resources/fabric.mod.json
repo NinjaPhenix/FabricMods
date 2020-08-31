@@ -18,10 +18,7 @@
   ],
   "entrypoints": {
     "main": [
-      "ninjaphenix.container_library.impl.common.ContainerLibrary::INSTANCE"
-    ],
-    "client": [
-      "ninjaphenix.container_library.impl.client.ContainerLibraryClient::INSTANCE"
+      "ninjaphenix.container_library.impl.common.NewContainerLibrary::INSTANCE"
     ]
   },
   "accessWidener": "ninjaphenix-container-library.accesswidener",

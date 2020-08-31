@@ -11,7 +11,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
-import ninjaphenix.container_library.impl.client.ContainerLibraryClient;
 import ninjaphenix.container_library.impl.common.Const;
 
 public final class SelectContainerScreen extends Screen
@@ -21,7 +20,7 @@ public final class SelectContainerScreen extends Screen
     private final int PADDING = 24;
     private int TOP;
 
-    public SelectContainerScreen(final Map<Identifier, Pair<Identifier, Text>> options, Consumer<Identifier> onSuccessfulClose)
+    public SelectContainerScreen(final Map<Identifier, Pair<Identifier, Text>> options, final Consumer<Identifier> onSuccessfulClose)
     {
         super(Const.translation("screen.%s.screen_picker_title"));
         OPTIONS = options;
@@ -62,13 +61,6 @@ public final class SelectContainerScreen extends Screen
                 }
             }
         }
-    }
-
-    @Override
-    public void onClose()
-    {
-        ContainerLibraryClient.sendCallbackRemoveToServer();
-        super.onClose();
     }
 
     private void updatePlayerPreference(final Identifier selection)

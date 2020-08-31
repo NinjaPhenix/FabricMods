@@ -12,21 +12,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stat;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -34,18 +32,43 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import ninjaphenix.container_library.api.common.inventory.AbstractScreenHandler.ScreenMeta;
 import ninjaphenix.container_library.api.common.inventory.DoubleSidedInventory;
-import ninjaphenix.container_library.impl.common.ContainerLibrary;
-import ninjaphenix.expandedstorage.common.ExpandedStorage;
+import ninjaphenix.container_library.api.common.inventory.ExtendedScreenHandlerFactoryProvider;
+import ninjaphenix.container_library.impl.client.NewContainerLibraryClient;
+import ninjaphenix.container_library.impl.common.NewContainerLibrary;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.entity.AbstractChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 import static net.minecraft.state.property.Properties.HORIZONTAL_FACING;
 
-public abstract class BaseChestBlock<T extends AbstractChestBlockEntity> extends BlockWithEntity implements InventoryProvider
+public abstract class BaseChestBlock<T extends AbstractChestBlockEntity> extends BlockWithEntity implements InventoryProvider,
+        ExtendedScreenHandlerFactoryProvider
 {
     public static final EnumProperty<CursedChestType> TYPE = EnumProperty.of("type", CursedChestType.class);
+    private final PropertyRetriever<T, Optional<Text>> NAME_GETTER = new PropertyRetriever<T, Optional<Text>>()
+    {
+        @Override
+        public Optional<Text> getFromBoth(final T first, final T second)
+        {
+            if (first.hasCustomName()) { return Optional.of(first.getDisplayName()); }
+            else if (second.hasCustomName()) { return Optional.of(second.getDisplayName()); }
+            return Optional.of(first.getDisplayName());
+        }
+
+        @Override
+        public Optional<Text> getFrom(final T single)
+        {
+            return Optional.of(single.getDisplayName());
+        }
+
+        @Override
+        public Optional<Text> getFallback()
+        {
+            return Optional.empty();
+        }
+    };
     private final Supplier<BlockEntityType<T>> blockEntityType;
     private final PropertyRetriever<T, Optional<SidedInventory>> INVENTORY_GETTER =
             new PropertyRetriever<T, Optional<SidedInventory>>()
@@ -62,76 +85,76 @@ public abstract class BaseChestBlock<T extends AbstractChestBlockEntity> extends
                 @Override
                 public Optional<SidedInventory> getFallback() { return Optional.empty(); }
             };
-    private final PropertyRetriever<T, Optional<ExtendedScreenHandlerFactory>> CONTAINER_GETTER =
-            new PropertyRetriever<T, Optional<ExtendedScreenHandlerFactory>>()
-            {
-                @Override
-                public Optional<ExtendedScreenHandlerFactory> getFromBoth(final T first, final T second)
-                {
-                    return Optional.of(new ExtendedScreenHandlerFactory()
-                    {
-                        private final DoubleSidedInventory inventory = new DoubleSidedInventory(first, second);
+    //private final PropertyRetriever<T, Optional<ExtendedScreenHandlerFactory>> CONTAINER_GETTER =
+    //        new PropertyRetriever<T, Optional<ExtendedScreenHandlerFactory>>()
+    //        {
+    //            @Override
+    //            public Optional<ExtendedScreenHandlerFactory> getFromBoth(final T first, final T second)
+    //            {
+    //                return Optional.of(new ExtendedScreenHandlerFactory()
+    //                {
+    //                    private final DoubleSidedInventory inventory = new DoubleSidedInventory(first, second);
 
-                        @Override
-                        public void writeScreenOpeningData(final ServerPlayerEntity player, final PacketByteBuf buffer)
-                        {
-                            buffer.writeBlockPos(first.getPos()).writeInt(inventory.size());
-                        }
+    //                    @Override
+    //                    public void writeScreenOpeningData(final ServerPlayerEntity player, final PacketByteBuf buffer)
+    //                    {
+    //                        buffer.writeBlockPos(first.getPos()).writeInt(inventory.size());
+    //                    }
 
-                        @Override
-                        public Text getDisplayName()
-                        {
-                            if (first.hasCustomName()) { return first.getDisplayName(); }
-                            else if (second.hasCustomName()) { return second.getDisplayName(); }
-                            return new TranslatableText("container.expandedstorage.generic_double", first.getDisplayName());
-                        }
+    //                    @Override
+    //                    public Text getDisplayName()
+    //                    {
+    //                        if (first.hasCustomName()) { return first.getDisplayName(); }
+    //                        else if (second.hasCustomName()) { return second.getDisplayName(); }
+    //                        return new TranslatableText("container.expandedstorage.generic_double", first.getDisplayName());
+    //                    }
 
-                        @Nullable
-                        @Override
-                        public ScreenHandler createMenu(final int syncId, final PlayerInventory playerInventory, final PlayerEntity player)
-                        {
-                            if (first.canPlayerUse(player) && second.canPlayerUse(player))
-                            {
-                                first.checkLootInteraction(player);
-                                second.checkLootInteraction(player);
-                                return ContainerLibrary.INSTANCE.getScreenHandler(syncId, first.getPos(), inventory, player, getDisplayName());
-                            }
-                            return null;
-                        }
-                    });
-                }
+    //                    @Nullable
+    //                    @Override
+    //                    public ScreenHandler createMenu(final int syncId, final PlayerInventory playerInventory, final PlayerEntity player)
+    //                    {
+    //                        if (first.canPlayerUse(player) && second.canPlayerUse(player))
+    //                        {
+    //                            first.checkLootInteraction(player);
+    //                            second.checkLootInteraction(player);
+    //                            return ContainerLibrary.INSTANCE.getScreenHandler(syncId, first.getPos(), inventory, player, getDisplayName());
+    //                        }
+    //                        return null;
+    //                    }
+    //                });
+    //            }
 
-                @Override
-                public Optional<ExtendedScreenHandlerFactory> getFrom(final T single)
-                {
-                    return Optional.of(new ExtendedScreenHandlerFactory()
-                    {
-                        @Override
-                        public void writeScreenOpeningData(final ServerPlayerEntity player, final PacketByteBuf buffer)
-                        {
-                            buffer.writeBlockPos(single.getPos()).writeInt(single.size());
-                        }
+    //            @Override
+    //            public Optional<ExtendedScreenHandlerFactory> getFrom(final T single)
+    //            {
+    //                return Optional.of(new ExtendedScreenHandlerFactory()
+    //                {
+    //                    @Override
+    //                    public void writeScreenOpeningData(final ServerPlayerEntity player, final PacketByteBuf buffer)
+    //                    {
+    //                        buffer.writeBlockPos(single.getPos()).writeInt(single.size());
+    //                    }
 
-                        @Override
-                        public Text getDisplayName() { return single.getDisplayName(); }
+    //                    @Override
+    //                    public Text getDisplayName() { return single.getDisplayName(); }
 
-                        @Nullable
-                        @Override
-                        public ScreenHandler createMenu(final int syncId, final PlayerInventory playerInventory, final PlayerEntity player)
-                        {
-                            if (single.canPlayerUse(player))
-                            {
-                                single.checkLootInteraction(player);
-                                return ContainerLibrary.INSTANCE.getScreenHandler(syncId, single.getPos(), single, player, getDisplayName());
-                            }
-                            return null;
-                        }
-                    });
-                }
+    //                    @Nullable
+    //                    @Override
+    //                    public ScreenHandler createMenu(final int syncId, final PlayerInventory playerInventory, final PlayerEntity player)
+    //                    {
+    //                        if (single.canPlayerUse(player))
+    //                        {
+    //                            single.checkLootInteraction(player);
+    //                            return ContainerLibrary.INSTANCE.getScreenHandler(syncId, single.getPos(), single, player, getDisplayName());
+    //                        }
+    //                        return null;
+    //                    }
+    //                });
+    //            }
 
-                @Override
-                public Optional<ExtendedScreenHandlerFactory> getFallback() { return Optional.empty(); }
-            };
+    //            @Override
+    //            public Optional<ExtendedScreenHandlerFactory> getFallback() { return Optional.empty(); }
+    //        };
 
     protected BaseChestBlock(final Settings builder, final Supplier<BlockEntityType<T>> blockEntityType)
     {
@@ -209,13 +232,10 @@ public abstract class BaseChestBlock<T extends AbstractChestBlockEntity> extends
     public ActionResult onUse(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand,
                               final BlockHitResult hit)
     {
-        if (!world.isClient)
+        if (world.isClient)
         {
-            final Optional<ExtendedScreenHandlerFactory> containerProvider = combine(state, world, pos, false).apply(CONTAINER_GETTER);
-            containerProvider.ifPresent(provider -> {
-                ContainerLibrary.INSTANCE.openContainer(player, provider);
-                player.incrementStat(getOpenStat());
-            });
+            NewContainerLibraryClient.INSTANCE.openContainer(state, world, pos);
+            player.increaseStat(getOpenStat(), 1);
         }
         return ActionResult.SUCCESS;
     }
@@ -373,5 +393,14 @@ public abstract class BaseChestBlock<T extends AbstractChestBlockEntity> extends
     public SidedInventory getInventory(final BlockState state, final WorldAccess world, final BlockPos pos)
     {
         return combine(state, world, pos, true).apply(INVENTORY_GETTER).orElse(null);
+    }
+
+    @Override
+    public ExtendedScreenHandlerFactory createFactory(final Identifier playerPreference, final ScreenMeta meta, final BlockState state, final ServerWorld world, final BlockPos pos)
+    {
+        PropertySource<? extends T> propertySource = combine(state, world, pos, true);
+        SidedInventory inventory = propertySource.apply(INVENTORY_GETTER).orElse(null);
+        Text containerName = propertySource.apply(NAME_GETTER).orElse(new LiteralText(""));
+        return NewContainerLibrary.INSTANCE.createScreenHandlerFactory(playerPreference, meta, inventory, containerName);
     }
 }

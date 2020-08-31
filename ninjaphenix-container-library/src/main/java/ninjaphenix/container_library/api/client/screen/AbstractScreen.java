@@ -7,7 +7,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import ninjaphenix.container_library.api.common.inventory.AbstractScreenHandler;
-import ninjaphenix.container_library.impl.client.ContainerLibraryClient;
 
 public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R extends AbstractScreenHandler.ScreenMeta> extends HandledScreen<T>
 {
@@ -44,19 +43,6 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
     {
         textRenderer.draw(matrices, title, 8, 6, 4210752);
         textRenderer.draw(matrices, playerInventory.getDisplayName(), INVENTORY_LABEL_LEFT, backgroundHeight - 96 + 2, 4210752);
-    }
-
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers)
-    {
-        if (keyCode == 256 || client.options.keyInventory.matchesKey(keyCode, scanCode))
-        {
-            ContainerLibraryClient.sendCallbackRemoveToServer();
-            client.player.closeHandledScreen();
-            return true;
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     protected static class Rectangle
