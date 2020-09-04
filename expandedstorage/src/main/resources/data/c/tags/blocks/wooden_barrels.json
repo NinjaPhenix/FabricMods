@@ -1,10 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:barrel",
-    {
-      "id": "#blockus:barrels",
-      "required": false
-    }
+    { "id":  "minecraft:barrel", "required":  true },
+    { "id": "#blockus:barrels", "required": false }
   ]
 }

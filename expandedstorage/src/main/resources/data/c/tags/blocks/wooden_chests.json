@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chest",
-    "minecraft:trapped_chest",
-    "expandedstorage:wood_chest"
+    { "id": "minecraft:chest", "required": true },
+    { "id": "minecraft:trapped_chest", "required":  true },
+    { "id": "expandedstorage:wood_chest", "required":  true }
   ]
 }
