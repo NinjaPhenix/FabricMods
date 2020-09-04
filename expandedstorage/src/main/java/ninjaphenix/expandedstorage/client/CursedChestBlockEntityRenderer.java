@@ -1,18 +1,18 @@
 package ninjaphenix.expandedstorage.client;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DoubleBlockProperties;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.state.property.Properties;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
@@ -22,7 +22,7 @@ import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 
 public final class CursedChestBlockEntityRenderer extends BlockEntityRenderer<CursedChestBlockEntity>
 {
-    private static final BlockState defaultState = ModContent.DIAMOND_CHEST.getDefaultState();
+    private static final BlockState defaultState = ModContent.DIAMOND_CHEST.defaultBlockState();
 
     private static final ImmutableMap<CursedChestType, SingleChestModel> MODELS = new ImmutableMap.Builder<CursedChestType, SingleChestModel>()
             .put(CursedChestType.SINGLE, new SingleChestModel())
@@ -38,26 +38,26 @@ public final class CursedChestBlockEntityRenderer extends BlockEntityRenderer<Cu
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void render(final CursedChestBlockEntity blockEntity, final float tickDelta, final MatrixStack stack,
-                       final VertexConsumerProvider vertexConsumerProvider, final int light, final int overlay)
+    public void render(final CursedChestBlockEntity blockEntity, final float tickDelta, final PoseStack stack,
+                       final MultiBufferSource vertexConsumerProvider, final int light, final int overlay)
     {
-        final BlockState state = blockEntity.hasWorld() ? blockEntity.getCachedState() : defaultState;
-        final CursedChestType chestType = state.get(CursedChestBlock.TYPE);
+        final BlockState state = blockEntity.hasLevel() ? blockEntity.getBlockState() : defaultState;
+        final CursedChestType chestType = state.getValue(CursedChestBlock.TYPE);
         final SingleChestModel model = getModel(chestType);
-        stack.push();
+        stack.pushPose();
         stack.translate(0.5D, 0.5D, 0.5D);
-        stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-state.get(Properties.HORIZONTAL_FACING).asRotation()));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()));
         stack.translate(-0.5D, -0.5D, -0.5D);
-        model.setLidPitch(blockEntity.getAnimationProgress(tickDelta));
+        model.setLidPitch(blockEntity.getOpenNess(tickDelta));
 
-        final DoubleBlockProperties.PropertySource<? extends CursedChestBlockEntity> wrapper = blockEntity.hasWorld() ?
-                ((CursedChestBlock) state.getBlock()).combine(state, blockEntity.getWorld(), blockEntity.getPos(), true) :
-                DoubleBlockProperties.PropertyRetriever::getFallback;
-        model.render(stack, new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE,
+        final DoubleBlockCombiner.NeighborCombineResult<? extends CursedChestBlockEntity> wrapper = blockEntity.hasLevel() ?
+                ((CursedChestBlock) state.getBlock()).combine(state, blockEntity.getLevel(), blockEntity.getBlockPos(), true) :
+                DoubleBlockCombiner.Combiner::acceptNone;
+        model.render(stack, new Material(Sheets.CHEST_SHEET,
                                                  Registries.CHEST.get(blockEntity.getBlock()).getChestTexture(chestType))
-                             .getVertexConsumer(vertexConsumerProvider, RenderLayer::getEntityCutout),
-                     wrapper.apply(new LightmapCoordinatesRetriever<>()).applyAsInt(light), overlay);
-        stack.pop();
+                             .buffer(vertexConsumerProvider, RenderType::entityCutout),
+                     wrapper.apply(new BrightnessCombiner<>()).applyAsInt(light), overlay);
+        stack.popPose();
     }
 
     public SingleChestModel getModel(final CursedChestType type) { return MODELS.get(type); }

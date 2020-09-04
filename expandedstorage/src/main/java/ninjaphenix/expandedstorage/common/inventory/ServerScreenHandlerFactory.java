@@ -1,12 +1,12 @@
 package ninjaphenix.expandedstorage.common.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 
 @FunctionalInterface
 public interface ServerScreenHandlerFactory<T extends AbstractScreenHandler<?>>
 {
-    T create(final int windowId, final BlockPos pos, final Inventory inventory, final PlayerEntity player, final Text displayName);
+    T create(final int windowId, final BlockPos pos, final Container inventory, final Player player, final Component displayName);
 }

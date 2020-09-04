@@ -1,6 +1,6 @@
 accessWidener   v1  named
-accessible method net/minecraft/util/registry/RegistryKey of (Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/registry/RegistryKey;
-mutable field net/minecraft/screen/slot/Slot x I
-mutable field net/minecraft/screen/slot/Slot y I
+accessible method net/minecraft/resources/ResourceKey create (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceKey;
+mutable field net/minecraft/world/inventory/Slot x I
+mutable field net/minecraft/world/inventory/Slot y I
 accessible class net/minecraft/screen/ScreenHandlerType$Factory
-accessible field net/minecraft/block/entity/BlockEntityType blocks Ljava/util/Set;
+accessible field net/minecraft/world/level/block/entity/BlockEntityType validBlocks Ljava/util/Set;

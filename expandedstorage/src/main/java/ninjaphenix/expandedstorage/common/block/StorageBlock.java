@@ -2,45 +2,51 @@ package ninjaphenix.expandedstorage.common.block;
 
 import javax.annotation.Nullable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.InventoryProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.PiglinBrain;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import ninjaphenix.expandedstorage.common.ExpandedStorage;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 
-public abstract class StorageBlock extends BlockWithEntity implements InventoryProvider
+public abstract class StorageBlock extends BaseEntityBlock implements WorldlyContainerHolder
 {
-    protected StorageBlock(final Settings settings) { super(settings); }
+    public final ResourceLocation TIER_ID;
 
-    protected abstract Identifier getOpenStat();
+    protected StorageBlock(final Properties settings, final ResourceLocation tierId)
+    {
+        super(settings);
+        TIER_ID = tierId;
+    }
 
-    public abstract <R extends Registries.TierData> SimpleRegistry<R> getDataRegistry();
+    protected abstract ResourceLocation getOpenStat();
 
-    protected ExtendedScreenHandlerFactory createContainerFactory(final BlockState state, final WorldAccess world, final BlockPos pos)
+    public abstract <R extends Registries.TierData> MappedRegistry<R> getDataRegistry();
+
+    protected ExtendedScreenHandlerFactory createContainerFactory(final BlockState state, final LevelAccessor world, final BlockPos pos)
     {
         final BlockEntity entity = world.getBlockEntity(pos);
         if(!(entity instanceof StorageBlockEntity)) { return null; }
@@ -48,25 +54,25 @@ public abstract class StorageBlock extends BlockWithEntity implements InventoryP
         return new ExtendedScreenHandlerFactory()
         {
             @Override
-            public void writeScreenOpeningData(final ServerPlayerEntity player, final PacketByteBuf buffer)
+            public void writeScreenOpeningData(final ServerPlayer player, final FriendlyByteBuf buffer)
             {
-                buffer.writeBlockPos(pos).writeInt(container.size());
+                buffer.writeBlockPos(pos).writeInt(container.getContainerSize());
             }
 
             @Override
-            public Text getDisplayName()
+            public Component getDisplayName()
             {
                 return container.getDisplayName();
             }
 
             @Nullable
             @Override
-            public ScreenHandler createMenu(final int syncId, final PlayerInventory inv, final PlayerEntity player)
+            public AbstractContainerMenu createMenu(final int syncId, final Inventory inv, final Player player)
             {
-                if (container.canPlayerUse(player))
+                if (container.stillValid(player))
                 {
-                    container.checkLootInteraction(player);
-                    return ExpandedStorage.INSTANCE.getScreenHandler(syncId, container.getPos(), container, player, getDisplayName());
+                    container.unpackLootTable(player);
+                    return ExpandedStorage.INSTANCE.getScreenHandler(syncId, container.getBlockPos(), container, player, getDisplayName());
                 }
                 return null;
             }
@@ -75,82 +81,80 @@ public abstract class StorageBlock extends BlockWithEntity implements InventoryP
 
     @Override
     @SuppressWarnings("deprecation")
-    public final boolean hasComparatorOutput(final BlockState state) { return true; }
+    public final boolean hasAnalogOutputSignal(final BlockState state) { return true; }
 
     @Override
-    public BlockRenderType getRenderType(final BlockState state) { return BlockRenderType.MODEL; }
+    public RenderShape getRenderShape(final BlockState state) { return RenderShape.MODEL; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onStateReplaced(final BlockState state, final World world, final BlockPos pos, final BlockState newState,
+    public void onRemove(final BlockState state, final Level world, final BlockPos pos, final BlockState newState,
                                 final boolean moved)
     {
         if (state.getBlock() != newState.getBlock())
         {
             final BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof Inventory)
+            if (blockEntity instanceof Container)
             {
-                ItemScatterer.spawn(world, pos, (Inventory) blockEntity);
-                world.updateNeighborsAlways(pos, this);
+                Containers.dropContents(world, pos, (Container) blockEntity);
+                world.updateNeighborsAt(pos, this);
             }
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onRemove(state, world, pos, newState, moved);
         }
     }
 
     @Nullable
     @Override
-    public NamedScreenHandlerFactory createScreenHandlerFactory(final BlockState state, final World world, final BlockPos pos)
+    public MenuProvider getMenuProvider(final BlockState state, final Level world, final BlockPos pos)
     {
         return null;
     }
 
     @Override
-    public void onPlaced(final World world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer,
+    public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer,
                          final ItemStack stack)
     {
-        if (stack.hasCustomName())
+        if (stack.hasCustomHoverName())
         {
             final BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof StorageBlockEntity)
             {
-                ((StorageBlockEntity) blockEntity).setCustomName(stack.getName());
+                ((StorageBlockEntity) blockEntity).setCustomName(stack.getHoverName());
             }
         }
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorOutput(final BlockState state, final World world, final BlockPos pos)
+    public int getAnalogOutputSignal(final BlockState state, final Level world, final BlockPos pos)
     {
-        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
+        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public InteractionResult use(final BlockState state, final Level world, final BlockPos pos, final Player player, final InteractionHand hand,
                               final BlockHitResult hit)
     {
-        if (!world.isClient)
+        if (!world.isClientSide)
         {
             final ExtendedScreenHandlerFactory factory = createContainerFactory(state, world, pos);
             if (factory != null)
             {
                 ExpandedStorage.INSTANCE.openContainer(player, factory);
-                player.incrementStat(getOpenStat());
-                PiglinBrain.onGuardedBlockBroken(player, true);
+                player.awardStat(getOpenStat());
+                PiglinAi.angerNearbyPiglins(player, true);
             }
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public SidedInventory getInventory(final BlockState state, final WorldAccess world, final BlockPos pos)
+    public WorldlyContainer getContainer(final BlockState state, final LevelAccessor world, final BlockPos pos)
     {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof StorageBlockEntity) { return (StorageBlockEntity) entity; }
         return null;
     }
-
-
 }

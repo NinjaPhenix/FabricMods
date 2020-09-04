@@ -1,86 +1,76 @@
 package ninjaphenix.expandedstorage.common.block.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import ninjaphenix.expandedstorage.common.block.StorageBlock;
 
-public abstract class StorageBlockEntity extends LootableContainerBlockEntity implements SidedInventory
+public abstract class StorageBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer
 {
-    protected Text defaultContainerName;
+    protected Component defaultContainerName;
     protected int inventorySize;
-    protected DefaultedList<ItemStack> inventory;
+    protected NonNullList<ItemStack> inventory;
     protected int[] SLOTS;
-    protected Identifier block;
+    protected ResourceLocation block;
 
-    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final Identifier block)
+    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final ResourceLocation block)
     {
         super(blockEntityType);
         if (block != null) { initialize(block); }
     }
 
-    protected abstract void initialize(final Identifier block);
-
-    public Identifier getBlock() { return block; }
+    protected abstract void initialize(final ResourceLocation block);
 
     @Override
-    protected DefaultedList<ItemStack> getInvStackList() { return inventory; }
+    protected NonNullList<ItemStack> getItems() { return inventory; }
 
     @Override
-    public void setInvStackList(final DefaultedList<ItemStack> inventory) { this.inventory = inventory; }
+    public void setItems(final NonNullList<ItemStack> inventory) { this.inventory = inventory; }
 
     @Override
-    protected ScreenHandler createScreenHandler(final int i, final PlayerInventory playerInventory) { return null; }
+    protected AbstractContainerMenu createMenu(final int i, final Inventory playerInventory) { return null; }
 
     @Override
-    public int[] getAvailableSlots(final Direction side) { return SLOTS; }
+    public int[] getSlotsForFace(final Direction side) { return SLOTS; }
 
     @Override
-    public boolean canInsert(final int slot, final ItemStack stack, final Direction direction) { return isValid(slot, stack); }
+    public boolean canPlaceItemThroughFace(final int slot, final ItemStack stack, final Direction direction) { return canPlaceItem(slot, stack); }
 
     @Override
-    public boolean canExtract(final int slot, final ItemStack stack, final Direction direction) { return true; }
+    public boolean canTakeItemThroughFace(final int slot, final ItemStack stack, final Direction direction) { return true; }
 
     @Override
-    public int size() { return inventorySize; }
+    public int getContainerSize() { return inventorySize; }
 
     @Override
-    protected Text getContainerName() { return defaultContainerName; }
+    protected Component getDefaultName() { return defaultContainerName; }
 
     @Override
     public boolean isEmpty() { return inventory.stream().allMatch(ItemStack::isEmpty); }
 
     @Override
-    public void fromTag(final BlockState state, final CompoundTag tag)
+    public void load(final BlockState state, final CompoundTag tag)
     {
-        super.fromTag(state, tag);
-        initialize(new Identifier(tag.getString("type")));
-        if (!deserializeLootTable(tag)) { Inventories.fromTag(tag, inventory); }
+        super.load(state, tag);
+        initialize(((StorageBlock) state.getBlock()).TIER_ID);
+        if (!tryLoadLootTable(tag)) { ContainerHelper.loadAllItems(tag, inventory); }
     }
 
     @Override
-    public CompoundTag toTag(final CompoundTag tag)
+    public CompoundTag save(final CompoundTag tag)
     {
-        super.toTag(tag);
-        tag.putString("type", block.toString());
-        if (!serializeLootTable(tag)) { Inventories.toTag(tag, inventory); }
+        super.save(tag);
+        if (!trySaveLootTable(tag)) { ContainerHelper.saveAllItems(tag, inventory); }
         return tag;
-    }
-
-    @Override
-    public CompoundTag toInitialChunkDataTag()
-    {
-        final CompoundTag initialChunkTag = super.toTag(new CompoundTag());
-        initialChunkTag.putString("type", block.toString());
-        return initialChunkTag;
     }
 }

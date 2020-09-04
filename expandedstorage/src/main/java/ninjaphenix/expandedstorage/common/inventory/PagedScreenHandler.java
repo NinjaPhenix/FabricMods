@@ -4,15 +4,15 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.screen.PagedScreenMeta;
 
@@ -29,12 +29,12 @@ public final class PagedScreenHandler extends AbstractScreenHandler<PagedScreenM
             .put(270, new PagedScreenMeta(10, 9, 3, 270, getTexture("shared", 10, 9), 224, 304)) // Large Netherite
             .build();
 
-    public PagedScreenHandler(final int syncId, final BlockPos pos, final Inventory inventory, final PlayerEntity player,
-                              final Text displayName)
+    public PagedScreenHandler(final int syncId, final BlockPos pos, final Container inventory, final Player player,
+                              final Component displayName)
     {
-        super(ModContent.PAGED_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.size()));
+        super(ModContent.PAGED_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getContainerSize()));
         resetSlotPositions(true);
-        final Inventory playerInventory = player.inventory;
+        final Container playerInventory = player.inventory;
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)
@@ -58,10 +58,10 @@ public final class PagedScreenHandler extends AbstractScreenHandler<PagedScreenM
 
     public void resetSlotPositions(final boolean createSlots)
     {
-        for (int i = 0; i < INVENTORY.size(); i++)
+        for (int i = 0; i < INVENTORY.getContainerSize(); i++)
         {
             final int x = i % SCREEN_META.WIDTH;
-            int y = MathHelper.ceil((((double) (i - x)) / SCREEN_META.WIDTH));
+            int y = Mth.ceil((((double) (i - x)) / SCREEN_META.WIDTH));
             if (y >= SCREEN_META.HEIGHT) { y = (18 * (y % SCREEN_META.HEIGHT)) - 2000; }
             else {y = y * 18;}
             if (createSlots) { addSlot(new Slot(INVENTORY, i, x * 18 + 8, y + 18)); }
@@ -77,10 +77,10 @@ public final class PagedScreenHandler extends AbstractScreenHandler<PagedScreenM
     public static final class Factory implements ScreenHandlerRegistry.ExtendedClientHandlerFactory<PagedScreenHandler>
     {
         @Override
-        public PagedScreenHandler create(final int syncId, final PlayerInventory playerInventory, final PacketByteBuf buffer)
+        public PagedScreenHandler create(final int syncId, final Inventory playerInventory, final FriendlyByteBuf buffer)
         {
             if (buffer == null) { return null; }
-            return new PagedScreenHandler(syncId, buffer.readBlockPos(), new SimpleInventory(buffer.readInt()), playerInventory.player,
+            return new PagedScreenHandler(syncId, buffer.readBlockPos(), new SimpleContainer(buffer.readInt()), playerInventory.player,
                                           null);
         }
     }

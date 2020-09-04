@@ -2,40 +2,39 @@ package ninjaphenix.expandedstorage.client.screen.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import ninjaphenix.expandedstorage.common.Const;
 
-public final class ScreenTypeSelectionScreenButton extends ButtonWidget
+public final class ScreenTypeSelectionScreenButton extends Button
 {
-    private final Identifier TEXTURE;
+    private final ResourceLocation TEXTURE;
 
-    @SuppressWarnings("ConstantConditions")
-    public ScreenTypeSelectionScreenButton(final int x, final int y, final TooltipSupplier tooltipSupplier)
+    public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip tooltipSupplier)
     {
-        super(x, y, 12, 12, new TranslatableText("screen.expandedstorage.change_screen_button"), button ->
+        super(x, y, 12, 12, new TranslatableComponent("screen.expandedstorage.change_screen_button"), button ->
         {
-            ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new PacketByteBuf(Unpooled.buffer()));
+            ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer()));
         }, tooltipSupplier);
         TEXTURE = Const.id("textures/gui/select_screen_button.png");
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void renderButton(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta)
+    public void renderButton(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
     {
-        MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+        Minecraft.getInstance().getTextureManager().bind(TEXTURE);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-        drawTexture(matrices, x, y, 0, isHovered() ? height : 0, width, height, 16, 32);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        blit(matrices, x, y, 0, isHovered() ? height : 0, width, height, 16, 32);
         if (isHovered()) { renderToolTip(matrices, mouseX, mouseY); }
     }
 }

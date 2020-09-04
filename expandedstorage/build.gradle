@@ -23,6 +23,8 @@ dependencies {
     }
     modCompileOnly("com.github.Virtuoel:Statement:${statement_commit}")
 
+    modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT')
+
     // todo: grab off curseforge
     //modRuntime('local:InventorySorter:1.7.0-1.16')
     //modRuntime('local:inventoryprofiles:fabric-1.16.1-0.4.2')

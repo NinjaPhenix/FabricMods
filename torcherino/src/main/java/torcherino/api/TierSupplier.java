@@ -1,8 +1,8 @@
 package torcherino.api;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface TierSupplier
 {
-    Identifier getTier();
+    ResourceLocation getTier();
 }

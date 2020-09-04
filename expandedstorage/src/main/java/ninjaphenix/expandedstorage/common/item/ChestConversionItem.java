@@ -2,35 +2,35 @@ package ninjaphenix.expandedstorage.common.item;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.BarrelBlock;
-import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.block.StorageBlock;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
@@ -38,183 +38,182 @@ import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 public final class ChestConversionItem extends ChestModifierItem
 {
-    private final Text TOOLTIP;
-    private final Identifier FROM, TO;
-    private static final MutableText DOUBLE_REQUIRES_2 = new TranslatableText("tooltip.expandedstorage.conversion_kit_double_requires_2")
-            .formatted(Formatting.GRAY);
+    private final Component TOOLTIP;
+    private final ResourceLocation FROM, TO;
+    private static final MutableComponent DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2")
+            .withStyle(ChatFormatting.GRAY);
 
-    public ChestConversionItem(final Item.Settings settings, final Pair<Identifier, String> from, final Pair<Identifier, String> to)
+    public ChestConversionItem(final Item.Properties settings, final Tuple<ResourceLocation, String> from, final Tuple<ResourceLocation, String> to)
     {
         super(settings);
-        FROM = from.getLeft();
-        TO = to.getLeft();
-        TOOLTIP = new TranslatableText(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getRight(), to.getRight()),
-                                       Const.leftShiftRightClick).formatted(Formatting.GRAY);
-    }
-
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
-    private void upgradeCursedChest(final World world, final BlockPos pos, final BlockState state)
-    {
-        StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        final SimpleRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final DefaultedList<ItemStack> inventoryData = DefaultedList.ofSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
-        Inventories.fromTag(blockEntity.toTag(new CompoundTag()), inventoryData);
-        world.removeBlockEntity(pos);
-        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).getDefaultState();
-        if (newState.getBlock() instanceof Waterloggable)
-        {
-            newState = newState.with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED));
-        }
-        world.setBlockState(pos, newState.with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING))
-                .with(CursedChestBlock.TYPE, state.get(CursedChestBlock.TYPE)));
-        blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        FROM = from.getA();
+        TO = to.getA();
+        TOOLTIP = new TranslatableComponent(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getB(), to.getB()),
+                                       Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
     }
 
     @SuppressWarnings({"ConstantConditions"})
-    private void upgradeChest(final World world, final BlockPos pos, final BlockState state)
+    private void upgradeCursedChest(final Level world, final BlockPos pos, final BlockState state)
+    {
+        StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
+        final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
+        world.removeBlockEntity(pos);
+        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).defaultBlockState();
+        if (newState.getBlock() instanceof SimpleWaterloggedBlock)
+        {
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED));
+        }
+        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING))
+                .setValue(CursedChestBlock.TYPE, state.getValue(CursedChestBlock.TYPE)));
+        blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
+        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
+    }
+
+    @SuppressWarnings({"ConstantConditions"})
+    private void upgradeChest(final Level world, final BlockPos pos, final BlockState state)
     {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        final DefaultedList<ItemStack> inventoryData = DefaultedList.ofSize(Registries.CHEST.get(FROM).getSlotCount(), ItemStack.EMPTY);
-        Inventories.fromTag(blockEntity.toTag(new CompoundTag()), inventoryData);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.CHEST.get(TO).getSlotCount(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.CHEST.get(TO).getBlockId()).getDefaultState();
-        world.setBlockState(pos, newState.with(Properties.HORIZONTAL_FACING, state.get(Properties.HORIZONTAL_FACING))
-                .with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED))
-                .with(CursedChestBlock.TYPE, CursedChestType.valueOf(state.get(Properties.CHEST_TYPE))));
+        final BlockState newState = Registry.BLOCK.get(Registries.CHEST.get(TO).getBlockId()).defaultBlockState();
+        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING))
+                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED))
+                .setValue(CursedChestBlock.TYPE, CursedChestType.valueOf(state.getValue(BlockStateProperties.CHEST_TYPE))));
         blockEntity = world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
     }
 
     @Override
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
-    protected ActionResult useModifierOnChestBlock(final ItemUsageContext context, final BlockState mainState, final BlockPos mainBlockPos, final BlockState otherState,
-                                                   final BlockPos otherBlockPos)
+    @SuppressWarnings({"ConstantConditions"})
+    protected InteractionResult useModifierOnChestBlock(final UseOnContext context, final BlockState mainState, final BlockPos mainBlockPos,
+                                                   final BlockState otherState, final BlockPos otherBlockPos)
     {
-        final World world = context.getWorld();
-        final PlayerEntity player = context.getPlayer();
+        final Level world = context.getLevel();
+        final Player player = context.getPlayer();
         final StorageBlock chestBlock = (StorageBlock) mainState.getBlock();
-        if (Registry.BLOCK.getId(chestBlock) != chestBlock.getDataRegistry().get(FROM).getBlockId()) { return ActionResult.FAIL; }
-        final ItemStack handStack = player.getStackInHand(context.getHand());
+        if (chestBlock.TIER_ID != FROM) { return InteractionResult.FAIL; }
+        final ItemStack handStack = player.getItemInHand(context.getHand());
         if (otherBlockPos == null)
         {
-            if (!world.isClient)
+            if (!world.isClientSide)
             {
                 upgradeCursedChest(world, mainBlockPos, mainState);
-                handStack.decrement(1);
+                handStack.shrink(1);
             }
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         else if (handStack.getCount() > 1 || player.isCreative())
         {
-            if (!world.isClient)
+            if (!world.isClientSide)
             {
                 upgradeCursedChest(world, otherBlockPos, world.getBlockState(otherBlockPos));
                 upgradeCursedChest(world, mainBlockPos, mainState);
-                handStack.decrement(2);
+                handStack.shrink(2);
             }
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
-    protected ActionResult useModifierOnBarrel(final ItemUsageContext context, final BlockState state, final BlockPos pos)
+    protected InteractionResult useModifierOnBarrel(final UseOnContext context, final BlockState state, final BlockPos pos)
     {
         final BarrelBlock block = (BarrelBlock) state.getBlock();
-        if (Registry.BLOCK.getId(block) != block.getDataRegistry().get(FROM).getBlockId()) { return ActionResult.FAIL; }
-        upgradeBarrel(context.getWorld(), pos, state);
-        context.getPlayer().getStackInHand(context.getHand()).decrement(1);
-        return ActionResult.SUCCESS;
+        if (block.TIER_ID != FROM) { return InteractionResult.FAIL; }
+        upgradeBarrel(context.getLevel(), pos, state);
+        context.getPlayer().getItemInHand(context.getHand()).shrink(1);
+        return InteractionResult.SUCCESS;
     }
 
-    private void upgradeVanillaBarrel(final World world, final BlockPos pos, final BlockState state)
+    private void upgradeVanillaBarrel(final Level world, final BlockPos pos, final BlockState state)
     {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        final DefaultedList<ItemStack> inventoryData = DefaultedList.ofSize(Registries.BARREL.get(FROM).getSlotCount(), ItemStack.EMPTY);
-        Inventories.fromTag(blockEntity.toTag(new CompoundTag()), inventoryData);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.BARREL.get(TO).getSlotCount(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.BARREL.get(TO).getBlockId()).getDefaultState();
-        world.setBlockState(pos, newState.with(Properties.FACING, state.get(Properties.FACING)));
+        final BlockState newState = Registry.BLOCK.get(Registries.BARREL.get(TO).getBlockId()).defaultBlockState();
+        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
         blockEntity = world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
     }
 
-    private void upgradeBarrel(final World world, final BlockPos pos, final BlockState state)
+    private void upgradeBarrel(final Level world, final BlockPos pos, final BlockState state)
     {
         StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        final SimpleRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final DefaultedList<ItemStack> inventoryData = DefaultedList.ofSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
-        Inventories.fromTag(blockEntity.toTag(new CompoundTag()), inventoryData);
+        final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).getDefaultState();
-        world.setBlockState(pos, newState.with(Properties.FACING, state.get(Properties.FACING)));
+        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).defaultBlockState();
+        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
         blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        blockEntity.fromTag(world.getBlockState(pos), Inventories.toTag(blockEntity.toTag(new CompoundTag()), inventoryData));
+        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected ActionResult useModifierOnBlock(final ItemUsageContext context, final BlockState state)
+    protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state)
     {
-        // todo: fix this for other mods.
-        //  Perhaps allow mods to define equivalents or use tags somehow e.g. Tag<Identifier>("expandedstorage:wood")
-        if (state.getBlock() == Blocks.CHEST && FROM.equals(Const.id("wood_chest")))
+        final Block block = state.getBlock();
+        if (block instanceof ChestBlock && block.is(Const.WOODEN_CHESTS) && FROM.equals(Const.id("wood")))
         {
-            final World world = context.getWorld();
-            final BlockPos mainPos = context.getBlockPos();
-            final PlayerEntity player = context.getPlayer();
-            final ItemStack handStack = player.getStackInHand(context.getHand());
-            if (state.get(Properties.CHEST_TYPE) == ChestType.SINGLE)
+            final Level world = context.getLevel();
+            final BlockPos mainPos = context.getClickedPos();
+            final Player player = context.getPlayer();
+            final ItemStack handStack = player.getItemInHand(context.getHand());
+            if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.SINGLE)
             {
-                if (!world.isClient)
+                if (!world.isClientSide)
                 {
                     upgradeChest(world, mainPos, state);
-                    handStack.decrement(1);
+                    handStack.shrink(1);
                 }
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             else if (handStack.getCount() > 1 || player.isCreative())
             {
                 final BlockPos otherPos;
-                if (state.get(Properties.CHEST_TYPE) == ChestType.RIGHT)
+                if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.RIGHT)
                 {
-                    otherPos = mainPos.offset(state.get(Properties.HORIZONTAL_FACING).rotateYCounterclockwise());
+                    otherPos = mainPos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getCounterClockWise());
                 }
-                else if (state.get(Properties.CHEST_TYPE) == ChestType.LEFT)
+                else if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.LEFT)
                 {
-                    otherPos = mainPos.offset(state.get(Properties.HORIZONTAL_FACING).rotateYClockwise());
+                    otherPos = mainPos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise());
                 }
-                else { return ActionResult.FAIL; }
-                if (!world.isClient)
+                else { return InteractionResult.FAIL; }
+                if (!world.isClientSide)
                 {
                     upgradeChest(world, otherPos, world.getBlockState(otherPos));
                     upgradeChest(world, mainPos, state);
-                    handStack.decrement(2);
+                    handStack.shrink(2);
                 }
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        else if(state.getBlock() == Blocks.BARREL && FROM.equals(Const.id("wood_chest")))
+        else if(block instanceof net.minecraft.world.level.block.BarrelBlock && block.is(Const.WOODEN_BARRELS) && FROM.equals(Const.id("wood")))
         {
-            final World world = context.getWorld();
-            final BlockPos mainPos = context.getBlockPos();
-            final PlayerEntity player = context.getPlayer();
-            final ItemStack handStack = player.getStackInHand(context.getHand());
-            if (!world.isClient)
+            final Level world = context.getLevel();
+            final BlockPos mainPos = context.getClickedPos();
+            final Player player = context.getPlayer();
+            final ItemStack handStack = player.getItemInHand(context.getHand());
+            if (!world.isClientSide)
             {
                 upgradeVanillaBarrel(world, mainPos, state);
-                handStack.decrement(1);
+                handStack.shrink(1);
             }
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
-    public void appendTooltip(final ItemStack stack, @Nullable final World world, final List<Text> tooltip, final TooltipContext context)
+    public void appendHoverText(final ItemStack stack, @Nullable final Level world, final List<Component> tooltip, final TooltipFlag context)
     {
-        super.appendTooltip(stack, world, tooltip, context);
+        super.appendHoverText(stack, world, tooltip, context);
         tooltip.add(TOOLTIP);
         tooltip.add(DOUBLE_REQUIRES_2);
     }

@@ -1,30 +1,30 @@
 package ninjaphenix.expandedstorage.common;
 
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 import java.util.function.Function;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 public final class Registries
 {
-    private static final RegistryKey<Registry<ChestTierData>> CHEST_KEY = RegistryKey.of(Const.id("root"), Const.id("chest"));
-    public static final SimpleRegistry<ChestTierData> CHEST = new SimpleRegistry<>(CHEST_KEY, Lifecycle.experimental());
-    private static final RegistryKey<Registry<TierData>> OLD_CHEST_KEY = RegistryKey.of(Const.id("root"), Const.id("old_chest"));
-    public static final SimpleRegistry<TierData> OLD_CHEST = new SimpleRegistry<>(OLD_CHEST_KEY, Lifecycle.experimental());
-    private static final RegistryKey<Registry<TierData>> BARREL_KEY = RegistryKey.of(Const.id("root"), Const.id("barrel"));
-    public static final SimpleRegistry<TierData> BARREL = new SimpleRegistry<>(BARREL_KEY, Lifecycle.experimental());
+    private static final ResourceKey<Registry<ChestTierData>> CHEST_KEY = ResourceKey.create(Const.id("root"), Const.id("chest"));
+    public static final MappedRegistry<ChestTierData> CHEST = new MappedRegistry<>(CHEST_KEY, Lifecycle.experimental());
+    private static final ResourceKey<Registry<TierData>> OLD_CHEST_KEY = ResourceKey.create(Const.id("root"), Const.id("old_chest"));
+    public static final MappedRegistry<TierData> OLD_CHEST = new MappedRegistry<>(OLD_CHEST_KEY, Lifecycle.experimental());
+    private static final ResourceKey<Registry<TierData>> BARREL_KEY = ResourceKey.create(Const.id("root"), Const.id("barrel"));
+    public static final MappedRegistry<TierData> BARREL = new MappedRegistry<>(BARREL_KEY, Lifecycle.experimental());
 
     public static class ChestTierData extends TierData
     {
-        private final Identifier singleTexture, topTexture, backTexture, rightTexture, bottomTexture, frontTexture, leftTexture;
+        private final ResourceLocation singleTexture, topTexture, backTexture, rightTexture, bottomTexture, frontTexture, leftTexture;
 
-        public ChestTierData(final int slots, final Text containerName, final Identifier blockId,
-                             final Function<CursedChestType, Identifier> textureFunction)
+        public ChestTierData(final int slots, final Component containerName, final ResourceLocation blockId,
+                             final Function<CursedChestType, ResourceLocation> textureFunction)
         {
             super(slots, containerName, blockId);
             singleTexture = textureFunction.apply(CursedChestType.SINGLE);
@@ -36,7 +36,7 @@ public final class Registries
             leftTexture = textureFunction.apply(CursedChestType.LEFT);
         }
 
-        public Identifier getChestTexture(final CursedChestType type)
+        public ResourceLocation getChestTexture(final CursedChestType type)
         {
             switch(type) {
 
@@ -54,10 +54,10 @@ public final class Registries
     public static class TierData
     {
         private final int slots;
-        private final Text containerName;
-        private final Identifier blockId;
+        private final Component containerName;
+        private final ResourceLocation blockId;
 
-        public TierData(final int slots, final Text containerName, final Identifier blockId)
+        public TierData(final int slots, final Component containerName, final ResourceLocation blockId)
         {
             this.slots = slots;
             this.containerName = containerName;
@@ -66,8 +66,8 @@ public final class Registries
 
         public int getSlotCount() { return slots; }
 
-        public Text getContainerName() { return containerName; }
+        public Component getContainerName() { return containerName; }
 
-        public Identifier getBlockId() { return blockId; }
+        public ResourceLocation getBlockId() { return blockId; }
     }
 }

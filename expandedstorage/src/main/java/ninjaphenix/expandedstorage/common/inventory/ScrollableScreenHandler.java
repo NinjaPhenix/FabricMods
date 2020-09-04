@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.screen.ScrollableScreenMeta;
 
@@ -31,19 +31,19 @@ public final class ScrollableScreenHandler extends AbstractScreenHandler<Scrolla
             .build();
 
 
-    public ScrollableScreenHandler(final int syncId, final BlockPos pos, final Inventory inventory, final PlayerEntity player,
-                                   final Text displayName)
+    public ScrollableScreenHandler(final int syncId, final BlockPos pos, final Container inventory, final Player player,
+                                   final Component displayName)
     {
-        super(ModContent.SCROLLABLE_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.size()));
-        for (int i = 0; i < INVENTORY.size(); i++)
+        super(ModContent.SCROLLABLE_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getContainerSize()));
+        for (int i = 0; i < INVENTORY.getContainerSize(); i++)
         {
             final int x = i % SCREEN_META.WIDTH;
-            int y = MathHelper.ceil((((double) (i - x)) / SCREEN_META.WIDTH));
+            int y = Mth.ceil((((double) (i - x)) / SCREEN_META.WIDTH));
             if (y >= SCREEN_META.HEIGHT) { y = -2000; }
             else {y = y * 18 + 18;}
             addSlot(new Slot(INVENTORY, i, x * 18 + 8, y));
         }
-        final Inventory playerInventory = player.inventory;
+        final Container playerInventory = player.inventory;
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)
@@ -78,10 +78,10 @@ public final class ScrollableScreenHandler extends AbstractScreenHandler<Scrolla
     public static final class Factory implements ScreenHandlerRegistry.ExtendedClientHandlerFactory<ScrollableScreenHandler>
     {
         @Override
-        public ScrollableScreenHandler create(final int syncId, final PlayerInventory playerInventory, final PacketByteBuf buffer)
+        public ScrollableScreenHandler create(final int syncId, final Inventory playerInventory, final FriendlyByteBuf buffer)
         {
             if (buffer == null) { return null; }
-            return new ScrollableScreenHandler(syncId, buffer.readBlockPos(), new SimpleInventory(buffer.readInt()), playerInventory.player,
+            return new ScrollableScreenHandler(syncId, buffer.readBlockPos(), new SimpleContainer(buffer.readInt()), playerInventory.player,
                                                null);
         }
     }

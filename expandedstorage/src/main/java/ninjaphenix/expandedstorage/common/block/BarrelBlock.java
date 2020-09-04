@@ -1,45 +1,43 @@
 package ninjaphenix.expandedstorage.common.block;
 
 import java.util.Random;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stats;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.BlockView;
-import ninjaphenix.expandedstorage.common.Const;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.entity.BarrelBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.state.property.Properties.FACING;
-import static net.minecraft.state.property.Properties.OPEN;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN;
 
 public class BarrelBlock extends StorageBlock
 {
-    public BarrelBlock(final Settings builder)
+    public BarrelBlock(final Properties builder, final ResourceLocation tierId)
     {
-        super(builder);
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(OPEN, false));
+        super(builder, tierId);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
     }
 
     @Override
-    protected void appendProperties(final StateManager.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder)
     {
-        super.appendProperties(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(FACING, OPEN);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void scheduledTick(final BlockState state, final ServerWorld world, final BlockPos pos, final Random random)
+    public void tick(final BlockState state, final ServerLevel world, final BlockPos pos, final Random random)
     {
         final BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof BarrelBlockEntity)
@@ -50,23 +48,19 @@ public class BarrelBlock extends StorageBlock
 
     @Nullable
     @Override
-    public BlockState getPlacementState(final ItemPlacementContext context)
+    public BlockState getStateForPlacement(final BlockPlaceContext context)
     {
-        return getDefaultState().with(FACING, context.getPlayerLookDirection().getOpposite());
+        return defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public SimpleRegistry<Registries.TierData> getDataRegistry() { return Registries.BARREL; }
+    public MappedRegistry<Registries.TierData> getDataRegistry() { return Registries.BARREL; }
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(final BlockView world)
-    {
-        final String path = Registry.BLOCK.getId(this).getPath();
-        return new BarrelBlockEntity(Const.id(path.replace("_barrel", "_chest")));
-    }
+    public BlockEntity newBlockEntity(final BlockGetter world) { return new BarrelBlockEntity(TIER_ID); }
 
     @Override
-    protected Identifier getOpenStat() { return Stats.OPEN_BARREL; }
+    protected ResourceLocation getOpenStat() { return Stats.OPEN_BARREL; }
 }

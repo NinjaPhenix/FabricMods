@@ -1,9 +1,9 @@
 package ninjaphenix.expandedstorage.common.misc;
 
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.state.properties.ChestType;
 
-public enum CursedChestType implements StringIdentifiable
+public enum CursedChestType implements StringRepresentable
 {
     SINGLE("single", -1), TOP("top", -1), BACK("back", 2), RIGHT("right", 3), BOTTOM("bottom", -1), FRONT("front", 0), LEFT("left", 1);
 
@@ -35,7 +35,7 @@ public enum CursedChestType implements StringIdentifiable
         throw new IllegalArgumentException("CursedChestType#getOpposite is not supported for type SINGLE");
     }
 
-    public String asString() { return name; }
+    public String getSerializedName() { return name; }
 
     public int getOffset() { return offset; }
 }

@@ -4,24 +4,23 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.api.EnvironmentInterfaces;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DoubleBlockProperties;
-import net.minecraft.client.block.ChestAnimationProgress;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Tickable;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
@@ -29,28 +28,30 @@ import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
 
-@EnvironmentInterfaces({@EnvironmentInterface(value = EnvType.CLIENT, itf = ChestAnimationProgress.class)})
-public final class CursedChestBlockEntity extends StorageBlockEntity implements ChestAnimationProgress, Tickable
+@EnvironmentInterfaces({@EnvironmentInterface(value = EnvType.CLIENT, itf = LidBlockEntity.class)})
+public final class CursedChestBlockEntity extends StorageBlockEntity implements LidBlockEntity, TickableBlockEntity
 {
     private float animationAngle, lastAnimationAngle;
     private int viewerCount, ticksOpen;
 
-    public CursedChestBlockEntity(final Identifier block) { super(ModContent.CHEST, block); }
+    public CursedChestBlockEntity(final ResourceLocation block) { super(ModContent.CHEST, block); }
 
-    public static int countViewers(final World world, final SidedInventory instance, final int x, final int y, final int z)
+    public ResourceLocation getBlock() { return block; }
+
+    public static int countViewers(final Level world, final WorldlyContainer instance, final int x, final int y, final int z)
     {
-        return world.getNonSpectatingEntities(PlayerEntity.class, new Box(x - 5, y - 5, z - 5, x + 6, y + 6, z + 6)).stream()
-                .filter(player -> player.currentScreenHandler instanceof AbstractScreenHandler)
-                .map(player -> ((AbstractScreenHandler<?>) player.currentScreenHandler).getInventory())
+        return world.getEntitiesOfClass(Player.class, new AABB(x - 5, y - 5, z - 5, x + 6, y + 6, z + 6)).stream()
+                .filter(player -> player.containerMenu instanceof AbstractScreenHandler)
+                .map(player -> ((AbstractScreenHandler<?>) player.containerMenu).getInventory())
                 .filter(inventory -> inventory == instance ||
                         inventory instanceof DoubleSidedInventory && ((DoubleSidedInventory) inventory).isPart(instance))
                 .mapToInt(inv -> 1).sum();
     }
 
-    private static int tickViewerCount(final World world, final CursedChestBlockEntity instance, final int ticksOpen, final int x,
+    private static int tickViewerCount(final Level world, final CursedChestBlockEntity instance, final int ticksOpen, final int x,
                                        final int y, final int z, final int viewCount)
     {
-        if (!world.isClient && viewCount != 0 && (ticksOpen + x + y + z) % 200 == 0)
+        if (!world.isClientSide && viewCount != 0 && (ticksOpen + x + y + z) % 200 == 0)
         {
             return countViewers(world, instance, x, y, z);
         }
@@ -58,66 +59,66 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     }
 
     @Environment(EnvType.CLIENT)
-    public void setBlock(final Identifier block) { this.block = block; }
+    public void setBlock(final ResourceLocation block) { this.block = block; }
 
     @Override
     @SuppressWarnings({"ConstantConditions"})
-    protected void initialize(final Identifier block)
+    protected void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.CHEST.get(block).getContainerName();
         inventorySize = Registries.CHEST.get(block).getSlotCount();
-        inventory = DefaultedList.ofSize(inventorySize, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         SLOTS = new int[inventorySize];
         for (int i = 0; i < inventorySize; i++) { SLOTS[i] = i; }
     }
 
     @Override
-    public boolean onSyncedBlockEvent(final int actionId, final int value)
+    public boolean triggerEvent(final int actionId, final int value)
     {
         if (actionId == 1)
         {
             viewerCount = value;
             return true;
         }
-        else { return super.onSyncedBlockEvent(actionId, value); }
+        else { return super.triggerEvent(actionId, value); }
     }
 
     @Override
-    public float getAnimationProgress(final float f) { return MathHelper.lerp(f, lastAnimationAngle, animationAngle); }
+    public float getOpenNess(final float f) { return Mth.lerp(f, lastAnimationAngle, animationAngle); }
 
     @Override
     @SuppressWarnings("ConstantConditions")
     public void tick()
     {
-        viewerCount = tickViewerCount(world, this, ++ticksOpen, pos.getX(), pos.getY(), pos.getZ(), viewerCount);
+        viewerCount = tickViewerCount(level, this, ++ticksOpen, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), viewerCount);
         lastAnimationAngle = animationAngle;
-        if (viewerCount > 0 && animationAngle == 0.0F) { playSound(SoundEvents.BLOCK_CHEST_OPEN); }
+        if (viewerCount > 0 && animationAngle == 0.0F) { playSound(SoundEvents.CHEST_OPEN); }
         if (viewerCount == 0 && animationAngle > 0.0F || viewerCount > 0 && animationAngle < 1.0F)
         {
-            animationAngle = MathHelper.clamp(animationAngle + (viewerCount > 0 ? 0.1F : -0.1F), 0, 1);
-            if (animationAngle < 0.5F && lastAnimationAngle >= 0.5F) { playSound(SoundEvents.BLOCK_CHEST_CLOSE); }
+            animationAngle = Mth.clamp(animationAngle + (viewerCount > 0 ? 0.1F : -0.1F), 0, 1);
+            if (animationAngle < 0.5F && lastAnimationAngle >= 0.5F) { playSound(SoundEvents.CHEST_CLOSE); }
         }
     }
 
     @SuppressWarnings("ConstantConditions")
     private void playSound(final SoundEvent soundEvent)
     {
-        final BlockState state = getCachedState();
-        final DoubleBlockProperties.Type mergeType = ChestBlock.getMergeType(state);
-        final Vec3d soundPos;
-        if (mergeType == DoubleBlockProperties.Type.SINGLE) { soundPos = Vec3d.ofCenter(pos); }
-        else if (mergeType == DoubleBlockProperties.Type.FIRST)
+        final BlockState state = getBlockState();
+        final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getMergeType(state);
+        final Vec3 soundPos;
+        if (mergeType == DoubleBlockCombiner.BlockType.SINGLE) { soundPos = Vec3.atCenterOf(worldPosition); }
+        else if (mergeType == DoubleBlockCombiner.BlockType.FIRST)
         {
-            soundPos = Vec3d.ofCenter(pos).add(Vec3d.of(ChestBlock.getDirectionToAttached(state).getVector()).multiply(0.5D));
+            soundPos = Vec3.atCenterOf(worldPosition).add(Vec3.atLowerCornerOf(ChestBlock.getDirectionToAttached(state).getNormal()).scale(0.5D));
         }
         else { return; }
-        world.playSound(null, soundPos.getX(), soundPos.getY(), soundPos.getZ(), soundEvent, SoundCategory.BLOCKS, 0.5F,
-                        world.random.nextFloat() * 0.1F + 0.9F);
+        level.playSound(null, soundPos.x(), soundPos.y(), soundPos.z(), soundEvent, SoundSource.BLOCKS, 0.5F,
+                        level.random.nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
-    public void onOpen(final PlayerEntity player)
+    public void startOpen(final Player player)
     {
         if (player.isSpectator()) { return; }
         if (viewerCount < 0) { viewerCount = 0; }
@@ -126,7 +127,7 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     }
 
     @Override
-    public void onClose(final PlayerEntity player)
+    public void stopOpen(final Player player)
     {
         if (player.isSpectator()) { return; }
         viewerCount--;
@@ -136,11 +137,11 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     @SuppressWarnings("ConstantConditions")
     private void onInvOpenOrClose()
     {
-        final Block block = getCachedState().getBlock();
+        final Block block = getBlockState().getBlock();
         if (block instanceof CursedChestBlock)
         {
-            world.addSyncedBlockEvent(pos, block, 1, viewerCount);
-            world.updateNeighborsAlways(pos, block);
+            level.blockEvent(worldPosition, block, 1, viewerCount);
+            level.updateNeighborsAt(worldPosition, block);
         }
     }
 }

@@ -1,1 +1,3 @@
-- Fix potential issues in networking code.
+- Reworked internal registries.
+- Chest modifiers now worked on trapped chests.
+- Reworked blockus support to use optional tags.
