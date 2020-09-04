@@ -67,7 +67,7 @@ public class ModBlocks
     }
 
     @Environment(EnvType.CLIENT)
-    private void SetRenderLayer(Block block) { BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout()); }
+    private void SetRenderLayer(Block block) { BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()); }
 
     private void registerAndBlacklist(ResourceLocation id, Block block)
     {

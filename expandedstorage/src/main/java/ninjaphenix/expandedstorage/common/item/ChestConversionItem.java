@@ -3,7 +3,6 @@ package ninjaphenix.expandedstorage.common.item;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
-import net.minecraft.block.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.NonNullList;
@@ -53,7 +52,7 @@ public final class ChestConversionItem extends ChestModifierItem
                                        Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
     }
 
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    @SuppressWarnings({"ConstantConditions"})
     private void upgradeCursedChest(final Level world, final BlockPos pos, final BlockState state)
     {
         StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
@@ -88,7 +87,7 @@ public final class ChestConversionItem extends ChestModifierItem
     }
 
     @Override
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    @SuppressWarnings({"ConstantConditions"})
     protected InteractionResult useModifierOnChestBlock(final UseOnContext context, final BlockState mainState, final BlockPos mainBlockPos,
                                                    final BlockState otherState, final BlockPos otherBlockPos)
     {
