@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.screen.SingleScreenMeta;
 
@@ -29,17 +29,17 @@ public final class SingleScreenHandler extends AbstractScreenHandler<SingleScree
             .put(270, new SingleScreenMeta(18, 15, 270, getTexture("shared", 18, 15), 368, 416)) // Large Netherite
             .build();
 
-    public SingleScreenHandler(final int syncId, final BlockPos pos, final Inventory inventory, final PlayerEntity player,
-                               final Text displayName)
+    public SingleScreenHandler(final int syncId, final BlockPos pos, final Container inventory, final Player player,
+                               final Component displayName)
     {
-        super(ModContent.SINGLE_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.size()));
-        for (int i = 0; i < inventory.size(); i++)
+        super(ModContent.SINGLE_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getContainerSize()));
+        for (int i = 0; i < inventory.getContainerSize(); i++)
         {
             final int x = i % SCREEN_META.WIDTH;
             final int y = (i - x) / SCREEN_META.WIDTH;
             addSlot(new Slot(inventory, i, x * 18 + 8, y * 18 + 18));
         }
-        final Inventory playerInventory = player.inventory;
+        final Container playerInventory = player.inventory;
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)
@@ -65,10 +65,10 @@ public final class SingleScreenHandler extends AbstractScreenHandler<SingleScree
     public static final class Factory implements ScreenHandlerRegistry.ExtendedClientHandlerFactory<SingleScreenHandler>
     {
         @Override
-        public SingleScreenHandler create(final int syncId, final PlayerInventory playerInventory, final PacketByteBuf buffer)
+        public SingleScreenHandler create(final int syncId, final Inventory playerInventory, final FriendlyByteBuf buffer)
         {
             if (buffer == null) { return null; }
-            return new SingleScreenHandler(syncId, buffer.readBlockPos(), new SimpleInventory(buffer.readInt()), playerInventory.player,
+            return new SingleScreenHandler(syncId, buffer.readBlockPos(), new SimpleContainer(buffer.readInt()), playerInventory.player,
                                            null);
         }
     }

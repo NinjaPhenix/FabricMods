@@ -1,21 +1,26 @@
 package torcherino.api.blocks;
 
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.TorchBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import torcherino.api.TierSupplier;
 import torcherino.api.TorcherinoLogic;
 import torcherino.api.blocks.entity.TorcherinoBlockEntity;
@@ -23,52 +28,52 @@ import torcherino.api.blocks.entity.TorcherinoBlockEntity;
 import java.util.Random;
 
 @SuppressWarnings({ "deprecation" })
-public class TorcherinoBlock extends TorchBlock implements BlockEntityProvider, TierSupplier
+public class TorcherinoBlock extends TorchBlock implements EntityBlock, TierSupplier
 {
-    private final Identifier tierID;
+    private final ResourceLocation tierID;
 
-    public TorcherinoBlock(Identifier tier, ParticleEffect particleEffect)
+    public TorcherinoBlock(ResourceLocation tier, ParticleOptions particleEffect)
     {
-        super(Block.Settings.copy(Blocks.TORCH), particleEffect);
+        super(BlockBehaviour.Properties.copy(Blocks.TORCH), particleEffect);
         tierID = tier;
     }
 
     @Override
-    public Identifier getTier() { return tierID; }
+    public ResourceLocation getTier() { return tierID; }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView view) { return new TorcherinoBlockEntity(); }
+    public BlockEntity newBlockEntity(BlockGetter view) { return new TorcherinoBlockEntity(); }
 
     @Override
-    public PistonBehavior getPistonBehavior(BlockState state) { return PistonBehavior.IGNORE; }
+    public PushReaction getPistonPushReaction(BlockState state) { return PushReaction.IGNORE; }
 
     @Override
-    public void onBlockAdded(BlockState newState, World world, BlockPos pos, BlockState state, boolean boolean_1)
+    public void onPlace(BlockState newState, Level world, BlockPos pos, BlockState state, boolean boolean_1)
     {
-        neighborUpdate(null, world, pos, null, null, false);
+        neighborChanged(null, world, pos, null, null, false);
     }
 
     @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random)
     {
         TorcherinoLogic.scheduledTick(state, world, pos, random);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
         return TorcherinoLogic.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean boolean_1)
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean boolean_1)
     {
         TorcherinoLogic.neighborUpdate(state, world, pos, neighborBlock, neighborPos, boolean_1, (be) ->
-                be.setPoweredByRedstone(world.isEmittingRedstonePower(pos.down(), Direction.UP)));
+                be.setPoweredByRedstone(world.hasSignal(pos.below(), Direction.UP)));
     }
 
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
         TorcherinoLogic.onPlaced(world, pos, state, placer, stack, this);
     }

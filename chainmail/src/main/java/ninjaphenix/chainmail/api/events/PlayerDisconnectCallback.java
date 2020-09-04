@@ -2,7 +2,7 @@ package ninjaphenix.chainmail.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Arrays;
 
 /**
@@ -14,5 +14,5 @@ public interface PlayerDisconnectCallback
     Event<PlayerDisconnectCallback> EVENT = EventFactory.createArrayBacked(PlayerDisconnectCallback.class, listeners ->
             (player) -> Arrays.stream(listeners).forEach(listener -> listener.onPlayerDisconnected(player)));
 
-    void onPlayerDisconnected(ServerPlayerEntity player);
+    void onPlayerDisconnected(ServerPlayer player);
 }

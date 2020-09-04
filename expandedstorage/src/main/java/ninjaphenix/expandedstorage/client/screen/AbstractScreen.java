@@ -1,21 +1,21 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Function;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import ninjaphenix.expandedstorage.client.ExpandedStorageClient;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.ScreenMeta;
 
-public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R extends ScreenMeta> extends HandledScreen<T>
+public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R extends ScreenMeta> extends AbstractContainerScreen<T>
 {
     protected final R SCREEN_META;
     private final Integer INVENTORY_LABEL_LEFT;
 
-    protected AbstractScreen(final T container, final PlayerInventory playerInventory, final Text title,
+    protected AbstractScreen(final T container, final Inventory playerInventory, final Component title,
                              final Function<R, Integer> inventoryLabelLeftFunction)
     {
         super(container, playerInventory, title);
@@ -25,36 +25,36 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
 
     @Override
     @SuppressWarnings({"ConstantConditions", "deprecation"})
-    protected void drawBackground(final MatrixStack matrices, final float delta, final int mouseX, final int mouseY)
+    protected void renderBg(final PoseStack matrices, final float delta, final int mouseX, final int mouseY)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        client.getTextureManager().bindTexture(SCREEN_META.TEXTURE);
-        drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight, SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
+        minecraft.getTextureManager().bind(SCREEN_META.TEXTURE);
+        blit(matrices, leftPos, topPos, 0, 0, imageWidth, imageHeight, SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
     }
 
     @Override
-    public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta)
+    public void render(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
     {
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
-        drawMouseoverTooltip(matrices, mouseX, mouseY);
+        renderTooltip(matrices, mouseX, mouseY);
     }
 
     @Override
-    protected void drawForeground(final MatrixStack matrices, final int mouseX, final int mouseY)
+    protected void renderLabels(final PoseStack matrices, final int mouseX, final int mouseY)
     {
-        textRenderer.draw(matrices, title, 8, 6, 4210752);
-        textRenderer.draw(matrices, playerInventory.getDisplayName(), INVENTORY_LABEL_LEFT, backgroundHeight - 96 + 2, 4210752);
+        font.draw(matrices, title, 8, 6, 4210752);
+        font.draw(matrices, inventory.getDisplayName(), INVENTORY_LABEL_LEFT, imageHeight - 96 + 2, 4210752);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers)
     {
-        if (keyCode == 256 || client.options.keyInventory.matchesKey(keyCode, scanCode))
+        if (keyCode == 256 || minecraft.options.keyInventory.matches(keyCode, scanCode))
         {
             ExpandedStorageClient.sendCallbackRemoveToServer();
-            client.player.closeHandledScreen();
+            minecraft.player.closeContainer();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -77,9 +77,9 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
             TEXTURE_HEIGHT = textureHeight;
         }
 
-        public void render(final MatrixStack matrices)
+        public void render(final PoseStack matrices)
         {
-            drawTexture(matrices, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(matrices, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }
 }

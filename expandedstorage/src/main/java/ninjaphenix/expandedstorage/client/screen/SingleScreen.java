@@ -1,9 +1,9 @@
 package ninjaphenix.expandedstorage.client.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import ninjaphenix.expandedstorage.client.screen.widget.ScreenTypeSelectionScreenButton;
 import ninjaphenix.expandedstorage.common.inventory.SingleScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.SingleScreenMeta;
@@ -12,11 +12,11 @@ public final class SingleScreen extends AbstractScreen<SingleScreenHandler, Sing
 {
     private Rectangle blankArea = null;
 
-    public SingleScreen(final SingleScreenHandler container, final PlayerInventory playerInventory, final Text title)
+    public SingleScreen(final SingleScreenHandler container, final Inventory playerInventory, final Component title)
     {
         super(container, playerInventory, title, (screenMeta) -> (screenMeta.WIDTH * 18 + 14) / 2 - 80);
-        backgroundWidth = 14 + 18 * SCREEN_META.WIDTH;
-        backgroundHeight = 17 + 97 + 18 * SCREEN_META.HEIGHT;
+        imageWidth = 14 + 18 * SCREEN_META.WIDTH;
+        imageHeight = 17 + 97 + 18 * SCREEN_META.HEIGHT;
     }
 
     @Override
@@ -30,21 +30,21 @@ public final class SingleScreen extends AbstractScreen<SingleScreenHandler, Sing
         if (inventoryProfilesLoaded) { settingsXOffset = -67; }
         else if (inventorySorterLoaded) { settingsXOffset = -37; }
         else { settingsXOffset = -19;}
-        addButton(new ScreenTypeSelectionScreenButton(x + backgroundWidth + settingsXOffset, y + 4, (button, matrices, mouseX, mouseY) ->
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + settingsXOffset, topPos + 4, (button, matrices, mouseX, mouseY) ->
                 renderTooltip(matrices, button.getMessage(), mouseX, mouseY)));
         final int blanked = SCREEN_META.BLANK_SLOTS;
         if (blanked > 0)
         {
             final int xOffset = 7 + (SCREEN_META.WIDTH - blanked) * 18;
-            blankArea = new Rectangle(x + xOffset, y + backgroundHeight - 115, blanked * 18, 18, xOffset, backgroundHeight,
+            blankArea = new Rectangle(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
                                       SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
         }
     }
 
     @Override
-    protected void drawBackground(final MatrixStack matrices, final float delta, final int mouseX, final int mouseY)
+    protected void renderBg(final PoseStack matrices, final float delta, final int mouseX, final int mouseY)
     {
-        super.drawBackground(matrices, delta, mouseX, mouseY);
+        super.renderBg(matrices, delta, mouseX, mouseY);
         if (blankArea != null) { blankArea.render(matrices); }
     }
 }

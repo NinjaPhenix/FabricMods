@@ -1,9 +1,9 @@
 package torcherino.api;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import torcherino.api.impl.TorcherinoImpl;
 
 /**
@@ -23,7 +23,7 @@ public interface TorcherinoAPI
      * @return Immutable map of tierID -> tier
      * @since 1.9.51
      */
-    ImmutableMap<Identifier, Tier> getTiers();
+    ImmutableMap<ResourceLocation, Tier> getTiers();
 
     /**
      * Returns the tier for the given tierName.
@@ -32,7 +32,7 @@ public interface TorcherinoAPI
      * @return The tier or null if it does not exist.
      * @since 1.9.51
      */
-    Tier getTier(Identifier tierIdentifier);
+    Tier getTier(ResourceLocation tierIdentifier);
 
     /**
      * @param tierIdentifier Identifier for the new tier.
@@ -42,14 +42,14 @@ public interface TorcherinoAPI
      * @return TRUE if the tier was registered, FALSE if tier with same name exists.
      * @since 1.9.51
      */
-    boolean registerTier(Identifier tierIdentifier, int maxSpeed, int xzRange, int yRange);
+    boolean registerTier(ResourceLocation tierIdentifier, int maxSpeed, int xzRange, int yRange);
 
     /**
      * @param blockIdentifier The Identifier of the block to be blacklisted.
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlock(Identifier blockIdentifier);
+    boolean blacklistBlock(ResourceLocation blockIdentifier);
 
     /**
      * @param block The block to be blacklisted.
@@ -63,7 +63,7 @@ public interface TorcherinoAPI
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlockEntity(Identifier blockEntityIdentifier);
+    boolean blacklistBlockEntity(ResourceLocation blockEntityIdentifier);
 
     /**
      * @param blockEntityType The block entity type to be blacklisted.

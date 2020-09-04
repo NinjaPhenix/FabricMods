@@ -3,13 +3,13 @@ package torcherino;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import torcherino.api.Tier;
 import torcherino.api.TierSupplier;
 import torcherino.api.TorcherinoAPI;
@@ -27,11 +27,11 @@ public class TorcherinoClient implements ClientModInitializer
     public void onInitializeClient()
     {
         // Open Torcherino Screen
-        ClientSidePacketRegistry.INSTANCE.register(new Identifier(MOD_ID, "ots"), (PacketContext context, PacketByteBuf buffer) ->
+        ClientSidePacketRegistry.INSTANCE.register(new ResourceLocation(MOD_ID, "ots"), (PacketContext context, FriendlyByteBuf buffer) ->
         {
-            World world = MinecraftClient.getInstance().world;
+            Level world = Minecraft.getInstance().level;
             BlockPos pos = buffer.readBlockPos();
-            Text title = buffer.readText();
+            Component title = buffer.readComponent();
             int xRange = buffer.readInt();
             int zRange = buffer.readInt();
             int yRange = buffer.readInt();
@@ -42,19 +42,19 @@ public class TorcherinoClient implements ClientModInitializer
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof TorcherinoBlockEntity)
                 {
-                    MinecraftClient.getInstance().openScreen(new TorcherinoScreen(title, xRange, zRange, yRange, speed, redstoneMode, pos,
+                    Minecraft.getInstance().setScreen(new TorcherinoScreen(title, xRange, zRange, yRange, speed, redstoneMode, pos,
                             ((TierSupplier) blockEntity).getTier()));
                 }
             });
         });
         // Torcherino Tier Sync
-        ClientSidePacketRegistry.INSTANCE.register(new Identifier(MOD_ID, "tts"), (PacketContext context, PacketByteBuf buffer) ->
+        ClientSidePacketRegistry.INSTANCE.register(new ResourceLocation(MOD_ID, "tts"), (PacketContext context, FriendlyByteBuf buffer) ->
         {
-            HashMap<Identifier, Tier> tiers = new HashMap<>();
+            HashMap<ResourceLocation, Tier> tiers = new HashMap<>();
             int count = buffer.readInt();
             for (int i = 0; i < count; i++)
             {
-                Identifier id = buffer.readIdentifier();
+                ResourceLocation id = buffer.readResourceLocation();
                 int maxSpeed = buffer.readInt();
                 int xzRange = buffer.readInt();
                 int yRange = buffer.readInt();

@@ -5,10 +5,11 @@ import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import ninjaphenix.chainmail.api.config.JanksonConfigParser;
 import org.apache.logging.log4j.MarkerManager;
 import torcherino.api.TorcherinoAPI;
+import torcherino.config.Config.Tier;
 
 public class Config
 {
@@ -21,10 +22,10 @@ public class Config
             EnvType.SERVER;
 
     @Comment("\nAdd a block by identifier to the blacklist.\nExamples: \"minecraft:dirt\", \"minecraft:furnace\"")
-    private final Identifier[] blacklisted_blocks = new Identifier[]{};
+    private final ResourceLocation[] blacklisted_blocks = new ResourceLocation[]{};
 
     @Comment("\nAdd a block entity by identifier to the blacklist.\nExamples: \"minecraft:furnace\", \"minecraft:mob_spawner\"")
-    private final Identifier[] blacklisted_blockentities = new Identifier[]{};
+    private final ResourceLocation[] blacklisted_blockentities = new ResourceLocation[]{};
 
     @Comment("\nAllows new custom torcherino tiers to be added.\nThis also allows for each tier to have their own max max_speed and ranges.")
     private final Tier[] tiers = new Tier[]{ new Tier("normal", 4, 4, 1), new Tier("compressed", 36, 4, 1), new Tier("double_compressed", 324, 4, 1) };
@@ -36,7 +37,7 @@ public class Config
     public static void initialize()
     {
         JanksonConfigParser parser = new JanksonConfigParser.Builder()
-                .deSerializer(JsonPrimitive.class, Identifier.class, (it, marshaller) -> new Identifier(it.asString()),
+                .deSerializer(JsonPrimitive.class, ResourceLocation.class, (it, marshaller) -> new ResourceLocation(it.asString()),
                         ((identifier, marshaller) -> marshaller.serialize(identifier.toString())))
                 .deSerializer(JsonObject.class, Tier.class, (it, marshaller) -> {
                     String name = it.get(String.class, "name");
@@ -61,9 +62,9 @@ public class Config
     {
         online_mode = online_mode.toUpperCase();
         if (!(online_mode.equals("ONLINE") || online_mode.equals("RESTART"))) { online_mode = ""; }
-        for (Tier tier : tiers) { TorcherinoAPI.INSTANCE.registerTier(new Identifier("torcherino", tier.name), tier.max_speed, tier.xz_range, tier.y_range); }
-        for (Identifier id : blacklisted_blocks) { TorcherinoAPI.INSTANCE.blacklistBlock(id); }
-        for (Identifier id : blacklisted_blockentities) { TorcherinoAPI.INSTANCE.blacklistBlockEntity(id); }
+        for (Tier tier : tiers) { TorcherinoAPI.INSTANCE.registerTier(new ResourceLocation("torcherino", tier.name), tier.max_speed, tier.xz_range, tier.y_range); }
+        for (ResourceLocation id : blacklisted_blocks) { TorcherinoAPI.INSTANCE.blacklistBlock(id); }
+        for (ResourceLocation id : blacklisted_blockentities) { TorcherinoAPI.INSTANCE.blacklistBlockEntity(id); }
     }
 
     static class Tier

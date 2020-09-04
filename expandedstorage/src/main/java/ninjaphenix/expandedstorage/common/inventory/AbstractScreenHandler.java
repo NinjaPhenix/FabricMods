@@ -1,71 +1,71 @@
 package ninjaphenix.expandedstorage.common.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.inventory.screen.ScreenMeta;
 
-public abstract class AbstractScreenHandler<T extends ScreenMeta> extends ScreenHandler
+public abstract class AbstractScreenHandler<T extends ScreenMeta> extends AbstractContainerMenu
 {
     public final BlockPos ORIGIN;
     public final T SCREEN_META;
-    protected final Inventory INVENTORY;
-    private final Text DISPLAY_NAME;
+    protected final Container INVENTORY;
+    private final Component DISPLAY_NAME;
 
-    public AbstractScreenHandler(final ScreenHandlerType<?> type, final int syncId, final BlockPos pos, final Inventory inventory,
-                                 final PlayerEntity player, final Text displayName, final T meta)
+    public AbstractScreenHandler(final MenuType<?> type, final int syncId, final BlockPos pos, final Container inventory,
+                                 final Player player, final Component displayName, final T meta)
     {
         super(type, syncId);
         ORIGIN = pos;
         INVENTORY = inventory;
         DISPLAY_NAME = displayName;
         SCREEN_META = meta;
-        inventory.onOpen(player);
+        inventory.startOpen(player);
     }
 
     @Override
-    public boolean canUse(final PlayerEntity player) { return INVENTORY.canPlayerUse(player); }
+    public boolean stillValid(final Player player) { return INVENTORY.stillValid(player); }
 
-    public Text getDisplayName() { return DISPLAY_NAME.copy(); }
+    public Component getDisplayName() { return DISPLAY_NAME.plainCopy(); }
 
     @Override
-    public ItemStack transferSlot(final PlayerEntity player, final int slotIndex)
+    public ItemStack quickMoveStack(final Player player, final int slotIndex)
     {
         ItemStack stack = ItemStack.EMPTY;
         final Slot slot = slots.get(slotIndex);
-        if (slot != null && slot.hasStack())
+        if (slot != null && slot.hasItem())
         {
-            final ItemStack slotStack = slot.getStack();
+            final ItemStack slotStack = slot.getItem();
             stack = slotStack.copy();
-            if (slotIndex < INVENTORY.size())
+            if (slotIndex < INVENTORY.getContainerSize())
             {
-                if (!insertItem(slotStack, INVENTORY.size(), slots.size(), true)) { return ItemStack.EMPTY; }
+                if (!moveItemStackTo(slotStack, INVENTORY.getContainerSize(), slots.size(), true)) { return ItemStack.EMPTY; }
             }
-            else if (!insertItem(slotStack, 0, INVENTORY.size(), false)) { return ItemStack.EMPTY; }
-            if (slotStack.isEmpty()) { slot.setStack(ItemStack.EMPTY); }
-            else { slot.markDirty(); }
+            else if (!moveItemStackTo(slotStack, 0, INVENTORY.getContainerSize(), false)) { return ItemStack.EMPTY; }
+            if (slotStack.isEmpty()) { slot.set(ItemStack.EMPTY); }
+            else { slot.setChanged(); }
         }
         return stack;
     }
 
     @Override
-    public void close(final PlayerEntity player)
+    public void removed(final Player player)
     {
-        super.close(player);
-        INVENTORY.onClose(player);
+        super.removed(player);
+        INVENTORY.stopOpen(player);
     }
 
-    public Inventory getInventory() { return INVENTORY; }
+    public Container getInventory() { return INVENTORY; }
 
-    public static Identifier getTexture(final String type, final int width, final int height)
+    public static ResourceLocation getTexture(final String type, final int width, final int height)
     {
-        return new Identifier(Const.MOD_ID, String.format("textures/gui/container/%s_%d_%d.png", type, width, height));
+        return new ResourceLocation(Const.MOD_ID, String.format("textures/gui/container/%s_%d_%d.png", type, width, height));
     }
 }

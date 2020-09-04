@@ -1,13 +1,13 @@
 package ninjaphenix.expandedstorage.common.inventory.screen;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class ScreenMeta
 {
     public final int WIDTH, HEIGHT, TOTAL_SLOTS, TEXTURE_WIDTH, TEXTURE_HEIGHT;
-    public final Identifier TEXTURE;
+    public final ResourceLocation TEXTURE;
 
-    protected ScreenMeta(final int width, final int height, final int totalSlots, final Identifier texture, final int textureWidth,
+    protected ScreenMeta(final int width, final int height, final int totalSlots, final ResourceLocation texture, final int textureWidth,
                          final int textureHeight)
     {
         WIDTH = width;

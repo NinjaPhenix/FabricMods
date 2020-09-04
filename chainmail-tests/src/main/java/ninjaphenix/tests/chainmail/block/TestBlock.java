@@ -1,15 +1,15 @@
 package ninjaphenix.tests.chainmail.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import ninjaphenix.tests.chainmail.block.entity.TestBlockEntity;
 
-public class TestBlock extends Block implements BlockEntityProvider
+public class TestBlock extends Block implements EntityBlock
 {
-    public TestBlock(Settings settings) { super(settings); }
+    public TestBlock(Properties settings) { super(settings); }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView view) { return new TestBlockEntity(); }
+    public BlockEntity newBlockEntity(BlockGetter view) { return new TestBlockEntity(); }
 }

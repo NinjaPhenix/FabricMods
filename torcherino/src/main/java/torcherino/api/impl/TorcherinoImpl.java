@@ -1,10 +1,6 @@
 package torcherino.api.impl;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import torcherino.api.Tier;
@@ -12,6 +8,10 @@ import torcherino.api.TorcherinoAPI;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 /**
  * DO NOT USE THIS CLASS DIRECTLY. Use TorcherinoAPI.INSTANCE instead.
@@ -22,10 +22,10 @@ public class TorcherinoImpl implements TorcherinoAPI
     public static final TorcherinoImpl INSTANCE = new TorcherinoImpl();
 
     private final Logger LOGGER = LogManager.getLogger("torcherino-api");
-    private final HashMap<Identifier, Tier> localTiers;
-    private final HashSet<Identifier> blacklistedBlocks;
-    private final HashSet<Identifier> blacklistedBlockEntities;
-    private HashMap<Identifier, Tier> remoteTiers;
+    private final HashMap<ResourceLocation, Tier> localTiers;
+    private final HashSet<ResourceLocation> blacklistedBlocks;
+    private final HashSet<ResourceLocation> blacklistedBlockEntities;
+    private HashMap<ResourceLocation, Tier> remoteTiers;
 
     private TorcherinoImpl()
     {
@@ -35,13 +35,13 @@ public class TorcherinoImpl implements TorcherinoAPI
     }
 
     @Override
-    public ImmutableMap<Identifier, Tier> getTiers() { return ImmutableMap.copyOf(localTiers); }
+    public ImmutableMap<ResourceLocation, Tier> getTiers() { return ImmutableMap.copyOf(localTiers); }
 
     @Override
-    public Tier getTier(Identifier tierIdentifier) { return remoteTiers.getOrDefault(tierIdentifier, null); }
+    public Tier getTier(ResourceLocation tierIdentifier) { return remoteTiers.getOrDefault(tierIdentifier, null); }
 
     @Override
-    public boolean registerTier(Identifier tierIdentifier, int maxSpeed, int xzRange, int yRange)
+    public boolean registerTier(ResourceLocation tierIdentifier, int maxSpeed, int xzRange, int yRange)
     {
         Tier tier = new Tier(maxSpeed, xzRange, yRange);
         if (localTiers.containsKey(tierIdentifier))
@@ -54,7 +54,7 @@ public class TorcherinoImpl implements TorcherinoAPI
     }
 
     @Override
-    public boolean blacklistBlock(Identifier blockIdentifier)
+    public boolean blacklistBlock(ResourceLocation blockIdentifier)
     {
         if (blacklistedBlocks.contains(blockIdentifier))
         {
@@ -68,7 +68,7 @@ public class TorcherinoImpl implements TorcherinoAPI
     @Override
     public boolean blacklistBlock(Block block)
     {
-        Identifier blockIdentifier = Registry.BLOCK.getId(block);
+        ResourceLocation blockIdentifier = Registry.BLOCK.getKey(block);
         if (Registry.BLOCK.get(blockIdentifier) != block)
         {
             LOGGER.error("[Torcherino] Please register your block before attempting to blacklist.");
@@ -84,7 +84,7 @@ public class TorcherinoImpl implements TorcherinoAPI
     }
 
     @Override
-    public boolean blacklistBlockEntity(Identifier blockEntityIdentifier)
+    public boolean blacklistBlockEntity(ResourceLocation blockEntityIdentifier)
     {
         if (blacklistedBlockEntities.contains(blockEntityIdentifier))
         {
@@ -98,7 +98,7 @@ public class TorcherinoImpl implements TorcherinoAPI
     @Override
     public boolean blacklistBlockEntity(BlockEntityType<?> blockEntityType)
     {
-        Identifier blockEntityTypeIdentifier = Registry.BLOCK_ENTITY_TYPE.getId(blockEntityType);
+        ResourceLocation blockEntityTypeIdentifier = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
         if (blockEntityTypeIdentifier == null)
         {
             LOGGER.error("[Torcherino] Please register your block entity type before attempting to blacklist.");
@@ -114,14 +114,14 @@ public class TorcherinoImpl implements TorcherinoAPI
     }
 
     @Override
-    public boolean isBlockBlacklisted(Block block) { return blacklistedBlocks.contains(Registry.BLOCK.getId(block)); }
+    public boolean isBlockBlacklisted(Block block) { return blacklistedBlocks.contains(Registry.BLOCK.getKey(block)); }
 
     @Override
     public boolean isBlockEntityBlacklisted(BlockEntityType<?> blockEntityType)
     {
-        return blacklistedBlockEntities.contains(BlockEntityType.getId(blockEntityType));
+        return blacklistedBlockEntities.contains(BlockEntityType.getKey(blockEntityType));
     }
 
     // Internal do not use.
-    public void setRemoteTiers(HashMap<Identifier, Tier> tiers) { remoteTiers = tiers; }
+    public void setRemoteTiers(HashMap<ResourceLocation, Tier> tiers) { remoteTiers = tiers; }
 }

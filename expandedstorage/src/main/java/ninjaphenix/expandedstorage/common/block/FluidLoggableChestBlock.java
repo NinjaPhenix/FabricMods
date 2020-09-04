@@ -1,59 +1,59 @@
 package ninjaphenix.expandedstorage.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.WorldAccess;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 
 import java.util.function.Supplier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
-import static net.minecraft.state.property.Properties.WATERLOGGED;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
 @SuppressWarnings("deprecation")
-public abstract class FluidLoggableChestBlock<T extends StorageBlockEntity> extends ChestBlock<T> implements Waterloggable
+public abstract class FluidLoggableChestBlock<T extends StorageBlockEntity> extends ChestBlock<T> implements SimpleWaterloggedBlock
 {
-    protected FluidLoggableChestBlock(final Settings settings, final Identifier tierId,
+    protected FluidLoggableChestBlock(final Properties settings, final ResourceLocation tierId,
                                       final Supplier<BlockEntityType<T>> blockEntityType)
     {
         super(settings, tierId, blockEntityType);
-        setDefaultState(getDefaultState().with(WATERLOGGED, false));
+        registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     @Override
     public FluidState getFluidState(final BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected void appendProperties(final StateManager.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder)
     {
-        super.appendProperties(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public BlockState getPlacementState(final ItemPlacementContext context)
+    public BlockState getStateForPlacement(final BlockPlaceContext context)
     {
-        return super.getPlacementState(context)
-                .with(WATERLOGGED, context.getWorld().getFluidState(context.getBlockPos()) == Fluids.WATER.getDefaultState());
+        return super.getStateForPlacement(context)
+                .setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()) == Fluids.WATER.defaultFluidState());
     }
 
     @Override
-    public BlockState getStateForNeighborUpdate(final BlockState state, final Direction direction, final BlockState neighborState,
-                                                final WorldAccess world, final BlockPos pos, final BlockPos neighborPos)
+    public BlockState updateShape(final BlockState state, final Direction direction, final BlockState neighborState,
+                                                final LevelAccessor world, final BlockPos pos, final BlockPos neighborPos)
     {
-        if (state.get(WATERLOGGED)) { world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world)); }
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+        if (state.getValue(WATERLOGGED)) { world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world)); }
+        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 }
