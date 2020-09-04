@@ -1,3 +1,3 @@
-- Reworked internal registries
-- Chest modifiers should now be able to be used on any blockus barrel and trapped chests too.
+- Reworked internal registries.
+- Chest modifiers now worked on trapped chests.
 - Reworked blockus support to use optional tags.
