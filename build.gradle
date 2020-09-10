@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'fabric-loom' version '0.5-SNAPSHOT' apply false
+    id 'fabric-loom' version '0.5.local' apply false
     id 'com.matthewprenger.cursegradle' version '1.4.0' apply false
 }
 
@@ -23,6 +23,8 @@ allprojects {
     minecraft {
         refmapName = "${mod_id}-refmap.json"
         runDir = "${project.projectDir.getName()}/run/"
+        shareCaches = true
+        remapJSRAnnotations = false
     }
 
     ext {

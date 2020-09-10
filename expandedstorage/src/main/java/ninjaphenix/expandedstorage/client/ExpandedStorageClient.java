@@ -102,7 +102,7 @@ public final class ExpandedStorageClient implements ClientModInitializer
     public static void sendCallbackRemoveToServer()
     {
         ClientSidePacketRegistry.INSTANCE.sendToServer(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
-                .writeResourceLocation(Const.id("auto")));
+                .writeResourceLocation(Const.resloc("auto")));
     }
 
     public static void setPreference(final ResourceLocation handlerType)

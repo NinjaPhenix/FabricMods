@@ -22,7 +22,7 @@ public final class ScreenTypeSelectionScreenButton extends Button
         {
             ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer()));
         }, tooltipSupplier);
-        TEXTURE = Const.id("textures/gui/select_screen_button.png");
+        TEXTURE = Const.resloc("textures/gui/select_screen_button.png");
     }
 
     @Override

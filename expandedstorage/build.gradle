@@ -19,11 +19,16 @@ dependencies {
     include "io.github.cottonmc:Jankson-Fabric:${jankson_version}"
 
     modCompileOnly("com.github.Virtuoel:Towelette:${towelette_commit}") {
+        withoutUnwanted
         exclude(group: "com.github.Virtuoel", module: "Statement")
     }
-    modCompileOnly("com.github.Virtuoel:Statement:${statement_commit}")
+    modCompileOnly("com.github.Virtuoel:Statement:${statement_commit}") {
+        withoutUnwanted
+    }
 
-    modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT')
+    modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT') {
+        withoutUnwanted
+    }
 
     // todo: grab off curseforge
     //modRuntime('local:InventorySorter:1.7.0-1.16')

@@ -15,8 +15,8 @@ public final class OldChestBlockEntity extends StorageBlockEntity
     protected void initialize(final ResourceLocation block)
     {
         this.block = block;
-        defaultContainerName = Registries.OLD_CHEST.get(block).getContainerName();
-        inventorySize = Registries.OLD_CHEST.get(block).getSlotCount();
+        defaultContainerName = Registries.OLD_CHEST.get(block).CONTAINER_NAME;
+        inventorySize = Registries.OLD_CHEST.get(block).SLOT_COUNT;
         inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         SLOTS = new int[inventorySize];
         for (int i = 0; i < inventorySize; i++) { SLOTS[i] = i; }

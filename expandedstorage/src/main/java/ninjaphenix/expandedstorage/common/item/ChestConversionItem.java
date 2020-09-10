@@ -57,10 +57,10 @@ public final class ChestConversionItem extends ChestModifierItem
     {
         StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
         final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).defaultBlockState();
+        BlockState newState = Registry.BLOCK.get(registry.get(TO).RESOURCE_LOCATION).defaultBlockState();
         if (newState.getBlock() instanceof SimpleWaterloggedBlock)
         {
             newState = newState.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED));
@@ -75,10 +75,10 @@ public final class ChestConversionItem extends ChestModifierItem
     private void upgradeChest(final Level world, final BlockPos pos, final BlockState state)
     {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.CHEST.get(TO).getSlotCount(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.CHEST.get(TO).SLOT_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.CHEST.get(TO).getBlockId()).defaultBlockState();
+        final BlockState newState = Registry.BLOCK.get(Registries.CHEST.get(TO).RESOURCE_LOCATION).defaultBlockState();
         world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING))
                 .setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED))
                 .setValue(CursedChestBlock.TYPE, CursedChestType.valueOf(state.getValue(BlockStateProperties.CHEST_TYPE))));
@@ -131,10 +131,10 @@ public final class ChestConversionItem extends ChestModifierItem
     private void upgradeVanillaBarrel(final Level world, final BlockPos pos, final BlockState state)
     {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.BARREL.get(TO).getSlotCount(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.BARREL.get(TO).SLOT_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.BARREL.get(TO).getBlockId()).defaultBlockState();
+        final BlockState newState = Registry.BLOCK.get(Registries.BARREL.get(TO).RESOURCE_LOCATION).defaultBlockState();
         world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
         blockEntity = world.getBlockEntity(pos);
         blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
@@ -144,10 +144,10 @@ public final class ChestConversionItem extends ChestModifierItem
     {
         StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
         final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).getSlotCount(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
         world.removeBlockEntity(pos);
-        BlockState newState = Registry.BLOCK.get(registry.get(TO).getBlockId()).defaultBlockState();
+        BlockState newState = Registry.BLOCK.get(registry.get(TO).RESOURCE_LOCATION).defaultBlockState();
         world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
         blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
         blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
@@ -158,7 +158,7 @@ public final class ChestConversionItem extends ChestModifierItem
     protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state)
     {
         final Block block = state.getBlock();
-        if (block instanceof ChestBlock && block.is(Const.WOODEN_CHESTS) && FROM.equals(Const.id("wood")))
+        if (block instanceof ChestBlock && block.is(Const.WOODEN_CHESTS) && FROM.equals(Const.resloc("wood")))
         {
             final Level world = context.getLevel();
             final BlockPos mainPos = context.getClickedPos();
@@ -194,7 +194,7 @@ public final class ChestConversionItem extends ChestModifierItem
                 return InteractionResult.SUCCESS;
             }
         }
-        else if(block instanceof net.minecraft.world.level.block.BarrelBlock && block.is(Const.WOODEN_BARRELS) && FROM.equals(Const.id("wood")))
+        else if(block instanceof net.minecraft.world.level.block.BarrelBlock && block.is(Const.WOODEN_BARRELS) && FROM.equals(Const.resloc("wood")))
         {
             final Level world = context.getLevel();
             final BlockPos mainPos = context.getClickedPos();

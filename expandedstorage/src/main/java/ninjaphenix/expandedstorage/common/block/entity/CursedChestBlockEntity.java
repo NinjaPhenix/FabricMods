@@ -66,8 +66,8 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     protected void initialize(final ResourceLocation block)
     {
         this.block = block;
-        defaultContainerName = Registries.CHEST.get(block).getContainerName();
-        inventorySize = Registries.CHEST.get(block).getSlotCount();
+        defaultContainerName = Registries.CHEST.get(block).CONTAINER_NAME;
+        inventorySize = Registries.CHEST.get(block).SLOT_COUNT;
         inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         SLOTS = new int[inventorySize];
         for (int i = 0; i < inventorySize; i++) { SLOTS[i] = i; }

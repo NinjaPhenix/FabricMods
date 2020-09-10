@@ -184,12 +184,12 @@ public final class ChestMutatorItem extends ChestModifierItem
                             {
                                 if (!world.isClientSide)
                                 {
-                                    final Registries.TierData entry = Registries.CHEST.get(Const.id("wood_chest"));
-                                    final BlockState defState = Registry.BLOCK.get(entry.getBlockId()).defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+                                    final Registries.TierData entry = Registries.CHEST.get(Const.resloc("wood_chest"));
+                                    final BlockState defState = Registry.BLOCK.get(entry.RESOURCE_LOCATION).defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
                                     final CursedChestType mainChestType = ChestBlock.getChestType(state.getValue(BlockStateProperties.HORIZONTAL_FACING), Direction.fromNormal(vec.getX(), vec.getY(), vec.getZ()));
                                     // todo: refactor into method.
                                     BlockEntity blockEntity = world.getBlockEntity(mainPos);
-                                    NonNullList<ItemStack> invData = NonNullList.withSize(entry.getSlotCount(), ItemStack.EMPTY);
+                                    NonNullList<ItemStack> invData = NonNullList.withSize(entry.SLOT_COUNT, ItemStack.EMPTY);
                                     ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), invData);
                                     world.removeBlockEntity(mainPos);
                                     world.setBlockAndUpdate(mainPos, defState.setValue(WATERLOGGED, state.getValue(WATERLOGGED)).setValue(TYPE, mainChestType));
@@ -197,7 +197,7 @@ public final class ChestMutatorItem extends ChestModifierItem
                                     blockEntity.load(world.getBlockState(mainPos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), invData));
 
                                     blockEntity = world.getBlockEntity(otherPos);
-                                    invData = NonNullList.withSize(entry.getSlotCount(), ItemStack.EMPTY);
+                                    invData = NonNullList.withSize(entry.SLOT_COUNT, ItemStack.EMPTY);
                                     ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), invData);
                                     world.removeBlockEntity(otherPos);
                                     world.setBlockAndUpdate(otherPos, defState.setValue(WATERLOGGED, state.getValue(WATERLOGGED)).setValue(TYPE, mainChestType.getOpposite()));

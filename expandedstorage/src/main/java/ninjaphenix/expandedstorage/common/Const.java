@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.Block;
 
 public class Const
 {
-    public static final ResourceLocation SCREEN_SELECT = id("screen_select");
-    public static final ResourceLocation OPEN_SCREEN_SELECT = id("open_screen_select");
-    public static final ResourceLocation SINGLE_CONTAINER = id("single");
-    public static final ResourceLocation SCROLLABLE_CONTAINER = id("scrollable");
-    public static final ResourceLocation PAGED_CONTAINER = id("paged");
+    public static final ResourceLocation SCREEN_SELECT = resloc("screen_select");
+    public static final ResourceLocation OPEN_SCREEN_SELECT = resloc("open_screen_select");
+    public static final ResourceLocation SINGLE_CONTAINER = resloc("single");
+    public static final ResourceLocation SCROLLABLE_CONTAINER = resloc("scrollable");
+    public static final ResourceLocation PAGED_CONTAINER = resloc("paged");
     public static final String MOD_ID = "expandedstorage";
 
     public static final MutableComponent leftShiftRightClick = new TranslatableComponent("tooltip.expandedstorage.left_shift_right_click",
@@ -23,5 +23,5 @@ public class Const
     public static final Tag<Block> WOODEN_BARRELS = TagRegistry.block(new ResourceLocation("c", "wooden_barrels"));
     public static final Tag<Block> WOODEN_CHESTS = TagRegistry.block(new ResourceLocation("c", "wooden_chests"));
 
-    public static ResourceLocation id(final String path) { return new ResourceLocation(MOD_ID, path); }
+    public static ResourceLocation resloc(final String path) { return new ResourceLocation(MOD_ID, path); }
 }
