@@ -1,4 +1,4 @@
-minecraft {
+loom {
     accessWidener = file('src/main/resources/torcherino.accesswidener')
 }
 

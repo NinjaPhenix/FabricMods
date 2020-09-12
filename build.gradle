@@ -20,11 +20,10 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    minecraft {
+    loom {
         refmapName = "${mod_id}-refmap.json"
         runDir = "${project.projectDir.getName()}/run/"
         shareCaches = true
-        remapJSRAnnotations = false
     }
 
     ext {
