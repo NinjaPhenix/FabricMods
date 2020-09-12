@@ -36,14 +36,14 @@ import ninjaphenix.expandedstorage.common.block.StorageBlock;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
-public final class ChestConversionItem extends ChestModifierItem
+public final class ConversionItem extends ModifierItem
 {
     private final Component TOOLTIP;
     private final ResourceLocation FROM, TO;
     private static final MutableComponent DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2")
             .withStyle(ChatFormatting.GRAY);
 
-    public ChestConversionItem(final Item.Properties settings, final Tuple<ResourceLocation, String> from, final Tuple<ResourceLocation, String> to)
+    public ConversionItem(final Item.Properties settings, final Tuple<ResourceLocation, String> from, final Tuple<ResourceLocation, String> to)
     {
         super(settings);
         FROM = from.getA();

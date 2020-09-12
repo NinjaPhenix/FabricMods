@@ -31,8 +31,8 @@ import ninjaphenix.expandedstorage.common.block.entity.OldChestBlockEntity;
 import ninjaphenix.expandedstorage.common.inventory.PagedScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.ScrollableScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.SingleScreenHandler;
-import ninjaphenix.expandedstorage.common.item.ChestConversionItem;
-import ninjaphenix.expandedstorage.common.item.ChestMutatorItem;
+import ninjaphenix.expandedstorage.common.item.ConversionItem;
+import ninjaphenix.expandedstorage.common.item.MutatorItem;
 
 public final class ModContent
 {
@@ -102,7 +102,7 @@ public final class ModContent
                 new Tuple<>(DIAMOND, "diamond"),
                 new Tuple<>(OBSIDIAN, "obsidian"),
                 new Tuple<>(NETHERITE, "netherite"));
-        Registry.register(Registry.ITEM, Const.resloc("chest_mutator"), new ChestMutatorItem(new Item.Properties().stacksTo(1).tab(tab)));
+        Registry.register(Registry.ITEM, Const.resloc("chest_mutator"), new MutatorItem(new Item.Properties().stacksTo(1).tab(tab)));
     }
 
     private static BarrelBlock barrel(final int miningLevel, final float hardness, final float resistance,
@@ -162,7 +162,7 @@ public final class ModContent
                 final Tuple<ResourceLocation, String> from = path[i];
                 final Tuple<ResourceLocation, String> to = path[x];
                 final ResourceLocation id = Const.resloc(from.getB() + "_to_" + to.getB() + "_conversion_kit");
-                Registry.register(Registry.ITEM, id, new ChestConversionItem(new Item.Properties().tab(tab).stacksTo(16), from, to));
+                Registry.register(Registry.ITEM, id, new ConversionItem(new Item.Properties().tab(tab).stacksTo(16), from, to));
             }
         }
     }

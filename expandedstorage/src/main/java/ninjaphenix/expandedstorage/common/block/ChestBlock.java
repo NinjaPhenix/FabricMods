@@ -148,7 +148,7 @@ public abstract class ChestBlock<T extends StorageBlockEntity> extends StorageBl
         }
     }
 
-    public static DoubleBlockCombiner.BlockType getMergeType(final BlockState state)
+    public static DoubleBlockCombiner.BlockType getBlockType(final BlockState state)
     {
         switch (state.getValue(TYPE))
         {
@@ -184,7 +184,7 @@ public abstract class ChestBlock<T extends StorageBlockEntity> extends StorageBl
                                                      final boolean alwaysOpen)
     {
         final BiPredicate<LevelAccessor, BlockPos> isChestBlocked = alwaysOpen ? (_world, _pos) -> false : this::isBlocked;
-        return DoubleBlockCombiner.combineWithNeigbour(blockEntityType.get(), ChestBlock::getMergeType,
+        return DoubleBlockCombiner.combineWithNeigbour(blockEntityType.get(), ChestBlock::getBlockType,
                                                       ChestBlock::getDirectionToAttached, HORIZONTAL_FACING, state, world, pos,
                                                       isChestBlocked);
     }
@@ -262,7 +262,7 @@ public abstract class ChestBlock<T extends StorageBlockEntity> extends StorageBl
     public BlockState updateShape(final BlockState state, final Direction offset, final BlockState offsetState,
                                                 final LevelAccessor world, final BlockPos pos, final BlockPos offsetPos)
     {
-        final DoubleBlockCombiner.BlockType mergeType = getMergeType(state);
+        final DoubleBlockCombiner.BlockType mergeType = getBlockType(state);
         if (mergeType == DoubleBlockCombiner.BlockType.SINGLE)
         {
             final Direction facing = state.getValue(HORIZONTAL_FACING);

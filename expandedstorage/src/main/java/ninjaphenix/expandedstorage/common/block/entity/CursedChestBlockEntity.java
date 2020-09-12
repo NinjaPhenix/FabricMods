@@ -105,7 +105,7 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     private void playSound(final SoundEvent soundEvent)
     {
         final BlockState state = getBlockState();
-        final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getMergeType(state);
+        final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getBlockType(state);
         final Vec3 soundPos;
         if (mergeType == DoubleBlockCombiner.BlockType.SINGLE) { soundPos = Vec3.atCenterOf(worldPosition); }
         else if (mergeType == DoubleBlockCombiner.BlockType.FIRST)

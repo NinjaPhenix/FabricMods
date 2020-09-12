@@ -40,11 +40,11 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
 @SuppressWarnings("ConstantConditions")
-public final class ChestMutatorItem extends ChestModifierItem
+public final class MutatorItem extends ModifierItem
 {
     private static final EnumProperty<CursedChestType> TYPE = ChestBlock.TYPE;
 
-    public ChestMutatorItem(final Properties settings) { super(settings); }
+    public MutatorItem(final Properties settings) { super(settings); }
 
     @Override
     protected InteractionResult useModifierOnBarrel(final UseOnContext context, final BlockState state, final BlockPos pos)
