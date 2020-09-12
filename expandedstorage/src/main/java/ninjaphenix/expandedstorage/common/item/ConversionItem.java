@@ -1,7 +1,6 @@
 package ninjaphenix.expandedstorage.common.item;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -9,7 +8,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -21,193 +19,183 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.DoubleBlockCombiner.BlockType;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.Registries;
-import ninjaphenix.expandedstorage.common.block.BarrelBlock;
+import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.block.StorageBlock;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
+import org.jetbrains.annotations.Nullable;
 
 public final class ConversionItem extends ModifierItem
 {
     private final Component TOOLTIP;
     private final ResourceLocation FROM, TO;
-    private static final MutableComponent DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2")
-            .withStyle(ChatFormatting.GRAY);
+    private static final Component DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2").withStyle(ChatFormatting.GRAY);
 
     public ConversionItem(final Item.Properties settings, final Tuple<ResourceLocation, String> from, final Tuple<ResourceLocation, String> to)
     {
         super(settings);
         FROM = from.getA();
         TO = to.getA();
-        TOOLTIP = new TranslatableComponent(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getB(), to.getB()),
-                                       Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    private void upgradeCursedChest(final Level world, final BlockPos pos, final BlockState state)
-    {
-        StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
-        world.removeBlockEntity(pos);
-        BlockState newState = Registry.BLOCK.get(registry.get(TO).RESOURCE_LOCATION).defaultBlockState();
-        if (newState.getBlock() instanceof SimpleWaterloggedBlock)
-        {
-            newState = newState.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED));
-        }
-        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING))
-                .setValue(CursedChestBlock.TYPE, state.getValue(CursedChestBlock.TYPE)));
-        blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    private void upgradeChest(final Level world, final BlockPos pos, final BlockState state)
-    {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.CHEST.get(TO).SLOT_COUNT, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
-        world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.CHEST.get(TO).RESOURCE_LOCATION).defaultBlockState();
-        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING))
-                .setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED))
-                .setValue(CursedChestBlock.TYPE, CursedChestType.valueOf(state.getValue(BlockStateProperties.CHEST_TYPE))));
-        blockEntity = world.getBlockEntity(pos);
-        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
+        TOOLTIP = new TranslatableComponent(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getB(), to.getB()), Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
     }
 
     @Override
-    @SuppressWarnings({"ConstantConditions"})
-    protected InteractionResult useModifierOnChestBlock(final UseOnContext context, final BlockState mainState, final BlockPos mainBlockPos,
-                                                   final BlockState otherState, final BlockPos otherBlockPos)
+    @SuppressWarnings("ConstantConditions")
+    protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state, final BlockPos pos, final BlockType type)
     {
-        final Level world = context.getLevel();
-        final Player player = context.getPlayer();
-        final StorageBlock chestBlock = (StorageBlock) mainState.getBlock();
-        if (chestBlock.TIER_ID != FROM) { return InteractionResult.FAIL; }
-        final ItemStack handStack = player.getItemInHand(context.getHand());
-        if (otherBlockPos == null)
+        final Block block = state.getBlock();
+        if (block instanceof StorageBlock)
         {
-            if (!world.isClientSide)
+            final StorageBlock instance = (StorageBlock) block;
+            if (instance.TIER_ID != FROM) { return InteractionResult.FAIL; }
+            final Player player = context.getPlayer();
+            final Level level = context.getLevel();
+            final ItemStack handStack = player.getItemInHand(context.getHand());
+            if (type == BlockType.SINGLE)
             {
-                upgradeCursedChest(world, mainBlockPos, mainState);
-                handStack.shrink(1);
+                if (!level.isClientSide)
+                {
+                    upgradeStorageBlock(level, state, pos);
+                    handStack.shrink(1);
+                    return InteractionResult.SUCCESS;
+                }
             }
-            return InteractionResult.SUCCESS;
-        }
-        else if (handStack.getCount() > 1 || player.isCreative())
-        {
-            if (!world.isClientSide)
+            else if (handStack.getCount() > 1 || player.isCreative())
             {
-                upgradeCursedChest(world, otherBlockPos, world.getBlockState(otherBlockPos));
-                upgradeCursedChest(world, mainBlockPos, mainState);
-                handStack.shrink(2);
+                if (!level.isClientSide)
+                {
+                    final BlockPos otherPos = pos.relative(ChestBlock.getDirectionToAttached(state));
+                    final BlockState otherState = level.getBlockState(otherPos);
+                    upgradeStorageBlock(level, state, pos);
+                    upgradeStorageBlock(level, otherState, otherPos);
+                    handStack.shrink(2);
+                    return InteractionResult.SUCCESS;
+                }
             }
-            return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;
     }
 
-    @Override
-    protected InteractionResult useModifierOnBarrel(final UseOnContext context, final BlockState state, final BlockPos pos)
+    @SuppressWarnings("ConstantConditions")
+    private void upgradeStorageBlock(final Level level, final BlockState state, final BlockPos pos)
     {
-        final BarrelBlock block = (BarrelBlock) state.getBlock();
-        if (block.TIER_ID != FROM) { return InteractionResult.FAIL; }
-        upgradeBarrel(context.getLevel(), pos, state);
-        context.getPlayer().getItemInHand(context.getHand()).shrink(1);
-        return InteractionResult.SUCCESS;
-    }
-
-    private void upgradeVanillaBarrel(final Level world, final BlockPos pos, final BlockState state)
-    {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(Registries.BARREL.get(TO).SLOT_COUNT, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
-        world.removeBlockEntity(pos);
-        final BlockState newState = Registry.BLOCK.get(Registries.BARREL.get(TO).RESOURCE_LOCATION).defaultBlockState();
-        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
-        blockEntity = world.getBlockEntity(pos);
-        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
-    }
-
-    private void upgradeBarrel(final Level world, final BlockPos pos, final BlockState state)
-    {
-        StorageBlockEntity blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
+        StorageBlockEntity blockEntity = (StorageBlockEntity) level.getBlockEntity(pos);
         final MappedRegistry<Registries.TierData> registry = ((StorageBlock) state.getBlock()).getDataRegistry();
-        final NonNullList<ItemStack> inventoryData = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventoryData);
-        world.removeBlockEntity(pos);
+        final NonNullList<ItemStack> inventory = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventory);
+        level.removeBlockEntity(pos);
         BlockState newState = Registry.BLOCK.get(registry.get(TO).RESOURCE_LOCATION).defaultBlockState();
-        world.setBlockAndUpdate(pos, newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING)));
-        blockEntity = (StorageBlockEntity) world.getBlockEntity(pos);
-        blockEntity.load(world.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventoryData));
+        if (newState.hasProperty(BlockStateProperties.WATERLOGGED))
+        {
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED));
+        }
+        if (newState.hasProperty(CursedChestBlock.TYPE))
+        {
+            newState = newState.setValue(CursedChestBlock.TYPE, state.getValue(CursedChestBlock.TYPE));
+        }
+        if (newState.hasProperty(BlockStateProperties.HORIZONTAL_FACING))
+        {
+            newState = newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+        }
+        else if (newState.hasProperty(BlockStateProperties.FACING))
+        {
+            newState = newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING));
+        }
+        level.setBlockAndUpdate(pos, newState);
+        blockEntity = (StorageBlockEntity) level.getBlockEntity(pos);
+        blockEntity.load(level.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
     protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state)
     {
+        if (!FROM.equals(Const.resloc("wood"))) { return InteractionResult.FAIL; }
+        final Level level = context.getLevel();
         final Block block = state.getBlock();
-        if (block instanceof ChestBlock && block.is(Const.WOODEN_CHESTS) && FROM.equals(Const.resloc("wood")))
+        final Player player = context.getPlayer();
+        final BlockPos pos = context.getClickedPos();
+        final ItemStack handStack = player.getItemInHand(context.getHand());
+        if (block instanceof net.minecraft.world.level.block.ChestBlock)
         {
-            final Level world = context.getLevel();
-            final BlockPos mainPos = context.getClickedPos();
-            final Player player = context.getPlayer();
-            final ItemStack handStack = player.getItemInHand(context.getHand());
             if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.SINGLE)
             {
-                if (!world.isClientSide)
+                if (!level.isClientSide)
                 {
-                    upgradeChest(world, mainPos, state);
+                    upgradeVanillaBlock(level, state, pos);
                     handStack.shrink(1);
+                    return InteractionResult.SUCCESS;
                 }
-                return InteractionResult.SUCCESS;
             }
             else if (handStack.getCount() > 1 || player.isCreative())
             {
-                final BlockPos otherPos;
-                if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.RIGHT)
+                if (!level.isClientSide)
                 {
-                    otherPos = mainPos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getCounterClockWise());
+                    final BlockPos otherPos = pos.relative(net.minecraft.world.level.block.ChestBlock.getConnectedDirection(state));
+                    final BlockState otherState = level.getBlockState(otherPos);
+                    upgradeVanillaBlock(level, state, pos);
+                    upgradeVanillaBlock(level, otherState, otherPos);
+                    return InteractionResult.SUCCESS;
                 }
-                else if (state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.LEFT)
-                {
-                    otherPos = mainPos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise());
-                }
-                else { return InteractionResult.FAIL; }
-                if (!world.isClientSide)
-                {
-                    upgradeChest(world, otherPos, world.getBlockState(otherPos));
-                    upgradeChest(world, mainPos, state);
-                    handStack.shrink(2);
-                }
+            }
+        }
+        else if (block instanceof BarrelBlock)
+        {
+            if (!level.isClientSide)
+            {
+                upgradeVanillaBlock(level, state, pos);
+                handStack.shrink(1);
                 return InteractionResult.SUCCESS;
             }
         }
-        else if(block instanceof net.minecraft.world.level.block.BarrelBlock && block.is(Const.WOODEN_BARRELS) && FROM.equals(Const.resloc("wood")))
-        {
-            final Level world = context.getLevel();
-            final BlockPos mainPos = context.getClickedPos();
-            final Player player = context.getPlayer();
-            final ItemStack handStack = player.getItemInHand(context.getHand());
-            if (!world.isClientSide)
-            {
-                upgradeVanillaBarrel(world, mainPos, state);
-                handStack.shrink(1);
-            }
-            return InteractionResult.SUCCESS;
-        }
         return InteractionResult.FAIL;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void upgradeVanillaBlock(final Level level, final BlockState state, final BlockPos pos)
+    {
+        RandomizableContainerBlockEntity blockEntity = (RandomizableContainerBlockEntity) level.getBlockEntity(pos);
+        final MappedRegistry<? extends Registries.TierData> registry = getVanillaRegistry(state.getBlock());
+        final NonNullList<ItemStack> inventory = NonNullList.withSize(registry.get(TO).SLOT_COUNT, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(blockEntity.save(new CompoundTag()), inventory);
+        level.removeBlockEntity(pos);
+        BlockState newState = Registry.BLOCK.get(registry.get(TO).RESOURCE_LOCATION).defaultBlockState();
+        if (newState.hasProperty(BlockStateProperties.WATERLOGGED))
+        {
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, state.getValue(BlockStateProperties.WATERLOGGED));
+        }
+        if (newState.hasProperty(CursedChestBlock.TYPE))
+        {
+            newState = newState.setValue(CursedChestBlock.TYPE, CursedChestType.valueOf(state.getValue(BlockStateProperties.CHEST_TYPE)));
+        }
+        if (newState.hasProperty(BlockStateProperties.HORIZONTAL_FACING))
+        {
+            newState = newState.setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+        }
+        else if (newState.hasProperty(BlockStateProperties.FACING))
+        {
+            newState = newState.setValue(BlockStateProperties.FACING, state.getValue(BlockStateProperties.FACING));
+        }
+        level.setBlockAndUpdate(pos, newState);
+        blockEntity = (StorageBlockEntity) level.getBlockEntity(pos);
+        blockEntity.load(level.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
+    }
+
+    private MappedRegistry<? extends Registries.TierData> getVanillaRegistry(final Block block)
+    {
+        if (block instanceof net.minecraft.world.level.block.ChestBlock) { return Registries.CHEST; }
+        else if (block instanceof BarrelBlock) { return Registries.BARREL; }
+        throw new IllegalArgumentException("Unexpected block passed to ConversionItem#getVanillaRegistry");
     }
 
     @Override
