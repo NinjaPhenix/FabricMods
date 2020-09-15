@@ -118,13 +118,12 @@ public final class ConversionItem extends ModifierItem
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state)
+    protected InteractionResult useOnBlock(final UseOnContext context, final BlockState state, final BlockPos pos)
     {
         if (!FROM.equals(Const.resloc("wood"))) { return InteractionResult.FAIL; }
         final Level level = context.getLevel();
         final Block block = state.getBlock();
         final Player player = context.getPlayer();
-        final BlockPos pos = context.getClickedPos();
         final ItemStack handStack = player.getItemInHand(context.getHand());
         if (block instanceof net.minecraft.world.level.block.ChestBlock)
         {

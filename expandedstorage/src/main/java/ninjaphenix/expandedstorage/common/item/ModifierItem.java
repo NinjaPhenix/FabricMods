@@ -30,7 +30,7 @@ public abstract class ModifierItem extends Item
         final Block block = state.getBlock();
         if (block instanceof BarrelBlock) { return useModifierOnBlock(context, state, pos, BlockType.SINGLE); }
         else if (block instanceof ChestBlock) { return useModifierOnBlock(context, state, pos, ChestBlock.getBlockType(state)); }
-        else { return useModifierOnBlock(context, state); }
+        else { return useOnBlock(context, state, context.getClickedPos()); }
     }
 
     protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state, final BlockPos pos, final BlockType type)
@@ -52,7 +52,7 @@ public abstract class ModifierItem extends Item
         return result;
     }
 
-    protected InteractionResult useModifierOnBlock(final UseOnContext context, final BlockState state)
+    protected InteractionResult useOnBlock(final UseOnContext context, final BlockState state, final BlockPos pos)
     {
         return InteractionResult.PASS;
     }
