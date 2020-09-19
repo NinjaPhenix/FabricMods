@@ -1,6 +1,7 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import me.shedaniel.math.Rectangle;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -10,10 +11,12 @@ import ninjaphenix.expandedstorage.client.screen.widget.PageButtonWidget;
 import ninjaphenix.expandedstorage.client.screen.widget.ScreenTypeSelectionScreenButton;
 import ninjaphenix.expandedstorage.common.inventory.PagedScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.PagedScreenMeta;
+import java.util.Collections;
+import java.util.List;
 
 public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedScreenMeta>
 {
-    private Rectangle blankArea = null;
+    private Image blankArea = null;
     private PageButtonWidget leftPageButton;
     private PageButtonWidget rightPageButton;
     private int page;
@@ -39,8 +42,8 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
                 if (blanked > 0)
                 {
                     final int xOffset = 7 + (SCREEN_META.WIDTH - blanked) * 18;
-                    blankArea = new Rectangle(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
-                                              SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
+                    blankArea = new Image(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
+                                          SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
                 }
             }
             if (!leftPageButton.active) { leftPageButton.setActive(true); }
@@ -160,5 +163,11 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public List<Rectangle> getReiRectangles()
+    {
+        return Collections.singletonList(new Rectangle(leftPos + imageWidth + 4, topPos, 22, 22));
     }
 }

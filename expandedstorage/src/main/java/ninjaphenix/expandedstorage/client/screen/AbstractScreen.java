@@ -2,9 +2,9 @@ package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
 import java.util.function.Function;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -62,12 +62,14 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    protected static class Rectangle
+    public abstract List<me.shedaniel.math.Rectangle> getReiRectangles();
+
+    protected static class Image
     {
         public final int X, Y, WIDTH, HEIGHT, TEXTURE_X, TEXTURE_Y, TEXTURE_WIDTH, TEXTURE_HEIGHT;
 
-        public Rectangle(final int x, final int y, final int width, final int height, final int textureX, final int textureY,
-                         final int textureWidth, final int textureHeight)
+        public Image(final int x, final int y, final int width, final int height, final int textureX, final int textureY,
+                     final int textureWidth, final int textureHeight)
         {
             X = x;
             Y = y;
@@ -79,9 +81,9 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
             TEXTURE_HEIGHT = textureHeight;
         }
 
-        public void render(final PoseStack matrices)
+        public void render(final PoseStack stack)
         {
-            blit(matrices, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(stack, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }
 
