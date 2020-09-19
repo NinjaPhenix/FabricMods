@@ -15,9 +15,9 @@ public class PageButtonWidget extends Button
     private final int TEXTURE_OFFSET;
 
     public PageButtonWidget(final int x, final int y, final int textureOffset, final Component text, final OnPress onPress,
-                            final OnTooltip tooltipSupplier)
+                            final OnTooltip onTooltip)
     {
-        super(x, y, 12, 12, text, onPress, tooltipSupplier);
+        super(x, y, 12, 12, text, onPress, onTooltip);
         TEXTURE_OFFSET = textureOffset;
     }
 

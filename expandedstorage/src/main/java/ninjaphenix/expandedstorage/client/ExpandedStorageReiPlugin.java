@@ -21,7 +21,7 @@ public class ExpandedStorageReiPlugin implements REIPluginV0
         BaseBoundsHandler.getInstance().registerExclusionZones(AbstractScreen.class, () ->
         {
             final Screen screen = Minecraft.getInstance().screen;
-            if (screen instanceof AbstractScreen) { return ((AbstractScreen) screen).getReiRectangles(); }
+            if (screen instanceof AbstractScreen) { return ((AbstractScreen<?,?>) screen).getReiRectangles(); }
             return Collections.emptyList();
         });
     }

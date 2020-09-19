@@ -39,6 +39,7 @@ import static ninjaphenix.expandedstorage.common.ModContent.*;
 
 public final class ExpandedStorageClient implements ClientModInitializer
 {
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     public static final ExpandedStorageClient INSTANCE = new ExpandedStorageClient();
     private static final CursedChestBlockEntity CURSED_CHEST_RENDER_ENTITY = new CursedChestBlockEntity(null);
     public static final ContainerConfig CONFIG = getConfigParser().load(ContainerConfig.class, ContainerConfig::new, getConfigPath(), new MarkerManager.Log4jMarker(Const.MOD_ID));

@@ -49,9 +49,9 @@ public final class ExpandedStorage implements ModInitializer
     {
         ModContent.register();
         final Function<String, TranslatableComponent> nameFunc = (name) -> new TranslatableComponent(String.format("screen.%s.%s", Const.MOD_ID, name));
-        declareContainerType(Const.SINGLE_CONTAINER, Const.resloc("textures/gui/single_button.png"), nameFunc.apply("single_screen"));
-        declareContainerType(Const.SCROLLABLE_CONTAINER, Const.resloc("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen"));
-        declareContainerType(Const.PAGED_CONTAINER, Const.resloc("textures/gui/paged_button.png"), nameFunc.apply("paged_screen"));
+        declareContainerType(Const.resloc("single"), Const.resloc("textures/gui/single_button.png"), nameFunc.apply("single_screen"));
+        declareContainerType(Const.resloc("scrollable"), Const.resloc("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen"));
+        declareContainerType(Const.resloc("paged"), Const.resloc("textures/gui/paged_button.png"), nameFunc.apply("paged_screen"));
         ServerSidePacketRegistry.INSTANCE.register(Const.OPEN_SCREEN_SELECT, this::onReceiveOpenSelectScreenPacket);
         ServerSidePacketRegistry.INSTANCE.register(Const.SCREEN_SELECT, this::onReceivePlayerPreference);
         PlayerDisconnectCallback.EVENT.register(player -> setPlayerPreference(player, null));

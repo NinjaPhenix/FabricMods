@@ -16,12 +16,10 @@ public final class ScreenTypeSelectionScreenButton extends Button
 {
     private final ResourceLocation TEXTURE;
 
-    public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip tooltipSupplier)
+    public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip onTooltip)
     {
         super(x, y, 22, 22, new TranslatableComponent("screen.expandedstorage.change_screen_button"), button ->
-        {
-            ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer()));
-        }, tooltipSupplier);
+                      ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())), onTooltip);
         TEXTURE = Const.resloc("textures/gui/select_screen_button.png");
     }
 
