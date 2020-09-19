@@ -46,7 +46,7 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
             isDragging = false;
             topRow = 0;
         }
-        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + 4, topPos, this::renderButtonTooltip));
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + (hasScrollbar ? 19 + 4 : 4), topPos, this::renderButtonTooltip));
     }
 
     @Override
