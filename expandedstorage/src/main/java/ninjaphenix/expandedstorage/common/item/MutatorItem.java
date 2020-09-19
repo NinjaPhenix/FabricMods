@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractChestBlock;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.DoubleBlockCombiner.BlockType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -35,16 +34,17 @@ import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.StorageBlock;
+import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 import javax.annotation.Nullable;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static net.minecraft.world.level.block.Rotation.CLOCKWISE_180;
 import static net.minecraft.world.level.block.Rotation.CLOCKWISE_90;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.*;
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.BOTTOM;
 
 public class MutatorItem extends ModifierItem
 {
@@ -104,8 +104,9 @@ public class MutatorItem extends ModifierItem
                             {
                                 final Registries.TierData entry = Registries.CHEST.get(Const.resloc("wood"));
                                 final CursedChestType type = ChestBlock.getChestType(state.getValue(HORIZONTAL_FACING), direction);
-                                convertRandomizableContainer(level, state, pos, entry, type);
-                                convertRandomizableContainer(level, otherState, otherPos, entry, type.getOpposite());
+                                final Predicate<BlockEntity> isRandomizable = b -> b instanceof RandomizableContainerBlockEntity;
+                                convertContainer(level, state, pos, entry, type, isRandomizable);
+                                convertContainer(level, otherState, otherPos, entry, type.getOpposite(), isRandomizable);
                                 tag.remove("pos");
                                 player.displayClientMessage(new TranslatableComponent("tooltip.expandedstorage.chest_mutator.merge_end"), true);
                             }
@@ -157,11 +158,11 @@ public class MutatorItem extends ModifierItem
         return InteractionResult.FAIL;
     }
 
-    private void convertRandomizableContainer(final Level level, final BlockState state, final BlockPos pos, final Registries.TierData data,
-                                              @Nullable final CursedChestType type)
+    private void convertContainer(final Level level, final BlockState state, final BlockPos pos, final Registries.TierData data,
+                                  @Nullable final CursedChestType type, final Predicate<BlockEntity> check)
     {
         final BlockEntity targetBlockEntity = level.getBlockEntity(pos);
-        if (targetBlockEntity instanceof RandomizableContainerBlockEntity)
+        if (check.test(targetBlockEntity))
         {
             Registry.BLOCK.getOptional(data.RESOURCE_LOCATION).ifPresent(
                     block ->
@@ -189,17 +190,75 @@ public class MutatorItem extends ModifierItem
     {
         final Level level = context.getLevel();
         final Player player = context.getPlayer();
+        final ItemStack stack = context.getItemInHand();
         final StorageBlock block = (StorageBlock) state.getBlock();
-        switch(getMode(context.getItemInHand()))
+        switch (getMode(context.getItemInHand()))
         {
-            // todo: after break implement merge and unmerge functionality, refer to MutatorItem_OLD's implementation
-            case MERGE: break;
-            case UNMERGE: break;
+            case MERGE:
+                if (block instanceof ChestBlock && state.getValue(ChestBlock.TYPE) == CursedChestType.SINGLE)
+                {
+                    CompoundTag tag = stack.getOrCreateTag();
+                    if (tag.contains("pos"))
+                    {
+                        final BlockPos otherPos = NbtUtils.readBlockPos(tag.getCompound("pos"));
+                        final BlockState otherState = level.getBlockState(otherPos);
+                        final Direction facing = state.getValue(HORIZONTAL_FACING);
+                        if (block == otherState.getBlock()
+                                && facing == otherState.getValue(HORIZONTAL_FACING)
+                                && otherState.getValue(ChestBlock.TYPE) == CursedChestType.SINGLE)
+                        {
+                            if (!level.isClientSide)
+                            {
+                                final BlockPos offset = otherPos.subtract(pos);
+                                final Direction direction = Direction.fromNormal(offset.getX(), offset.getY(), offset.getZ());
+                                if (direction != null)
+                                {
+                                    final Registries.TierData entry = block.getDataRegistry().get(block.TIER_ID);
+                                    final CursedChestType chestType = ChestBlock.getChestType(state.getValue(HORIZONTAL_FACING), direction);
+                                    final Predicate<BlockEntity> isStorage = b -> b instanceof StorageBlockEntity;
+                                    convertContainer(level, state, pos, entry, chestType, isStorage);
+                                    convertContainer(level, otherState, otherPos, entry, chestType.getOpposite(), isStorage);
+                                    tag.remove("pos");
+                                    player.displayClientMessage(new TranslatableComponent("tooltip.expandedstorage.chest_mutator.merge_end"), true);
+                                }
+                            }
+                            player.getCooldowns().addCooldown(this, 5);
+                            return InteractionResult.SUCCESS;
+                        }
+
+
+                    }
+                    else
+                    {
+                        if (!level.isClientSide)
+                        {
+                            tag.put("pos", NbtUtils.writeBlockPos(pos));
+                            player.displayClientMessage(new TranslatableComponent("tooltip.expandedstorage.chest_mutator.merge_start"), true);
+                        }
+                        player.getCooldowns().addCooldown(this, 5);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+                break;
+            case UNMERGE:
+                if (block instanceof ChestBlock && state.getValue(ChestBlock.TYPE) != CursedChestType.SINGLE)
+                {
+                    if (!level.isClientSide)
+                    {
+                        final BlockPos otherPos = pos.relative(ChestBlock.getDirectionToAttached(state));
+                        final BlockState otherState = level.getBlockState(otherPos);
+                        level.setBlockAndUpdate(pos, state.setValue(ChestBlock.TYPE, CursedChestType.SINGLE));
+                        level.setBlockAndUpdate(otherPos, otherState.setValue(ChestBlock.TYPE, CursedChestType.SINGLE));
+                    }
+                    player.getCooldowns().addCooldown(this, 5);
+                    return InteractionResult.SUCCESS;
+                }
+                break;
             case ROTATE:
             {
-                if(state.hasProperty(FACING))
+                if (state.hasProperty(FACING))
                 {
-                    if(!level.isClientSide)
+                    if (!level.isClientSide)
                     {
                         final Direction direction = state.getValue(FACING);
                         level.setBlockAndUpdate(pos, state.setValue(FACING, Direction.from3DDataValue(direction.get3DDataValue() + 1)));
@@ -207,11 +266,11 @@ public class MutatorItem extends ModifierItem
                     player.getCooldowns().addCooldown(this, 5);
                     return InteractionResult.SUCCESS;
                 }
-                else if(state.hasProperty(HORIZONTAL_FACING))
+                else if (state.hasProperty(HORIZONTAL_FACING))
                 {
-                    if(block instanceof ChestBlock)
+                    if (block instanceof ChestBlock)
                     {
-                        switch(state.getValue(ChestBlock.TYPE))
+                        switch (state.getValue(ChestBlock.TYPE))
                         {
                             case SINGLE:
                                 if (!level.isClientSide) { level.setBlockAndUpdate(pos, state.rotate(CLOCKWISE_90)); }
@@ -246,7 +305,7 @@ public class MutatorItem extends ModifierItem
                 }
             }
         }
-        return InteractionResult.PASS;
+        return InteractionResult.FAIL;
     }
 
     @Override
