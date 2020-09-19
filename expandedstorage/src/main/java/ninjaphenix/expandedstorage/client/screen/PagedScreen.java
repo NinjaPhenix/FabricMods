@@ -81,12 +81,7 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
         final boolean inventoryProfilesLoaded = instance.isModLoaded("inventoryprofiles");
         final boolean inventorySorterLoaded = instance.isModLoaded("inventorysorter");
         super.init();
-        final int settingsXOffset;
-        if (inventoryProfilesLoaded) { settingsXOffset = -67; }
-        else if (inventorySorterLoaded) { settingsXOffset = -37; }
-        else { settingsXOffset = -19; }
-        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + settingsXOffset, topPos + 4,
-                                                      (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, button.getMessage(), mouseX, mouseY)));
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + 4, topPos, this::renderButtonTooltip));
         if (SCREEN_META.PAGES != 1)
         {
             final int pageButtonsXOffset;
@@ -97,12 +92,12 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
             setPageText();
             leftPageButton = new PageButtonWidget(leftPos + imageWidth - 61 + pageButtonsXOffset, topPos + imageHeight - 96, 0,
                                                   new TranslatableComponent("screen.expandedstorage.prev_page"), button -> setPage(page, page - 1),
-                                                  (button, matrices, bX, bY) -> renderTooltip(matrices, button.getMessage(), bX, bY));
+                                                  this::renderButtonTooltip);
             leftPageButton.active = false;
             addButton(leftPageButton);
             rightPageButton = new PageButtonWidget(leftPos + imageWidth - 19 + pageButtonsXOffset, topPos + imageHeight - 96, 1,
                                                    new TranslatableComponent("screen.expandedstorage.next_page"), button -> setPage(page, page + 1),
-                                                   (button, matrices, bX, bY) -> renderTooltip(matrices, button.getMessage(), bX, bY));
+                                                   this::renderButtonTooltip);
             addButton(rightPageButton);
             pageTextX = (1 + leftPageButton.x + rightPageButton.x - rightPageButton.getWidth() / 2F) / 2F;
         }

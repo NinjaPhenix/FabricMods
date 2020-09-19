@@ -22,16 +22,8 @@ public final class SingleScreen extends AbstractScreen<SingleScreenHandler, Sing
     @Override
     protected void init()
     {
-        final FabricLoader instance = FabricLoader.getInstance();
-        final boolean inventoryProfilesLoaded = instance.isModLoaded("inventoryprofiles");
-        final boolean inventorySorterLoaded = instance.isModLoaded("inventorysorter");
         super.init();
-        final int settingsXOffset;
-        if (inventoryProfilesLoaded) { settingsXOffset = -67; }
-        else if (inventorySorterLoaded) { settingsXOffset = -37; }
-        else { settingsXOffset = -19;}
-        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + settingsXOffset, topPos + 4, (button, matrices, mouseX, mouseY) ->
-                renderTooltip(matrices, button.getMessage(), mouseX, mouseY)));
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + 4, topPos, this::renderButtonTooltip));
         final int blanked = SCREEN_META.BLANK_SLOTS;
         if (blanked > 0)
         {

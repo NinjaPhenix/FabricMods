@@ -3,6 +3,8 @@ package ninjaphenix.expandedstorage.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Function;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -81,5 +83,10 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
         {
             blit(matrices, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
+    }
+
+    protected final void renderButtonTooltip(final AbstractButton widget, final PoseStack stack, final int x, final int y)
+    {
+        renderTooltip(stack, widget.getMessage(), x, y);
     }
 }

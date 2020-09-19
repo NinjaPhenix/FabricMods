@@ -32,33 +32,22 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
     @Override
     protected void init()
     {
-        final FabricLoader instance = FabricLoader.getInstance();
-        final boolean inventoryProfilesLoaded = instance.isModLoaded("inventoryprofiles");
-        final boolean inventorySorterLoaded = instance.isModLoaded("inventorysorter");
         super.init();
-        final int settingsXOffset;
         if (!hasScrollbar)
         {
-            if (inventoryProfilesLoaded) { settingsXOffset = -67; }
-            else if (inventorySorterLoaded) { settingsXOffset = -37; }
-            else { settingsXOffset = -19; }
             final int blanked = SCREEN_META.BLANK_SLOTS;
             if (blanked > 0)
             {
                 final int xOffset = 7 + (SCREEN_META.WIDTH - blanked) * 18;
-                blankArea = new Rectangle(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
-                                          SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
+                blankArea = new Rectangle(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight, SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
             }
         }
         else
         {
-            settingsXOffset = ExpandedStorageClient.CONFIG.settings_button_center_on_scrollbar ? -2 : -1;
             isDragging = false;
             topRow = 0;
         }
-        addButton(new ScreenTypeSelectionScreenButton(leftPos + renderBackgroundWidth + settingsXOffset, topPos + 4,
-                                                      (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, button.getMessage(),
-                                                                                                          mouseX, mouseY)));
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + 4, topPos, this::renderButtonTooltip));
     }
 
     @Override
@@ -147,8 +136,7 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
 
     private void updateTopRow(final double mouseY)
     {
-        setTopRow(topRow, Mth.floor(Mth.clampedLerp(0, SCREEN_META.TOTAL_ROWS - SCREEN_META.HEIGHT,
-                                                                  (mouseY - (topPos + 18)) / (SCREEN_META.HEIGHT * 18))));
+        setTopRow(topRow, Mth.floor(Mth.clampedLerp(0, SCREEN_META.TOTAL_ROWS - SCREEN_META.HEIGHT, (mouseY - (topPos + 18)) / (SCREEN_META.HEIGHT * 18))));
     }
 
     @Override
