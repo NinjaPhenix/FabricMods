@@ -1,10 +1,10 @@
 package ninjaphenix.expandedstorage.client;
 
+import blue.endless.jankson.JsonPrimitive;
+import io.netty.buffer.Unpooled;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
-import blue.endless.jankson.JsonPrimitive;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -28,11 +28,11 @@ import ninjaphenix.expandedstorage.client.screen.SelectContainerScreen;
 import ninjaphenix.expandedstorage.client.screen.SingleScreen;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.ExpandedStorage;
+import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
-import ninjaphenix.expandedstorage.common.ModContent;
 import org.apache.logging.log4j.MarkerManager;
 
 import static ninjaphenix.expandedstorage.common.ModContent.*;

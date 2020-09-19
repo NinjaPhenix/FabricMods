@@ -1,10 +1,5 @@
 package ninjaphenix.expandedstorage.common.item;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoubleBlockCombiner.BlockType;
-import ninjaphenix.expandedstorage.common.block.BarrelBlock;
-import ninjaphenix.expandedstorage.common.block.ChestBlock;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,7 +10,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoubleBlockCombiner.BlockType;
 import net.minecraft.world.level.block.state.BlockState;
+import ninjaphenix.expandedstorage.common.block.BarrelBlock;
+import ninjaphenix.expandedstorage.common.block.ChestBlock;
 
 public abstract class ModifierItem extends Item
 {

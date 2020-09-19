@@ -1,6 +1,8 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Collections;
+import java.util.List;
 import me.shedaniel.math.Rectangle;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -11,8 +13,6 @@ import ninjaphenix.expandedstorage.client.screen.widget.PageButtonWidget;
 import ninjaphenix.expandedstorage.client.screen.widget.ScreenTypeSelectionScreenButton;
 import ninjaphenix.expandedstorage.common.inventory.PagedScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.PagedScreenMeta;
-import java.util.Collections;
-import java.util.List;
 
 public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedScreenMeta>
 {

@@ -1,6 +1,8 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.List;
 import me.shedaniel.math.Rectangle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -10,8 +12,6 @@ import ninjaphenix.expandedstorage.client.ExpandedStorageClient;
 import ninjaphenix.expandedstorage.client.screen.widget.ScreenTypeSelectionScreenButton;
 import ninjaphenix.expandedstorage.common.inventory.ScrollableScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.ScrollableScreenMeta;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandler, ScrollableScreenMeta>
 {

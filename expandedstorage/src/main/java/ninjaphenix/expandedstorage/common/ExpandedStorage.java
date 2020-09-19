@@ -2,6 +2,12 @@ package ninjaphenix.expandedstorage.common;
 
 import com.google.common.collect.ImmutableMap;
 import io.netty.buffer.Unpooled;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -21,12 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import ninjaphenix.chainmail.api.events.PlayerDisconnectCallback;
 import ninjaphenix.expandedstorage.common.inventory.*;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public final class ExpandedStorage implements ModInitializer
 {

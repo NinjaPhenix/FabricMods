@@ -1,12 +1,11 @@
 package ninjaphenix.expandedstorage.common.item;
 
-import ninjaphenix.expandedstorage.common.Const;
-
 import java.util.function.Function;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import ninjaphenix.expandedstorage.common.Const;
 
 public enum MutatorMode
 {

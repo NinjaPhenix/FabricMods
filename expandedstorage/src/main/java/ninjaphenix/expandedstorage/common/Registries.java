@@ -1,14 +1,13 @@
 package ninjaphenix.expandedstorage.common;
 
 import com.mojang.serialization.Lifecycle;
+import java.util.function.Function;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
-
-import java.util.function.Function;
 
 public final class Registries
 {

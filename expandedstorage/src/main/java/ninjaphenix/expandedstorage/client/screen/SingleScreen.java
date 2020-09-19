@@ -1,14 +1,14 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Collections;
+import java.util.List;
 import me.shedaniel.math.Rectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import ninjaphenix.expandedstorage.client.screen.widget.ScreenTypeSelectionScreenButton;
 import ninjaphenix.expandedstorage.common.inventory.SingleScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.screen.SingleScreenMeta;
-import java.util.Collections;
-import java.util.List;
 
 public final class SingleScreen extends AbstractScreen<SingleScreenHandler, SingleScreenMeta>
 {

@@ -1,10 +1,10 @@
 package ninjaphenix.expandedstorage.common.block.entity;
 
-import ninjaphenix.expandedstorage.common.Registries;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import ninjaphenix.expandedstorage.common.ModContent;
+import ninjaphenix.expandedstorage.common.Registries;
 
 public final class OldChestBlockEntity extends StorageBlockEntity
 {

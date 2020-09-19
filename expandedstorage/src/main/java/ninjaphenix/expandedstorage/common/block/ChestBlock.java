@@ -32,8 +32,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import ninjaphenix.expandedstorage.common.ExpandedStorage;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
-import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
+import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 

@@ -1,9 +1,5 @@
 package ninjaphenix.expandedstorage.common.block;
 
-import ninjaphenix.expandedstorage.common.Registries;
-import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
-import ninjaphenix.expandedstorage.common.misc.CursedChestType;
-import ninjaphenix.expandedstorage.common.ModContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
@@ -14,6 +10,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import ninjaphenix.expandedstorage.common.ModContent;
+import ninjaphenix.expandedstorage.common.Registries;
+import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
+import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 

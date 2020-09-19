@@ -1,5 +1,8 @@
 package ninjaphenix.expandedstorage.common.item;
 
+import java.util.List;
+import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -36,11 +39,6 @@ import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.StorageBlock;
 import ninjaphenix.expandedstorage.common.block.entity.StorageBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
-
-import javax.annotation.Nullable;
-
-import java.util.List;
-import java.util.function.Predicate;
 
 import static net.minecraft.world.level.block.Rotation.CLOCKWISE_180;
 import static net.minecraft.world.level.block.Rotation.CLOCKWISE_90;

@@ -21,10 +21,10 @@ import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
-import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
 
