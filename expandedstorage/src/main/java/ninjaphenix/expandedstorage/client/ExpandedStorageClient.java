@@ -73,11 +73,11 @@ public final class ExpandedStorageClient implements ClientModInitializer
                         .map(data::getChestTexture).forEach(registry::register)));
         BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, CursedChestBlockEntityRenderer::new);
         ModContent.CHEST.validBlocks.forEach(block -> BuiltinItemRendererRegistry.INSTANCE.register(
-                block.asItem(), (stack, matrices, vertexConsumers, light, overlay) ->
+                block.asItem(), (itemStack, type, stack, vertexConsumers, light, overlay) ->
                 {
-                    CursedChestBlock renderBlock = (CursedChestBlock) ((BlockItem) stack.getItem()).getBlock();
+                    CursedChestBlock renderBlock = (CursedChestBlock) ((BlockItem) itemStack.getItem()).getBlock();
                     CURSED_CHEST_RENDER_ENTITY.setBlock(renderBlock.TIER_ID);
-                    BlockEntityRenderDispatcher.instance.renderItem(CURSED_CHEST_RENDER_ENTITY, matrices, vertexConsumers, light, overlay);
+                    BlockEntityRenderDispatcher.instance.renderItem(CURSED_CHEST_RENDER_ENTITY, stack, vertexConsumers, light, overlay);
                 }));
         ScreenRegistry.register(SCROLLABLE_HANDLER_TYPE, ScrollableScreen::new);
         ScreenRegistry.register(PAGED_HANDLER_TYPE, PagedScreen::new);
