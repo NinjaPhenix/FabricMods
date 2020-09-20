@@ -101,21 +101,21 @@ allprojects {
 
     task release {
         doLast {
-            def tagName = "${mod_id}-${mod_version}+${minecraft_version}"
-            def commit = "git rev-parse HEAD".execute().in.readLines().get(0)
-            if (extensions.getExtraProperties().has('artifactId')) {
-                def artifactId = extensions.getExtraProperties().get('artifactId')
-                def url = String.format(curseforge_url_template, curseforge_project_slug, artifactId)
-                if ('false'.equalsIgnoreCase(upload_debug)) {
-                    "hub release create -t ${commit} -m ${tagName} -m ${url} ${tagName}".execute()
-                    println "Created release for tag ${tagName} with message ${url}"
-                }
-            } else {
-                if ('false'.equalsIgnoreCase(upload_debug)) {
-                    "hub release create -a ${projectDir.getName()}/build/libs/${tagName}.jar -a ${projectDir.getName()}/build/libs/${tagName}-sources.jar -m ${tagName} -m ${tagName} -t ${commit} ${tagName}".execute()
-                    println "Created release for tag ${tagName} with message ${tagName}"
-                }
-            }
+            //def tagName = "${mod_id}-${mod_version}+${minecraft_version}"
+            //def commit = "git rev-parse HEAD".execute().in.readLines().get(0)
+            //if (extensions.getExtraProperties().has('artifactId')) {
+            //    def artifactId = extensions.getExtraProperties().get('artifactId')
+            //    def url = String.format(curseforge_url_template, curseforge_project_slug, artifactId)
+            //    if ('false'.equalsIgnoreCase(upload_debug)) {
+            //        "hub release create -t ${commit} -m ${tagName} -m ${url} ${tagName}".execute()
+            //        println "Created release for tag ${tagName} with message ${url}"
+            //    }
+            //} else {
+            //    if ('false'.equalsIgnoreCase(upload_debug)) {
+            //        "hub release create -a ${projectDir.getName()}/build/libs/${tagName}.jar -a ${projectDir.getName()}/build/libs/${tagName}-sources.jar -m ${tagName} -m ${tagName} -t ${commit} ${tagName}".execute()
+            //        println "Created release for tag ${tagName} with message ${tagName}"
+            //    }
+            //}
         }
     }
     def curseforge_api_key = System.getenv('CURSEFORGE_API_KEY')
