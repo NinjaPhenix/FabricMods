@@ -39,7 +39,7 @@ public class BarrelInitializer implements Initializer
                 {
                     if (Main.MOD_ID.equals(modelResLoc.getNamespace()))
                     {
-                        
+
                     }
                     System.out.println("Loading model variant: " + modelResLoc);
                     return null;
