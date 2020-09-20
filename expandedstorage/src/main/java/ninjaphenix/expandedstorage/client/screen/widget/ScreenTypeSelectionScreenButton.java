@@ -16,13 +16,11 @@ public final class ScreenTypeSelectionScreenButton extends Button
 {
     private final ResourceLocation TEXTURE;
 
-    public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip tooltipSupplier)
+    public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip onTooltip)
     {
-        super(x, y, 12, 12, new TranslatableComponent("screen.expandedstorage.change_screen_button"), button ->
-        {
-            ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer()));
-        }, tooltipSupplier);
-        TEXTURE = Const.id("textures/gui/select_screen_button.png");
+        super(x, y, 22, 22, new TranslatableComponent("screen.expandedstorage.change_screen_button"), button ->
+                      ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())), onTooltip);
+        TEXTURE = Const.resloc("textures/gui/select_screen_button.png");
     }
 
     @Override
@@ -34,7 +32,7 @@ public final class ScreenTypeSelectionScreenButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        blit(matrices, x, y, 0, isHovered() ? height : 0, width, height, 16, 32);
+        blit(matrices, x, y, 0, isHovered() ? height : 0, width, height, 32, 48);
         if (isHovered()) { renderToolTip(matrices, mouseX, mouseY); }
     }
 }

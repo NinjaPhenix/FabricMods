@@ -1,6 +1,9 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Collections;
+import java.util.List;
+import me.shedaniel.math.Rectangle;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -13,7 +16,7 @@ import ninjaphenix.expandedstorage.common.inventory.screen.PagedScreenMeta;
 
 public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedScreenMeta>
 {
-    private Rectangle blankArea = null;
+    private Image blankArea = null;
     private PageButtonWidget leftPageButton;
     private PageButtonWidget rightPageButton;
     private int page;
@@ -39,8 +42,8 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
                 if (blanked > 0)
                 {
                     final int xOffset = 7 + (SCREEN_META.WIDTH - blanked) * 18;
-                    blankArea = new Rectangle(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
-                                              SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
+                    blankArea = new Image(leftPos + xOffset, topPos + imageHeight - 115, blanked * 18, 18, xOffset, imageHeight,
+                                          SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
                 }
             }
             if (!leftPageButton.active) { leftPageButton.setActive(true); }
@@ -81,12 +84,7 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
         final boolean inventoryProfilesLoaded = instance.isModLoaded("inventoryprofiles");
         final boolean inventorySorterLoaded = instance.isModLoaded("inventorysorter");
         super.init();
-        final int settingsXOffset;
-        if (inventoryProfilesLoaded) { settingsXOffset = -67; }
-        else if (inventorySorterLoaded) { settingsXOffset = -37; }
-        else { settingsXOffset = -19; }
-        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + settingsXOffset, topPos + 4,
-                                                      (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, button.getMessage(), mouseX, mouseY)));
+        addButton(new ScreenTypeSelectionScreenButton(leftPos + imageWidth + 4, topPos, this::renderButtonTooltip));
         if (SCREEN_META.PAGES != 1)
         {
             final int pageButtonsXOffset;
@@ -97,12 +95,12 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
             setPageText();
             leftPageButton = new PageButtonWidget(leftPos + imageWidth - 61 + pageButtonsXOffset, topPos + imageHeight - 96, 0,
                                                   new TranslatableComponent("screen.expandedstorage.prev_page"), button -> setPage(page, page - 1),
-                                                  (button, matrices, bX, bY) -> renderTooltip(matrices, button.getMessage(), bX, bY));
+                                                  this::renderButtonTooltip);
             leftPageButton.active = false;
             addButton(leftPageButton);
             rightPageButton = new PageButtonWidget(leftPos + imageWidth - 19 + pageButtonsXOffset, topPos + imageHeight - 96, 1,
                                                    new TranslatableComponent("screen.expandedstorage.next_page"), button -> setPage(page, page + 1),
-                                                   (button, matrices, bX, bY) -> renderTooltip(matrices, button.getMessage(), bX, bY));
+                                                   this::renderButtonTooltip);
             addButton(rightPageButton);
             pageTextX = (1 + leftPageButton.x + rightPageButton.x - rightPageButton.getWidth() / 2F) / 2F;
         }
@@ -165,5 +163,11 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public List<Rectangle> getReiRectangles()
+    {
+        return Collections.singletonList(new Rectangle(leftPos + imageWidth + 4, topPos, 22, 22));
     }
 }

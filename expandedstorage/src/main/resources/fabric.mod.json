@@ -21,6 +21,9 @@
     ],
     "client": [
       "ninjaphenix.expandedstorage.client.ExpandedStorageClient::INSTANCE"
+    ],
+    "rei_plugins": [
+      "ninjaphenix.expandedstorage.client.ExpandedStorageReiPlugin"
     ]
   },
   "accessWidener": "expandedstorage.accesswidener",

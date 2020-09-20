@@ -25,8 +25,8 @@ public class BarrelBlockEntity extends StorageBlockEntity
     protected void initialize(final ResourceLocation block)
     {
         this.block = block;
-        defaultContainerName = Registries.BARREL.get(block).getContainerName();
-        inventorySize = Registries.BARREL.get(block).getSlotCount();
+        defaultContainerName = Registries.BARREL.get(block).CONTAINER_NAME;
+        inventorySize = Registries.BARREL.get(block).SLOT_COUNT;
         inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         SLOTS = new int[inventorySize];
         for (int i = 0; i < inventorySize; i++) { SLOTS[i] = i; }

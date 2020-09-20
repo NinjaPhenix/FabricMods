@@ -1,10 +1,10 @@
 package ninjaphenix.expandedstorage.client;
 
+import blue.endless.jankson.JsonPrimitive;
+import io.netty.buffer.Unpooled;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
-import blue.endless.jankson.JsonPrimitive;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -28,17 +28,18 @@ import ninjaphenix.expandedstorage.client.screen.SelectContainerScreen;
 import ninjaphenix.expandedstorage.client.screen.SingleScreen;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.ExpandedStorage;
+import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
-import ninjaphenix.expandedstorage.common.ModContent;
 import org.apache.logging.log4j.MarkerManager;
 
 import static ninjaphenix.expandedstorage.common.ModContent.*;
 
 public final class ExpandedStorageClient implements ClientModInitializer
 {
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     public static final ExpandedStorageClient INSTANCE = new ExpandedStorageClient();
     private static final CursedChestBlockEntity CURSED_CHEST_RENDER_ENTITY = new CursedChestBlockEntity(null);
     public static final ContainerConfig CONFIG = getConfigParser().load(ContainerConfig.class, ContainerConfig::new, getConfigPath(), new MarkerManager.Log4jMarker(Const.MOD_ID));
@@ -73,11 +74,11 @@ public final class ExpandedStorageClient implements ClientModInitializer
                         .map(data::getChestTexture).forEach(registry::register)));
         BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, CursedChestBlockEntityRenderer::new);
         ModContent.CHEST.validBlocks.forEach(block -> BuiltinItemRendererRegistry.INSTANCE.register(
-                block.asItem(), (stack, matrices, vertexConsumers, light, overlay) ->
+                block.asItem(), (itemStack, type, stack, vertexConsumers, light, overlay) ->
                 {
-                    CursedChestBlock renderBlock = (CursedChestBlock) ((BlockItem) stack.getItem()).getBlock();
+                    CursedChestBlock renderBlock = (CursedChestBlock) ((BlockItem) itemStack.getItem()).getBlock();
                     CURSED_CHEST_RENDER_ENTITY.setBlock(renderBlock.TIER_ID);
-                    BlockEntityRenderDispatcher.instance.renderItem(CURSED_CHEST_RENDER_ENTITY, matrices, vertexConsumers, light, overlay);
+                    BlockEntityRenderDispatcher.instance.renderItem(CURSED_CHEST_RENDER_ENTITY, stack, vertexConsumers, light, overlay);
                 }));
         ScreenRegistry.register(SCROLLABLE_HANDLER_TYPE, ScrollableScreen::new);
         ScreenRegistry.register(PAGED_HANDLER_TYPE, PagedScreen::new);
@@ -102,7 +103,7 @@ public final class ExpandedStorageClient implements ClientModInitializer
     public static void sendCallbackRemoveToServer()
     {
         ClientSidePacketRegistry.INSTANCE.sendToServer(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
-                .writeResourceLocation(Const.id("auto")));
+                .writeResourceLocation(Const.resloc("auto")));
     }
 
     public static void setPreference(final ResourceLocation handlerType)

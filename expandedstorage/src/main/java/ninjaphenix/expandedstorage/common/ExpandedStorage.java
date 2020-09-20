@@ -2,6 +2,12 @@ package ninjaphenix.expandedstorage.common;
 
 import com.google.common.collect.ImmutableMap;
 import io.netty.buffer.Unpooled;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -21,12 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import ninjaphenix.chainmail.api.events.PlayerDisconnectCallback;
 import ninjaphenix.expandedstorage.common.inventory.*;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public final class ExpandedStorage implements ModInitializer
 {
@@ -37,9 +37,9 @@ public final class ExpandedStorage implements ModInitializer
     private final HashMap<UUID, ResourceLocation> playerPreferences = new HashMap<>();
     private final ImmutableMap<ResourceLocation, ServerScreenHandlerFactory<?>> handlerFactories =
             new ImmutableMap.Builder<ResourceLocation, ServerScreenHandlerFactory<?>>()
-                    .put(Const.id("single"), SingleScreenHandler::new)
-                    .put(Const.id("scrollable"), ScrollableScreenHandler::new)
-                    .put(Const.id("paged"), PagedScreenHandler::new)
+                    .put(Const.resloc("single"), SingleScreenHandler::new)
+                    .put(Const.resloc("scrollable"), ScrollableScreenHandler::new)
+                    .put(Const.resloc("paged"), PagedScreenHandler::new)
                     .build();
 
     private ExpandedStorage() { }
@@ -49,9 +49,9 @@ public final class ExpandedStorage implements ModInitializer
     {
         ModContent.register();
         final Function<String, TranslatableComponent> nameFunc = (name) -> new TranslatableComponent(String.format("screen.%s.%s", Const.MOD_ID, name));
-        declareContainerType(Const.SINGLE_CONTAINER, Const.id("textures/gui/single_button.png"), nameFunc.apply("single_screen"));
-        declareContainerType(Const.SCROLLABLE_CONTAINER, Const.id("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen"));
-        declareContainerType(Const.PAGED_CONTAINER, Const.id("textures/gui/paged_button.png"), nameFunc.apply("paged_screen"));
+        declareContainerType(Const.resloc("single"), Const.resloc("textures/gui/single_button.png"), nameFunc.apply("single_screen"));
+        declareContainerType(Const.resloc("scrollable"), Const.resloc("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen"));
+        declareContainerType(Const.resloc("paged"), Const.resloc("textures/gui/paged_button.png"), nameFunc.apply("paged_screen"));
         ServerSidePacketRegistry.INSTANCE.register(Const.OPEN_SCREEN_SELECT, this::onReceiveOpenSelectScreenPacket);
         ServerSidePacketRegistry.INSTANCE.register(Const.SCREEN_SELECT, this::onReceivePlayerPreference);
         PlayerDisconnectCallback.EVENT.register(player -> setPlayerPreference(player, null));
@@ -69,7 +69,7 @@ public final class ExpandedStorage implements ModInitializer
         }
         else
         {
-            if (containerTypeId == null || !containerTypeId.equals(Const.id("auto"))) { playerPreferences.remove(uuid); }
+            if (containerTypeId == null || !containerTypeId.equals(Const.resloc("auto"))) { playerPreferences.remove(uuid); }
             preferenceCallbacks.remove(uuid);
         }
     }

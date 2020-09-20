@@ -11,13 +11,13 @@ import ninjaphenix.expandedstorage.common.Const;
 
 public class PageButtonWidget extends Button
 {
-    private static final ResourceLocation TEXTURE = Const.id("textures/gui/page_buttons.png");
+    private static final ResourceLocation TEXTURE = Const.resloc("textures/gui/page_buttons.png");
     private final int TEXTURE_OFFSET;
 
     public PageButtonWidget(final int x, final int y, final int textureOffset, final Component text, final OnPress onPress,
-                            final OnTooltip tooltipSupplier)
+                            final OnTooltip onTooltip)
     {
-        super(x, y, 12, 12, text, onPress, tooltipSupplier);
+        super(x, y, 12, 12, text, onPress, onTooltip);
         TEXTURE_OFFSET = textureOffset;
     }
 

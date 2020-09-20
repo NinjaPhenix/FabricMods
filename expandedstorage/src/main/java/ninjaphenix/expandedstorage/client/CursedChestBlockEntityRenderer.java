@@ -13,12 +13,12 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import ninjaphenix.expandedstorage.common.Registries;
-import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
-import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 import ninjaphenix.expandedstorage.client.models.*;
 import ninjaphenix.expandedstorage.common.ModContent;
+import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
+import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
+import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 
 public final class CursedChestBlockEntityRenderer extends BlockEntityRenderer<CursedChestBlockEntity>
 {

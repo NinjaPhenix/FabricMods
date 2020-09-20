@@ -21,10 +21,10 @@ import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.ChestBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
-import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
 
@@ -66,8 +66,8 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     protected void initialize(final ResourceLocation block)
     {
         this.block = block;
-        defaultContainerName = Registries.CHEST.get(block).getContainerName();
-        inventorySize = Registries.CHEST.get(block).getSlotCount();
+        defaultContainerName = Registries.CHEST.get(block).CONTAINER_NAME;
+        inventorySize = Registries.CHEST.get(block).SLOT_COUNT;
         inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
         SLOTS = new int[inventorySize];
         for (int i = 0; i < inventorySize; i++) { SLOTS[i] = i; }
@@ -105,7 +105,7 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     private void playSound(final SoundEvent soundEvent)
     {
         final BlockState state = getBlockState();
-        final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getMergeType(state);
+        final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getBlockType(state);
         final Vec3 soundPos;
         if (mergeType == DoubleBlockCombiner.BlockType.SINGLE) { soundPos = Vec3.atCenterOf(worldPosition); }
         else if (mergeType == DoubleBlockCombiner.BlockType.FIRST)
