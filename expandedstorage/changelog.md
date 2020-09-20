@@ -1,3 +1,5 @@
-- Reworked internal registries.
-- Chest modifiers now worked on trapped chests.
-- Reworked blockus support to use optional tags.
+- Blockus barrels can now be upgraded in world ( will change to spruce base texture)
+- Updated netherite textures to use vanilla colors
+- Re-added REI integration, known to be behaving weirdly see if interested: https://github.com/shedaniel/RoughlyEnoughItems/issues/409
+- Moved the screen settings button so it's less likely to cover other mods buttons
+- General code cleanup
