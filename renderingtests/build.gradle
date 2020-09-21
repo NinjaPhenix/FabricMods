@@ -1,0 +1,15 @@
+repositories {
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+}
+
+dependencies {
+    modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT') {
+        withoutUnwanted
+    }
+    compile project(":ninjatips") {
+        withoutUnwanted
+    }
+}

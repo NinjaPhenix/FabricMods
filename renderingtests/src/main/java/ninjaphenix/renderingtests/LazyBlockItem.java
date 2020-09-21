@@ -1,32 +1,34 @@
 package ninjaphenix.renderingtests;
 
+import com.mojang.datafixers.types.Func;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class LazyBlockItem
 {
     private final ResourceLocation resourceLocation;
     private final Supplier<Block> blockSupplier;
-    private final Supplier<Item.Properties> itemPropertiesSupplier;
+    private final Function<Block, BlockItem> itemSupplier;
 
     private BlockItem value;
 
-    public LazyBlockItem(final ResourceLocation resloc, final Supplier<Block> block, final Supplier<Item.Properties> properties)
+    public LazyBlockItem(final ResourceLocation resloc, final Supplier<Block> block, final Function<Block, BlockItem> item)
     {
         resourceLocation = resloc;
         blockSupplier = block;
-        itemPropertiesSupplier = properties;
+        itemSupplier = item;
     }
 
     public void register()
     {
         final Block block = blockSupplier.get();
         Registry.register(Registry.BLOCK, resourceLocation, block);
-        final BlockItem item = new BlockItem(block, itemPropertiesSupplier.get());
+        final BlockItem item = itemSupplier.apply(block);
         Registry.register(Registry.ITEM, resourceLocation, item);
         value = item;
     }

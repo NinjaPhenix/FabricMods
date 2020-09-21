@@ -3,3 +3,5 @@
 - Re-added REI integration, known to be behaving weirdly see if interested: https://github.com/shedaniel/RoughlyEnoughItems/issues/409
 - Moved the screen settings button so it's less likely to cover other mods buttons
 - General code cleanup
+- Fixes previous broke release
+- Retextures the barrel strips to use vanilla colors.
