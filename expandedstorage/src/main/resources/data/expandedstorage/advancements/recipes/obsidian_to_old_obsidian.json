@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:obsidian_to_old_obsidian" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

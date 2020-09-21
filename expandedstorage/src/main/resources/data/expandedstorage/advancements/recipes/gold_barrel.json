@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:gold_barrel" }
     }
   },
-  "requirements": [ "has_barrel", "has_the_recipe" ]
+  "requirements": [ [ "has_barrel", "has_the_recipe" ] ]
 }

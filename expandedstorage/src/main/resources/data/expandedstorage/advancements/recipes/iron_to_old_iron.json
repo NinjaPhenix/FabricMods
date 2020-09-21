@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:iron_to_old_iron" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

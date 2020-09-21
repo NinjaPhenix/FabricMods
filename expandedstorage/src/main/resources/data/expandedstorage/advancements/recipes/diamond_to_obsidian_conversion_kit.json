@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:diamond_to_obsidian_conversion_kit" }
     }
   },
-  "requirements": [ "has_diamond", "has_the_recipe" ]
+  "requirements": [ [ "has_diamond", "has_the_recipe" ] ]
 }

@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:wood_to_old_wood" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:gold_chest" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

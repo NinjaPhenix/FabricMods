@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:gold_to_diamond_conversion_kit" }
     }
   },
-  "requirements": [ "has_ingot", "has_the_recipe" ]
+  "requirements": [ [ "has_ingot", "has_the_recipe" ] ]
 }

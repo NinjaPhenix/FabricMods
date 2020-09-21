@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:old_diamond_to_diamond" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

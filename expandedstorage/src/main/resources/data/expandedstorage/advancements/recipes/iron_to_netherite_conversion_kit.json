@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:iron_to_netherite_conversion_kit" }
     }
   },
-  "requirements": [ "has_netherite", "has_the_recipe" ]
+  "requirements": [ [ "has_netherite", "has_the_recipe" ] ]
 }

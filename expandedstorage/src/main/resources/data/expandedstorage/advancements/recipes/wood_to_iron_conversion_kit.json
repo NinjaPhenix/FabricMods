@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:wood_to_iron_conversion_kit" }
     }
   },
-  "requirements": [ "has_planks", "has_the_recipe" ]
+  "requirements": [ [ "has_planks", "has_the_recipe" ] ]
 }

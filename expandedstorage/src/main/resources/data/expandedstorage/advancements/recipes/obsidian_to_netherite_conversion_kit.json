@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:obsidian_to_netherite_conversion_kit" }
     }
   },
-  "requirements": [ "has_netherite", "has_the_recipe" ]
+  "requirements": [ [ "has_netherite", "has_the_recipe" ] ]
 }

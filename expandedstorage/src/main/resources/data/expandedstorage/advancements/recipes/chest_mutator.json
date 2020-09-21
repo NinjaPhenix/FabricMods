@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:chest_mutator" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }

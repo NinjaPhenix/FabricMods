@@ -11,5 +11,5 @@
       "conditions": { "recipe": "expandedstorage:netherite_to_old_netherite" }
     }
   },
-  "requirements": [ "has_chest", "has_the_recipe" ]
+  "requirements": [ [ "has_chest", "has_the_recipe" ] ]
 }
