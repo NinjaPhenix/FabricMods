@@ -1,17 +1,17 @@
 {
   "replace": false,
   "values": [
-    "expandedstorage:wood_chest",
-    "expandedstorage:iron_chest",
-    "expandedstorage:gold_chest",
-    "expandedstorage:diamond_chest",
-    "expandedstorage:obsidian_chest",
-    "expandedstorage:netherite_chest",
-    "expandedstorage:old_wood_chest",
-    "expandedstorage:old_iron_chest",
-    "expandedstorage:old_gold_chest",
-    "expandedstorage:old_diamond_chest",
-    "expandedstorage:old_obsidian_chest",
-    "expandedstorage:old_netherite_chest"
+    { "id": "expandedstorage:wood_chest", "required": true},
+    { "id": "expandedstorage:iron_chest", "required": true},
+    { "id": "expandedstorage:gold_chest", "required": true},
+    { "id": "expandedstorage:diamond_chest", "required": true},
+    { "id": "expandedstorage:obsidian_chest", "required": true},
+    { "id": "expandedstorage:netherite_chest", "required": true},
+    { "id": "expandedstorage:old_wood_chest", "required": true},
+    { "id": "expandedstorage:old_iron_chest", "required": true},
+    { "id": "expandedstorage:old_gold_chest", "required": true},
+    { "id": "expandedstorage:old_diamond_chest", "required": true},
+    { "id": "expandedstorage:old_obsidian_chest", "required": true},
+    { "id": "expandedstorage:old_netherite_chest", "required": true}
   ]
 }

@@ -1,8 +1,6 @@
 {
   "variants": {
-    "facing=north,type=top": {
-      "model": "expandedstorage:block/old_iron_chest/top"
-    },
+    "facing=north,type=top": { "model": "expandedstorage:block/old_iron_chest/top" },
     "facing=east,type=top": {
       "model": "expandedstorage:block/old_iron_chest/top",
       "y": 90
@@ -15,9 +13,7 @@
       "model": "expandedstorage:block/old_iron_chest/top",
       "y": 270
     },
-    "facing=north,type=bottom": {
-      "model": "expandedstorage:block/old_iron_chest/bottom"
-    },
+    "facing=north,type=bottom": { "model": "expandedstorage:block/old_iron_chest/bottom" },
     "facing=east,type=bottom": {
       "model": "expandedstorage:block/old_iron_chest/bottom",
       "y": 90
@@ -30,9 +26,7 @@
       "model": "expandedstorage:block/old_iron_chest/bottom",
       "y": 270
     },
-    "facing=north,type=front": {
-      "model": "expandedstorage:block/old_iron_chest/front"
-    },
+    "facing=north,type=front": { "model": "expandedstorage:block/old_iron_chest/front" },
     "facing=east,type=front": {
       "model": "expandedstorage:block/old_iron_chest/front",
       "y": 90
@@ -45,9 +39,7 @@
       "model": "expandedstorage:block/old_iron_chest/front",
       "y": 270
     },
-    "facing=north,type=back": {
-      "model": "expandedstorage:block/old_iron_chest/back"
-    },
+    "facing=north,type=back": { "model": "expandedstorage:block/old_iron_chest/back" },
     "facing=east,type=back": {
       "model": "expandedstorage:block/old_iron_chest/back",
       "y": 90
@@ -60,9 +52,7 @@
       "model": "expandedstorage:block/old_iron_chest/back",
       "y": 270
     },
-    "facing=north,type=left": {
-      "model": "expandedstorage:block/old_iron_chest/left"
-    },
+    "facing=north,type=left": { "model": "expandedstorage:block/old_iron_chest/left" },
     "facing=east,type=left": {
       "model": "expandedstorage:block/old_iron_chest/left",
       "y": 90
@@ -75,9 +65,7 @@
       "model": "expandedstorage:block/old_iron_chest/left",
       "y": 270
     },
-    "facing=north,type=right": {
-      "model": "expandedstorage:block/old_iron_chest/right"
-    },
+    "facing=north,type=right": { "model": "expandedstorage:block/old_iron_chest/right" },
     "facing=east,type=right": {
       "model": "expandedstorage:block/old_iron_chest/right",
       "y": 90
@@ -90,9 +78,7 @@
       "model": "expandedstorage:block/old_iron_chest/right",
       "y": 270
     },
-    "facing=north,type=single": {
-      "model": "expandedstorage:block/old_iron_chest/single"
-    },
+    "facing=north,type=single": { "model": "expandedstorage:block/old_iron_chest/single" },
     "facing=east,type=single": {
       "model": "expandedstorage:block/old_iron_chest/single",
       "y": 90

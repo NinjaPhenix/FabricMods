@@ -3,14 +3,8 @@
   "package": "ninjaphenix.expandedstorage.mixin",
   "plugin": "ninjaphenix.expandedstorage.ExpandedStorageMixinPlugin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "ToweletteSupportMixin"
-  ],
-  "client": [
-    "ClientGameStart"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
+  "mixins": [ "ToweletteSupportMixin" ],
+  "client": [ "ClientGameStart" ],
+  "injectors": { "defaultRequire": 1 },
   "minVersion": "0.8"
 }

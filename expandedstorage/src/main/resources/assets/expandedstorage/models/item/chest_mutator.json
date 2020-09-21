@@ -1,6 +1,4 @@
 {
   "parent": "item/generated",
-  "textures": {
-    "layer0": "expandedstorage:item/chest_mutator"
-  }
+  "textures": { "layer0": "expandedstorage:item/chest_mutator" }
 }

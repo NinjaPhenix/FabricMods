@@ -4,9 +4,7 @@
   "version": "${mod_version}",
   "name": "ExpandedStorage",
   "description": "Adds new storage blocks with varying capacities.",
-  "authors": [
-    "NinjaPhenix"
-  ],
+  "authors": [ "NinjaPhenix" ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/expanded-storage-fabric",
     "sources": "https://github.com/NinjaPhenix/FabricMods/tree/${minecraft_version}",
@@ -16,15 +14,9 @@
   "icon": "assets/expandedstorage/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "ninjaphenix.expandedstorage.common.ExpandedStorage::INSTANCE"
-    ],
-    "client": [
-      "ninjaphenix.expandedstorage.client.ExpandedStorageClient::INSTANCE"
-    ],
-    "rei_plugins": [
-      "ninjaphenix.expandedstorage.client.ExpandedStorageReiPlugin"
-    ]
+    "main": [ "ninjaphenix.expandedstorage.common.ExpandedStorage::INSTANCE" ],
+    "client": [ "ninjaphenix.expandedstorage.client.ExpandedStorageClient::INSTANCE" ],
+    "rei_plugins": [ "ninjaphenix.expandedstorage.client.ExpandedStorageReiPlugin" ]
   },
   "accessWidener": "expandedstorage.accesswidener",
   "mixins": [

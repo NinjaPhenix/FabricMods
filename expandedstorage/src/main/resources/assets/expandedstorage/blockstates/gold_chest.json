@@ -1,7 +1,1 @@
-{
-  "variants": {
-    "": {
-      "model": "expandedstorage:block/gold_chest"
-    }
-  }
-}
+{ "variants": { "": { "model": "expandedstorage:block/gold_chest" } } }

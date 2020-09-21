@@ -36,12 +36,8 @@
       "y": 180,
       "model": "expandedstorage:block/iron_barrel_open"
     },
-    "facing=up,open=false": {
-      "model": "expandedstorage:block/iron_barrel"
-    },
-    "facing=up,open=true": {
-      "model": "expandedstorage:block/iron_barrel_open"
-    },
+    "facing=up,open=false": { "model": "expandedstorage:block/iron_barrel" },
+    "facing=up,open=true": { "model": "expandedstorage:block/iron_barrel_open" },
     "facing=west,open=false": {
       "x": 90,
       "y": 270,

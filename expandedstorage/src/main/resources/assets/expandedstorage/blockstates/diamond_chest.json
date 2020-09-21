@@ -1,7 +1,1 @@
-{
-  "variants": {
-    "": {
-      "model": "expandedstorage:block/diamond_chest"
-    }
-  }
-}
+{ "variants": { "": { "model": "expandedstorage:block/diamond_chest" } } }

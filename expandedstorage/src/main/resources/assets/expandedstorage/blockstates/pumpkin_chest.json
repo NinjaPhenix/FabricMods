@@ -1,7 +1,1 @@
-{
-  "variants": {
-    "": {
-      "model": "expandedstorage:block/pumpkin_chest"
-    }
-  }
-}
+{ "variants": { "": { "model": "expandedstorage:block/pumpkin_chest" } } }
