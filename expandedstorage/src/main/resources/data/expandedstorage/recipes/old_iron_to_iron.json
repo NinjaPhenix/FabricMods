@@ -1,12 +1,6 @@
 {
   "type": "crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "expandedstorage:old_iron_chest"
-    }
-  ],
-  "result": {
-    "item": "expandedstorage:iron_chest"
-  },
+  "ingredients": [ { "item": "expandedstorage:old_iron_chest" } ],
+  "result": { "item": "expandedstorage:iron_chest" },
   "group": "expandedstorage:iron_chest"
 }

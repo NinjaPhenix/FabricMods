@@ -1,29 +1,13 @@
 {
   "type": "crafting_shaped",
-  "pattern": [
-    " B ",
-    "RCW",
-    " S "
-  ],
+  "pattern": [ " B ",  "RCW",  " S " ],
   "key": {
-    "S": {
-      "item": "minecraft:spruce_sapling"
-    },
-    "R": {
-      "item": "minecraft:red_dye"
-    },
-    "W": {
-      "item": "minecraft:white_dye"
-    },
-    "B": {
-      "item": "minecraft:sweet_berries"
-    },
-    "C": {
-      "tag": "c:wooden_chests"
-    }
+    "S": { "item": "minecraft:spruce_sapling" },
+    "R": { "item": "minecraft:red_dye" },
+    "W": { "item": "minecraft:white_dye" },
+    "B": { "item": "minecraft:sweet_berries" },
+    "C": { "tag": "c:wooden_chests" }
   },
-  "result": {
-    "item": "expandedstorage:christmas_chest"
-  },
+  "result": { "item": "expandedstorage:christmas_chest" },
   "group": "expandedstorage:christmas_chest"
 }

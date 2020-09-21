@@ -1,13 +1,7 @@
 {
   "type": "minecraft:smithing",
-  "base": {
-    "item": "expandedstorage:obsidian_chest"
-  },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
-  "result": {
-    "item": "expandedstorage:netherite_chest"
-  },
+  "base": { "item": "expandedstorage:obsidian_chest" },
+  "addition": { "item": "minecraft:netherite_ingot" },
+  "result": { "item": "expandedstorage:netherite_chest" },
   "group": "expandedstorage:netherite_chest"
 }

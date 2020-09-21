@@ -1,20 +1,10 @@
 {
   "type": "crafting_shaped",
-  "pattern": [
-    "III",
-    "ICI",
-    "III"
-  ],
+  "pattern": [ "III", "ICI", "III" ],
   "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
-    },
-    "C": {
-      "tag": "c:wooden_chests"
-    }
+    "I": { "item": "minecraft:iron_ingot" },
+    "C": { "tag": "c:wooden_chests" }
   },
-  "result": {
-    "item": "expandedstorage:iron_chest"
-  },
+  "result": { "item": "expandedstorage:iron_chest" },
   "group": "expandedstorage:iron_chest"
 }

@@ -1,12 +1,6 @@
 {
   "type": "crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "expandedstorage:old_wood_chest"
-    }
-  ],
-  "result": {
-    "item": "expandedstorage:wood_chest"
-  },
+  "ingredients": [ { "item": "expandedstorage:old_wood_chest" } ],
+  "result": { "item": "expandedstorage:wood_chest" },
   "group": "expandedstorage:wood_chest"
 }

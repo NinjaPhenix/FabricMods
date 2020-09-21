@@ -1,20 +1,10 @@
 {
   "type": "crafting_shaped",
-  "pattern": [
-    "OOO",
-    "OBO",
-    "OOO"
-  ],
+  "pattern": [ "OOO", "OBO", "OOO" ],
   "key": {
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "B": {
-      "item": "expandedstorage:diamond_barrel"
-    }
+    "O": { "item": "minecraft:obsidian" },
+    "B": { "item": "expandedstorage:diamond_barrel" }
   },
-  "result": {
-    "item": "expandedstorage:obsidian_barrel"
-  },
+  "result": { "item": "expandedstorage:obsidian_barrel" },
   "group": "expandedstorage:obsidian_barrel"
 }

@@ -1,12 +1,6 @@
 {
   "type": "crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "expandedstorage:old_gold_chest"
-    }
-  ],
-  "result": {
-    "item": "expandedstorage:gold_chest"
-  },
+  "ingredients": [ { "item": "expandedstorage:old_gold_chest" } ],
+  "result": { "item": "expandedstorage:gold_chest" },
   "group": "expandedstorage:gold_chest"
 }

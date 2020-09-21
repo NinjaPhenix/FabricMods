@@ -1,20 +1,10 @@
 {
   "type": "crafting_shaped",
-  "pattern": [
-    "OOO",
-    "OCO",
-    "OOO"
-  ],
+  "pattern": [ "OOO", "OCO", "OOO" ],
   "key": {
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "C": {
-      "item": "expandedstorage:old_diamond_chest"
-    }
+    "O": { "item": "minecraft:obsidian" },
+    "C": { "item": "expandedstorage:old_diamond_chest" }
   },
-  "result": {
-    "item": "expandedstorage:old_obsidian_chest"
-  },
+  "result": { "item": "expandedstorage:old_obsidian_chest" },
   "group": "expandedstorage:old_obsidian_chest"
 }

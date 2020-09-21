@@ -1,20 +1,10 @@
 {
   "type": "crafting_shaped",
-  "pattern": [
-    "III",
-    "IBI",
-    "III"
-  ],
+  "pattern": [ "III", "IBI", "III" ],
   "key": {
-    "I": {
-      "item": "minecraft:gold_ingot"
-    },
-    "B": {
-      "item": "expandedstorage:iron_barrel"
-    }
+    "I": { "item": "minecraft:gold_ingot" },
+    "B": { "item": "expandedstorage:iron_barrel" }
   },
-  "result": {
-    "item": "expandedstorage:gold_barrel"
-  },
+  "result": { "item": "expandedstorage:gold_barrel" },
   "group": "expandedstorage:gold_barrel"
 }

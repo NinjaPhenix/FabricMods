@@ -1,12 +1,6 @@
 {
   "type": "minecraft:smithing",
-  "base": {
-    "item": "expandedstorage:gold_to_obsidian_conversion_kit"
-  },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
-  "result": {
-    "item": "expandedstorage:gold_to_netherite_conversion_kit"
-  }
+  "base": { "item": "expandedstorage:gold_to_obsidian_conversion_kit" },
+  "addition": { "item": "minecraft:netherite_ingot" },
+  "result": { "item": "expandedstorage:gold_to_netherite_conversion_kit" }
 }
