@@ -1,5 +1,1 @@
-{
-  "textures": {
-    "particle": "expandedstorage:block/old_netherite_chest"
-  }
-}
+{ "textures": { "particle": "expandedstorage:block/old_netherite_chest" } }

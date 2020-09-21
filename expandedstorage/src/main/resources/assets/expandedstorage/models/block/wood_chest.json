@@ -1,5 +1,1 @@
-{
-  "textures": {
-    "particle": "expandedstorage:block/old_wood_chest"
-  }
-}
+{ "textures": { "particle": "expandedstorage:block/old_wood_chest" } }

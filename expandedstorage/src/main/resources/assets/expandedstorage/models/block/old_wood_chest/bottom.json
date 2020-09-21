@@ -1,6 +1,4 @@
 {
   "parent": "expandedstorage:block/old_chest/bottom",
-  "textures": {
-    "atlas": "expandedstorage:block/old_wood_chest"
-  }
+  "textures": { "atlas": "expandedstorage:block/old_wood_chest" }
 }

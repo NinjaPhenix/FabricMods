@@ -1,6 +1,4 @@
 {
   "parent": "expandedstorage:block/old_chest/back",
-  "textures": {
-    "atlas": "expandedstorage:block/old_netherite_chest"
-  }
+  "textures": { "atlas": "expandedstorage:block/old_netherite_chest" }
 }
