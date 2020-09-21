@@ -1,32 +1,15 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "expandedstorage:iron_barrel"
-    ]
-  },
+  "rewards": { "recipes": [ "expandedstorage:iron_barrel" ] },
   "criteria": {
     "has_barrel": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "c:wooden_barrels"
-          }
-        ]
-      }
+      "conditions": { "items": [ { "tag": "c:wooden_barrels" } ] }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "expandedstorage:iron_barrel"
-      }
+      "conditions": { "recipe": "expandedstorage:iron_barrel" }
     }
   },
-  "requirements": [
-    [
-      "has_barrel",
-      "has_the_recipe"
-    ]
-  ]
+  "requirements": [ "has_barrel", "has_the_recipe" ]
 }

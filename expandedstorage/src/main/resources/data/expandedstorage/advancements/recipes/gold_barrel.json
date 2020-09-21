@@ -1,32 +1,15 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "expandedstorage:gold_barrel"
-    ]
-  },
+  "rewards": { "recipes": [ "expandedstorage:gold_barrel" ] },
   "criteria": {
     "has_barrel": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "item": "expandedstorage:iron_barrel"
-          }
-        ]
-      }
+      "conditions": { "items": [ { "item": "expandedstorage:iron_barrel" } ] }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "expandedstorage:gold_barrel"
-      }
+      "conditions": { "recipe": "expandedstorage:gold_barrel" }
     }
   },
-  "requirements": [
-    [
-      "has_barrel",
-      "has_the_recipe"
-    ]
-  ]
+  "requirements": [ "has_barrel", "has_the_recipe" ]
 }
