@@ -15,11 +15,7 @@
           "name": "expandedstorage:iron_chest"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "conditions": [ { "condition": "minecraft:survives_explosion" } ]
     }
   ]
 }

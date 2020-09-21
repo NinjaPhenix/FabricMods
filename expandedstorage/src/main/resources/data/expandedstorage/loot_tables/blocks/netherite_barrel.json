@@ -15,11 +15,7 @@
           "name": "expandedstorage:netherite_barrel"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "conditions": [ { "condition": "minecraft:survives_explosion" } ]
     }
   ]
 }
