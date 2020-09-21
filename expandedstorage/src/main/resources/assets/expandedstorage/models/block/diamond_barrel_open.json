@@ -1,10 +1,4 @@
 {
-  "parent": "expandedstorage:block/barrel",
-  "textures": {
-    "particle": "minecraft:block/barrel_side",
-    "top": "minecraft:block/barrel_top_open",
-    "bottom": "minecraft:block/barrel_bottom",
-    "side": "minecraft:block/barrel_side",
-    "strip": "expandedstorage:block/diamond_barrel_strip"
-  }
+  "parent": "expandedstorage:block/diamond_barrel",
+  "textures": { "top": "minecraft:block/barrel_top_open" }
 }
