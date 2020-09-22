@@ -16,7 +16,7 @@ import ninjaphenix.renderingtests.Main;
 
 public class BarrelInitializer implements Initializer
 {
-    public static final BarrelInitializer INSTANCE = new BarrelInitializer();
+    public static final Initializer INSTANCE = new BarrelInitializer();
 
     public static final LazyBlockItem IRON_BARREL;
     public static final LazyBlockItem GOLD_BARREL;
