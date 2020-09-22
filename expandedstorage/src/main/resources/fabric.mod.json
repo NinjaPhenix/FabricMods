@@ -12,21 +12,16 @@
   },
   "license": "MIT-0",
   "icon": "assets/expandedstorage/icon.png",
-  "environment": "*",
   "entrypoints": {
     "main": [ "ninjaphenix.expandedstorage.common.ExpandedStorage::INSTANCE" ],
     "client": [ "ninjaphenix.expandedstorage.client.ExpandedStorageClient::INSTANCE" ],
     "rei_plugins": [ "ninjaphenix.expandedstorage.client.ExpandedStorageReiPlugin" ]
   },
   "accessWidener": "expandedstorage.accesswidener",
-  "mixins": [
-    {
-      "config": "expandedstorage.mixins.common.json",
-      "environment": "*"
-    }
-  ],
+  "mixins": [ "expandedstorage.mixins.common.json" ],
   "depends": {
+    "chainmail": ">=${dep_chainmail_version}",
     "fabric": ">=${dep_fabric_version}",
-    "chainmail": ">=${dep_chainmail_version}"
+    "minecraft": "~${dep_minecraft_version}"
   }
 }

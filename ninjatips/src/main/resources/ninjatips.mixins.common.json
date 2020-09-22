@@ -2,10 +2,8 @@
   "required": true,
   "package": "ninjaphenix.ninjatips.mixins",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
+  "mixins": [ ],
+  "client": [ "ItemLinkingMixin" ],
+  "injectors": { "defaultRequire": 1 },
   "minVersion": "0.7.11"
 }

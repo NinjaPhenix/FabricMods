@@ -4,21 +4,13 @@
   "version": "${mod_version}",
   "name": "Fat Experience Orbs",
   "description": "Makes Experience orbs combine together.",
-  "authors": [
-    "NinjaPhenix"
-  ],
+  "authors": [ "NinjaPhenix" ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/fat-experience-orbs",
     "sources": "https://github.com/NinjaPhenix/FabricMods/tree/${minecraft_version}",
     "issues": "https://github.com/NinjaPhenix/FabricMods/issues"
   },
   "license": "MIT-0",
-  "mixins": [
-    {
-      "config": "fatxporbs.mixins.json"
-    }
-  ],
-  "depends": {
-    "fabricloader": ">=${dep_loader_version}"
-  }
+  "mixins": [ "fatxporbs.mixins.json" ],
+  "depends": { "fabricloader": ">=${dep_loader_version}" }
 }

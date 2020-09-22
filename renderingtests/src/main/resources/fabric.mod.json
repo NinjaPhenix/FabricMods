@@ -4,12 +4,9 @@
   "version": "${mod_version}",
   "name": "Rendering Tests",
   "description": "THIS IS NOT A MOD.",
-  "authors": ["NinjaPhenix"],
+  "authors": [ "NinjaPhenix" ],
   "license": "MIT-0",
-  "environment": "*",
   "entrypoints": {
-    "main": [
-      "ninjaphenix.renderingtests.Main::INSTANCE"
-    ]
+    "main": [ "ninjaphenix.renderingtests.Main::INSTANCE" ]
   }
 }

@@ -3,10 +3,5 @@
   "id": "chainmail-tests",
   "version": "${mod_version}",
   "name": "Chainmail Test Mod",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "ninjaphenix.tests.chainmail.Main::INSTANCE"
-    ]
-  }
+  "entrypoints": { "main": [ "ninjaphenix.tests.chainmail.Main::INSTANCE" ] }
 }
