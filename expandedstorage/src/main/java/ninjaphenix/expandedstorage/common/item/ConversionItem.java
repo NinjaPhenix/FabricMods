@@ -144,6 +144,7 @@ public final class ConversionItem extends ModifierItem
                     final BlockState otherState = level.getBlockState(otherPos);
                     upgradeVanillaBlock(level, state, pos);
                     upgradeVanillaBlock(level, otherState, otherPos);
+                    handStack.shrink(2);
                     return InteractionResult.SUCCESS;
                 }
             }

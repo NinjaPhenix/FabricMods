@@ -27,11 +27,11 @@ public class AssetReloadListener implements IdentifiableResourceReloadListener
 
     public void uploadSprites(TextureAtlas atlas, ClientSpriteRegistryCallback.Registry registry)
     {
-        chestAtlases.forEach((tier, image) ->
-                             {
-                                 getTextures(tier, atlas, image).forEach(registry::register);
-                                 image.close();
-                             });
+        chestAtlases.forEach((tier, image) -> getTextures(tier, atlas, image).forEach(sprite ->
+                                                                                      {
+                                                                                          System.out.println("Registering: " + sprite.getName());
+                                                                                          registry.register(sprite);
+                                                                                      }));
     }
 
     @Override
