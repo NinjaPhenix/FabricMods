@@ -23,7 +23,6 @@ allprojects {
     loom {
         refmapName = "${mod_id}-refmap.json"
         runDir = "${project.projectDir.getName()}/run/"
-        shareCaches = true
     }
 
     ext {
