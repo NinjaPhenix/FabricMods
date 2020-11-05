@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.DoubleBlockCombiner.Combiner;
 import net.minecraft.world.level.block.DoubleBlockCombiner.NeighborCombineResult;
+import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import ninjaphenix.expandedstorage.common.Const;
@@ -78,7 +79,7 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
         final boolean hasLevel = blockEntity.hasLevel();
         final BlockState state = hasLevel ? blockEntity.getBlockState() : defaultState;
         final CursedChestType chestType = state.hasProperty(CursedChestBlock.TYPE) ? state.getValue(CursedChestBlock.TYPE) : CursedChestType.SINGLE;
-        Block block = state.getBlock();
+        final Block block = state.getBlock();
         if (block instanceof CursedChestBlock)
         {
             stack.pushPose();
@@ -122,14 +123,16 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     }
 
     private void render(final PoseStack stack, final VertexConsumer consumer, final ModelPart bottom, final ModelPart lid,
-                        final ModelPart lock, final float openNess, final int brightness, int overlay)
+                        final ModelPart lock, float openNess, final int brightness, int overlay)
     {
         if (lid != null)
-        { // Not every chest has a lid
+        {
+            openNess = 1 - openNess;
+            openNess = 1 - openNess * openNess * openNess;
             lid.xRot = -openNess * 1.5707964F;
             lid.render(stack, consumer, brightness, overlay);
             if (lock != null)
-            { // But every lock needs a lid
+            {
                 lock.xRot = lid.xRot;
                 lock.render(stack, consumer, brightness, overlay);
             }
@@ -139,8 +142,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createSingleBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 14, 10, 14), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 14, 5, 14), PartPose.offset(0, 9, 1));
         partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7, -1, 15, 2, 4, 1), PartPose.offset(0, 8, 0));
@@ -149,8 +152,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createVanillaLeftBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 15, 10, 14), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 15, 5, 14), PartPose.offset(0, 9, 1));
         partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(15, -1, 15, 1, 4, 1), PartPose.offset(0, 8, 0));
@@ -159,8 +162,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createVanillaRightBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(0, 0, 1, 15, 10, 14), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(0, 0, 0, 15, 5, 14), PartPose.offset(0, 9, 1));
         partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(0, -1, 15, 1, 4, 1), PartPose.offset(0, 8, 0));
@@ -169,8 +172,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createTallTopBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 14, 10, 14), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 14, 5, 14), PartPose.offset(0, 9, 1));
         partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7, -1, 15, 2, 4, 1), PartPose.offset(0, 8, 0));
@@ -179,16 +182,16 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createTallBottomBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 1, 14, 16, 14), PartPose.ZERO);
         return LayerDefinition.create(meshDefinition, 64, 32);
     }
 
     public static LayerDefinition createLongFrontBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 20).addBox(1, 0, 0, 14, 10, 15), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 15, 14, 5, 15), PartPose.offset(0, 9, -15));
         partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7, -1, 31, 2, 4, 1), PartPose.offset(0, 8, -16));
@@ -197,8 +200,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
 
     public static LayerDefinition createLongBackBodyLayer()
     {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        final MeshDefinition meshDefinition = new MeshDefinition();
+        final PartDefinition partDefinition = meshDefinition.getRoot();
         partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 20).addBox(1, 0, 1, 14, 10, 15), PartPose.ZERO);
         partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 14, 5, 15), PartPose.offset(0, 9, 1));
         return LayerDefinition.create(meshDefinition, 48, 48);
