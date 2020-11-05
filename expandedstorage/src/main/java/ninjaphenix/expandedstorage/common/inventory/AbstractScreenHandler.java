@@ -40,7 +40,7 @@ public abstract class AbstractScreenHandler<T extends ScreenMeta> extends Abstra
     {
         ItemStack stack = ItemStack.EMPTY;
         final Slot slot = slots.get(slotIndex);
-        if (slot != null && slot.hasItem())
+        if (slot.hasItem())
         {
             final ItemStack slotStack = slot.getItem();
             stack = slotStack.copy();

@@ -178,7 +178,7 @@ public class MutatorItem extends ModifierItem
                         if (type != null) { newState = newState.setValue(ChestBlock.TYPE, type); }
                         level.setBlockAndUpdate(pos, newState);
                         final BlockEntity newEntity = level.getBlockEntity(pos);
-                        newEntity.load(newState, ContainerHelper.saveAllItems(newEntity.save(new CompoundTag()), invData));
+                        newEntity.load(ContainerHelper.saveAllItems(newEntity.save(new CompoundTag()), invData));
                     });
         }
     }

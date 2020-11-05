@@ -39,7 +39,7 @@ public final class SingleScreenHandler extends AbstractScreenHandler<SingleScree
             final int y = (i - x) / SCREEN_META.WIDTH;
             addSlot(new Slot(inventory, i, x * 18 + 8, y * 18 + 18));
         }
-        final Container playerInventory = player.inventory;
+        final Container playerInventory = player.getInventory();
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)

@@ -1,14 +1,16 @@
 package ninjaphenix.expandedstorage.common.block.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 
 public final class OldChestBlockEntity extends StorageBlockEntity
 {
-    public OldChestBlockEntity(final ResourceLocation block) { super(ModContent.OLD_CHEST, block); }
+    public OldChestBlockEntity(final BlockPos pos, final BlockState state) { super(ModContent.OLD_CHEST, pos, state); }
 
     @Override
     @SuppressWarnings("ConstantConditions")

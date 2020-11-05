@@ -1,0 +1,5 @@
+- Block Entity on Load in chainmail
+- Cursed chest models need redoing.
+- Testing after fabric api updates
+- StorageBlockEntity#initialize needs to find block tier.
+- ModelLayer mixin needs testing / fixing.

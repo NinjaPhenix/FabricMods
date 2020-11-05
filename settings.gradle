@@ -13,7 +13,6 @@ include 'chainmail'
 include 'chainmail-tests'
 include 'torcherino'
 include 'expandedstorage'
-include 'fatexperienceorbs'
 include 'ninjatips'
 // Non-mods
 include 'renderingtests'

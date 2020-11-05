@@ -64,7 +64,7 @@ public final class ModContent
         CHEST = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("cursed_chest"),
                 BlockEntityType.Builder.of(
-                        () -> new CursedChestBlockEntity(null),
+                        CursedChestBlockEntity::new,
                         chest(Blocks.OAK_PLANKS, Const.resloc("wood_chest"), WOOD, 3, tab),
                         chest(Blocks.PUMPKIN, Const.resloc("pumpkin_chest"), Const.resloc("pumpkin"), 3, tab),
                         chest(Blocks.OAK_PLANKS, Const.resloc("christmas_chest"), Const.resloc("christmas"), 3, tab),
@@ -77,7 +77,7 @@ public final class ModContent
         OLD_CHEST = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("old_cursed_chest"),
                 BlockEntityType.Builder.of(
-                        () -> new OldChestBlockEntity(null),
+                        OldChestBlockEntity::new,
                         old(Blocks.OAK_PLANKS, "wood_chest", WOOD, 3, tab),
                         old(Blocks.IRON_BLOCK, "iron_chest", IRON, 6, tab),
                         old(Blocks.GOLD_BLOCK, "gold_chest", GOLD, 9, tab),
@@ -88,7 +88,7 @@ public final class ModContent
         BARREL = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("barrel"),
                 BlockEntityType.Builder.of(
-                        () -> new BarrelBlockEntity(null),
+                        BarrelBlockEntity::new,
                         barrel(1, 5, 6, Const.resloc("iron_barrel"), IRON, 6, tab),
                         barrel(2, 3, 6, Const.resloc("gold_barrel"), GOLD, 9, tab),
                         barrel(2, 5, 6, Const.resloc("diamond_barrel"), DIAMOND, 12, tab),

@@ -34,7 +34,7 @@ public final class PagedScreenHandler extends AbstractScreenHandler<PagedScreenM
     {
         super(ModContent.PAGED_HANDLER_TYPE, syncId, pos, inventory, player, displayName, getNearestSize(inventory.getContainerSize()));
         resetSlotPositions(true);
-        final Container playerInventory = player.inventory;
+        final Container playerInventory = player.getInventory();
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)

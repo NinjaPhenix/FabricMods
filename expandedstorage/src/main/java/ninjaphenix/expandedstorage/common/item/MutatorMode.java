@@ -22,7 +22,7 @@ public enum MutatorMode
     MutatorMode(final Component title, final Function<Component, MutableComponent> description, final int next)
     {
         this.title = title;
-        this.description = description.apply(Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
+        this.description = description.apply(Const.LSRC).withStyle(ChatFormatting.GRAY);
         this.next = (byte) next;
     }
 }

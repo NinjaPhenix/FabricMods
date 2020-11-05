@@ -1,8 +1,0 @@
-{
-  "required": true,
-  "package": "ninjaphenix.fatxporbs.mixins",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [ "ExperienceOrbEntityMixin" ],
-  "injectors": { "defaultRequire": 1 },
-  "minVersion": "0.7.11"
-}

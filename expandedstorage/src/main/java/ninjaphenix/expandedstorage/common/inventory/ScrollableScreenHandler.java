@@ -43,7 +43,7 @@ public final class ScrollableScreenHandler extends AbstractScreenHandler<Scrolla
             else {y = y * 18 + 18;}
             addSlot(new Slot(INVENTORY, i, x * 18 + 8, y));
         }
-        final Container playerInventory = player.inventory;
+        final Container playerInventory = player.getInventory();
         final int left = (SCREEN_META.WIDTH * 18 + 14) / 2 - 80;
         final int top = 18 + 14 + (SCREEN_META.HEIGHT * 18);
         for (int x = 0; x < 9; x++)

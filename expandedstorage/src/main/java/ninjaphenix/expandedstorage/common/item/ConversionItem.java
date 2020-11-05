@@ -46,7 +46,7 @@ public final class ConversionItem extends ModifierItem
         super(settings);
         FROM = from.getA();
         TO = to.getA();
-        TOOLTIP = new TranslatableComponent(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getB(), to.getB()), Const.leftShiftRightClick).withStyle(ChatFormatting.GRAY);
+        TOOLTIP = new TranslatableComponent(String.format("tooltip.expandedstorage.conversion_kit_%s_%s", from.getB(), to.getB()), Const.LSRC).withStyle(ChatFormatting.GRAY);
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class ConversionItem extends ModifierItem
         }
         level.setBlockAndUpdate(pos, newState);
         blockEntity = (StorageBlockEntity) level.getBlockEntity(pos);
-        blockEntity.load(level.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
+        blockEntity.load(ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
     }
 
     @Override
@@ -188,7 +188,7 @@ public final class ConversionItem extends ModifierItem
         }
         level.setBlockAndUpdate(pos, newState);
         blockEntity = (StorageBlockEntity) level.getBlockEntity(pos);
-        blockEntity.load(level.getBlockState(pos), ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
+        blockEntity.load(ContainerHelper.saveAllItems(blockEntity.save(new CompoundTag()), inventory));
     }
 
     private MappedRegistry<? extends Registries.TierData> getVanillaRegistry(final Block block)

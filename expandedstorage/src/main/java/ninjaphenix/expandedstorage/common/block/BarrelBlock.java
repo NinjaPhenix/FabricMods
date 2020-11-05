@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,13 +36,10 @@ public class BarrelBlock extends StorageBlock
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(final BlockState state, final ServerLevel world, final BlockPos pos, final Random random)
+    public void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final Random random)
     {
-        final BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof BarrelBlockEntity)
-        {
-            ((BarrelBlockEntity) blockEntity).tick();
-        }
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof BarrelBlockEntity) { ((BarrelBlockEntity) blockEntity).recheckOpen(); }
     }
 
     @Nullable
@@ -57,10 +53,13 @@ public class BarrelBlock extends StorageBlock
     @SuppressWarnings("unchecked")
     public MappedRegistry<Registries.TierData> getDataRegistry() { return Registries.BARREL; }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(final BlockGetter world) { return new BarrelBlockEntity(TIER_ID); }
-
     @Override
     protected ResourceLocation getOpenStat() { return Stats.OPEN_BARREL; }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state)
+    {
+        return new BarrelBlockEntity(pos, state);
+    }
 }

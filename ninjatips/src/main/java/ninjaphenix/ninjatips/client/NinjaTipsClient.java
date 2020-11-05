@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.SnbtPrinterTagVisitor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -33,7 +34,7 @@ public class NinjaTipsClient implements ClientModInitializer
             if (Screen.hasControlDown())
             {
                 tooltip.add(new TranslatableComponent(getTranslationId("nbt"), "").withStyle(GRAY));
-                @SuppressWarnings("ConstantConditions") final String[] lines = tag.getPrettyDisplay().getString().split("\\n");
+                final String[] lines = new SnbtPrinterTagVisitor().visit(tag).split("\\n");
                 for (String line : lines) { tooltip.add(new TextComponent(line)); }
             }
             else

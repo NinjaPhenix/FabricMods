@@ -4,58 +4,75 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.api.EnvironmentInterfaces;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.ChestBlock;
-import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
 
 @EnvironmentInterfaces({@EnvironmentInterface(value = EnvType.CLIENT, itf = LidBlockEntity.class)})
-public final class CursedChestBlockEntity extends StorageBlockEntity implements LidBlockEntity, TickableBlockEntity
+public final class CursedChestBlockEntity extends StorageBlockEntity implements LidBlockEntity
 {
-    private float animationAngle, lastAnimationAngle;
-    private int viewerCount, ticksOpen;
+    private final ChestLidController chestLidController;
+    private final ContainerOpenersCounter openersCounter;
 
-    public CursedChestBlockEntity(final ResourceLocation block) { super(ModContent.CHEST, block); }
+    public CursedChestBlockEntity(final BlockPos pos, final BlockState state)
+    {
+        super(ModContent.CHEST, pos, state);
+        openersCounter = new ContainerOpenersCounter()
+        {
+            @Override
+            protected void onOpen(final Level level, final BlockPos pos, final BlockState state)
+            {
+                CursedChestBlockEntity.playSound(level, pos, state, SoundEvents.CHEST_OPEN);
+            }
+
+            @Override
+            protected void onClose(final Level level, final BlockPos pos, final BlockState state)
+            {
+                CursedChestBlockEntity.playSound(level, pos, state, SoundEvents.CHEST_CLOSE);
+            }
+
+            @Override
+            protected void openerCountChanged(final Level level, final BlockPos pos, final BlockState state, int i, int j)
+            {
+                CursedChestBlockEntity.this.signalOpenCount(level, pos, state, i, j);
+            }
+
+            @Override
+            protected boolean isOwnContainer(Player player)
+            {
+                if (!(player.containerMenu instanceof AbstractScreenHandler)) { return false; }
+                else
+                {
+                    final Container container = ((AbstractScreenHandler<?>) player.containerMenu).getInventory();
+                    return container == CursedChestBlockEntity.this ||
+                            container instanceof DoubleSidedInventory && ((DoubleSidedInventory) container).isPart(CursedChestBlockEntity.this);
+                }
+            }
+        };
+        chestLidController = new ChestLidController();
+    }
 
     public ResourceLocation getBlock() { return block; }
 
-    public static int countViewers(final Level world, final WorldlyContainer instance, final int x, final int y, final int z)
+    public static void lidAnimateTick(final Level level, final BlockPos pos, final BlockState state, final CursedChestBlockEntity blockEntity)
     {
-        return world.getEntitiesOfClass(Player.class, new AABB(x - 5, y - 5, z - 5, x + 6, y + 6, z + 6)).stream()
-                .filter(player -> player.containerMenu instanceof AbstractScreenHandler)
-                .map(player -> ((AbstractScreenHandler<?>) player.containerMenu).getInventory())
-                .filter(inventory -> inventory == instance ||
-                        inventory instanceof DoubleSidedInventory && ((DoubleSidedInventory) inventory).isPart(instance))
-                .mapToInt(inv -> 1).sum();
-    }
-
-    private static int tickViewerCount(final Level world, final CursedChestBlockEntity instance, final int ticksOpen, final int x,
-                                       final int y, final int z, final int viewCount)
-    {
-        if (!world.isClientSide && viewCount != 0 && (ticksOpen + x + y + z) % 200 == 0)
-        {
-            return countViewers(world, instance, x, y, z);
-        }
-        return viewCount;
+        blockEntity.chestLidController.tickLid();
     }
 
     @Environment(EnvType.CLIENT)
@@ -74,43 +91,27 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     }
 
     @Override
-    public boolean triggerEvent(final int actionId, final int value)
+    public boolean triggerEvent(int i, int j)
     {
-        if (actionId == 1)
+        if (i == 1)
         {
-            viewerCount = value;
+            chestLidController.shouldBeOpen(j > 0);
             return true;
         }
-        else { return super.triggerEvent(actionId, value); }
+        return super.triggerEvent(i, j);
     }
 
     @Override
-    public float getOpenNess(final float f) { return Mth.lerp(f, lastAnimationAngle, animationAngle); }
+    public float getOpenNess(final float f) { return chestLidController.getOpenness(f); }
 
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    public void tick()
+    private static void playSound(final Level level, final BlockPos pos, final BlockState state, final SoundEvent soundEvent)
     {
-        viewerCount = tickViewerCount(level, this, ++ticksOpen, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), viewerCount);
-        lastAnimationAngle = animationAngle;
-        if (viewerCount > 0 && animationAngle == 0.0F) { playSound(SoundEvents.CHEST_OPEN); }
-        if (viewerCount == 0 && animationAngle > 0.0F || viewerCount > 0 && animationAngle < 1.0F)
-        {
-            animationAngle = Mth.clamp(animationAngle + (viewerCount > 0 ? 0.1F : -0.1F), 0, 1);
-            if (animationAngle < 0.5F && lastAnimationAngle >= 0.5F) { playSound(SoundEvents.CHEST_CLOSE); }
-        }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void playSound(final SoundEvent soundEvent)
-    {
-        final BlockState state = getBlockState();
         final DoubleBlockCombiner.BlockType mergeType = ChestBlock.getBlockType(state);
         final Vec3 soundPos;
-        if (mergeType == DoubleBlockCombiner.BlockType.SINGLE) { soundPos = Vec3.atCenterOf(worldPosition); }
+        if (mergeType == DoubleBlockCombiner.BlockType.SINGLE) { soundPos = Vec3.atCenterOf(pos); }
         else if (mergeType == DoubleBlockCombiner.BlockType.FIRST)
         {
-            soundPos = Vec3.atCenterOf(worldPosition).add(Vec3.atLowerCornerOf(ChestBlock.getDirectionToAttached(state).getNormal()).scale(0.5D));
+            soundPos = Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(ChestBlock.getDirectionToAttached(state).getNormal()).scale(0.5D));
         }
         else { return; }
         level.playSound(null, soundPos.x(), soundPos.y(), soundPos.z(), soundEvent, SoundSource.BLOCKS, 0.5F,
@@ -120,28 +121,19 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     @Override
     public void startOpen(final Player player)
     {
-        if (player.isSpectator()) { return; }
-        if (viewerCount < 0) { viewerCount = 0; }
-        viewerCount++;
-        onInvOpenOrClose();
+        if (!player.isSpectator()) { openersCounter.incrementOpeners(getLevel(), getBlockPos(), getBlockState()); }
     }
 
     @Override
     public void stopOpen(final Player player)
     {
-        if (player.isSpectator()) { return; }
-        viewerCount--;
-        onInvOpenOrClose();
+        if (!player.isSpectator()) { openersCounter.decrementOpeners(getLevel(), getBlockPos(), getBlockState()); }
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void onInvOpenOrClose()
+    protected void signalOpenCount(final Level level, final BlockPos pos, final BlockState state, int i, int j)
     {
-        final Block block = getBlockState().getBlock();
-        if (block instanceof CursedChestBlock)
-        {
-            level.blockEvent(worldPosition, block, 1, viewerCount);
-            level.updateNeighborsAt(worldPosition, block);
-        }
+        level.blockEvent(pos, state.getBlock(), 1, j);
     }
+
+    public void recheckOpen() { openersCounter.recheckOpeners(getLevel(), getBlockPos(), getBlockState()); }
 }

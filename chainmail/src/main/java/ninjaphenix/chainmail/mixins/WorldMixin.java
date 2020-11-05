@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Level.class)
 public abstract class WorldMixin
 {
-    @Inject(method = "addBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;)Z", at = @At("TAIL"))
+    //@Inject(method = "addBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;)Z", at = @At("TAIL"))
     private void chainmail_addBlockEntity(final BlockEntity be, final CallbackInfoReturnable<Boolean> cir)
     {
         if (be instanceof ExpandedBlockEntity) { ((ExpandedBlockEntity) be).onLoad(); }

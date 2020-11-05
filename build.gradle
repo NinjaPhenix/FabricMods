@@ -44,15 +44,10 @@ allprojects {
         minecraft("com.mojang:minecraft:${minecraft_version}")
         mappings(minecraft.officialMojangMappings())
         modImplementation("net.fabricmc:fabric-loader:${loader_version}")
-        modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")  {
-            if(fabric_api_jar_old == "true") {
-                exclude(module: "fabric-registry-sync-v0")
-                exclude(module: "fabric-biomes-v1")
-            }
-        }
-        modCompile "me.shedaniel:RoughlyEnoughItems:${rei_version}", withoutUnwanted
+        modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems:${rei_version}", withoutUnwanted
 
-        modCompile "io.github.prospector:modmenu:${modmenu_version}", withoutUnwanted
+        modCompileOnly "io.github.prospector:modmenu:${modmenu_version}", withoutUnwanted
 
         modImplementation "io.github.cottonmc:Jankson-Fabric:${jankson_version}", withoutUnwanted
 

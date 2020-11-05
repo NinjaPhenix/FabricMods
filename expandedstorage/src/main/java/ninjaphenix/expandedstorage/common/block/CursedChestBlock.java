@@ -4,9 +4,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -14,6 +20,9 @@ import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
 import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Random;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -36,7 +45,26 @@ public final class CursedChestBlock extends FluidLoggableChestBlock<CursedChestB
     }
 
     @Override
-    public BlockEntity newBlockEntity(final BlockGetter view) { return new CursedChestBlockEntity(TIER_ID); }
+    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) { return new CursedChestBlockEntity(pos, state); }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, final BlockState state, final BlockEntityType<T> type)
+    {
+        return level.isClientSide ? createTickerHelper(type, ModContent.CHEST, CursedChestBlockEntity::lidAnimateTick) : null;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final Random random)
+    {
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof CursedChestBlockEntity)
+        {
+            ((CursedChestBlockEntity) blockEntity).recheckOpen();
+        }
+
+    }
 
     @Override
     @SuppressWarnings("deprecation")

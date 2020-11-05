@@ -26,9 +26,9 @@ dependencies {
         withoutUnwanted
     }
 
-    modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT') {
-        withoutUnwanted
-    }
+    //modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT') {
+    //    withoutUnwanted
+    //}
 
     // todo: grab off curseforge
     //modRuntime('local:InventorySorter:1.7.0-1.16')

@@ -1,5 +1,6 @@
 package ninjaphenix.expandedstorage.common.block.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -23,10 +24,10 @@ public abstract class StorageBlockEntity extends RandomizableContainerBlockEntit
     protected int[] SLOTS;
     protected ResourceLocation block;
 
-    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final ResourceLocation block)
+    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final BlockPos pos, final BlockState state)
     {
-        super(blockEntityType);
-        if (block != null) { initialize(block); }
+        super(blockEntityType, pos, state);
+        // todo: get type from state and initialize.
     }
 
     protected abstract void initialize(final ResourceLocation block);
@@ -59,10 +60,9 @@ public abstract class StorageBlockEntity extends RandomizableContainerBlockEntit
     public boolean isEmpty() { return inventory.stream().allMatch(ItemStack::isEmpty); }
 
     @Override
-    public void load(final BlockState state, final CompoundTag tag)
+    public void load(final CompoundTag tag)
     {
-        super.load(state, tag);
-        initialize(((StorageBlock) state.getBlock()).TIER_ID);
+        super.load(tag);
         if (!tryLoadLootTable(tag)) { ContainerHelper.loadAllItems(tag, inventory); }
     }
 
