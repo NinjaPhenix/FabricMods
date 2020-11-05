@@ -60,6 +60,8 @@ public class BarrelBlock extends StorageBlock
     @Override
     public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state)
     {
-        return new BarrelBlockEntity(pos, state);
+        final BarrelBlockEntity entity = new BarrelBlockEntity(pos, state);
+        entity.initialize(TIER_ID);
+        return entity;
     }
 }

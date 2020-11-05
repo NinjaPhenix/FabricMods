@@ -27,10 +27,9 @@ public abstract class StorageBlockEntity extends RandomizableContainerBlockEntit
     protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final BlockPos pos, final BlockState state)
     {
         super(blockEntityType, pos, state);
-        // todo: get type from state and initialize.
     }
 
-    protected abstract void initialize(final ResourceLocation block);
+    public abstract void initialize(final ResourceLocation block);
 
     @Override
     protected NonNullList<ItemStack> getItems() { return inventory; }

@@ -78,8 +78,7 @@ public final class ExpandedStorageClient implements ClientModInitializer
         ClientSpriteRegistryCallback.event(Sheets.CHEST_SHEET).register(
                 (atlas, registry) -> Registries.CHEST.stream().forEach(data -> Arrays.stream(CursedChestType.values())
                         .map(data::getChestTexture).forEach(registry::register)));
-
-        BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, (BlockEntityRendererProvider<CursedChestBlockEntity>) CursedChestBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, CursedChestBlockEntityRenderer::new);
         ModContent.CHEST.validBlocks.forEach(block -> BuiltinItemRendererRegistry.INSTANCE.register(
                 block.asItem(), (itemStack, type, stack, vertexConsumers, light, overlay) ->
                 {
@@ -100,10 +99,7 @@ public final class ExpandedStorageClient implements ClientModInitializer
         registerModelLayer(Const.LONG_BACK_LAYER);
     }
 
-    private void registerModelLayer(final ModelLayerLocation layer)
-    {
-        ModelLayers.ALL_MODELS.add(layer);
-    }
+    private void registerModelLayer(final ModelLayerLocation layer) { ModelLayers.ALL_MODELS.add(layer); }
 
     private static JanksonConfigParser getConfigParser()
     {

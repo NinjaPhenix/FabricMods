@@ -60,7 +60,7 @@ public class BarrelBlockEntity extends StorageBlockEntity
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected void initialize(final ResourceLocation block)
+    public void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.BARREL.get(block).CONTAINER_NAME;

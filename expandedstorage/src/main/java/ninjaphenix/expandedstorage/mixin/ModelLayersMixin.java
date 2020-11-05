@@ -18,7 +18,7 @@ import java.util.Map;
 public class ModelLayersMixin
 {
     @Inject(method = "createRoots()Ljava/util/Map;",
-            at = @At(value = "INVOKE:FIRST", target = "Lnet/minecraft/client/model/geom/builders/LayerDefinition;create(Lnet/minecraft/client/model/geom/builders/MeshDefinition;II)Lnet/minecraft/client/model/geom/builders/LayerDefinition;"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/geom/builders/LayerDefinition;create(Lnet/minecraft/client/model/geom/builders/MeshDefinition;II)Lnet/minecraft/client/model/geom/builders/LayerDefinition;", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private static void addLayerDefinitions(final CallbackInfoReturnable<Map<ModelLayerLocation, ModelPart>> cir,
                                             final ImmutableMap.Builder<ModelLayerLocation, LayerDefinition> builder)

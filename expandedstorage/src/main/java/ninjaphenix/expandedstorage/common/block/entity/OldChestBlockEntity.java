@@ -14,7 +14,7 @@ public final class OldChestBlockEntity extends StorageBlockEntity
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected void initialize(final ResourceLocation block)
+    public void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.OLD_CHEST.get(block).CONTAINER_NAME;

@@ -80,7 +80,7 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
 
     @Override
     @SuppressWarnings({"ConstantConditions"})
-    protected void initialize(final ResourceLocation block)
+    public void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.CHEST.get(block).CONTAINER_NAME;
