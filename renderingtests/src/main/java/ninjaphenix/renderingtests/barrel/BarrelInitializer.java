@@ -3,6 +3,7 @@ package ninjaphenix.renderingtests.barrel;
 import net.fabricmc.fabric.api.client.model.*;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
@@ -56,7 +57,7 @@ public class BarrelInitializer implements Initializer
         DIAMOND_BARREL.register();
         OBSIDIAN_BARREL.register();
         NETHERITE_BARREL.register();
-        BARREL_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Main.resloc("barrel"), BlockEntityType.Builder.of(BarrelBlockEntity::new,
+        BARREL_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Main.resloc("barrel"), FabricBlockEntityTypeBuilder.create(BarrelBlockEntity::new,
                                                                                                                               IRON_BARREL.block(),
                                                                                                                               GOLD_BARREL.block(),
                                                                                                                               DIAMOND_BARREL.block(),

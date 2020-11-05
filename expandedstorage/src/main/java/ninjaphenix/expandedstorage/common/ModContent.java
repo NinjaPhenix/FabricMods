@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.FabricLoader;
@@ -63,7 +64,7 @@ public final class ModContent
         final ResourceLocation NETHERITE = Const.resloc("netherite");
         CHEST = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("cursed_chest"),
-                BlockEntityType.Builder.of(
+                FabricBlockEntityTypeBuilder.create(
                         CursedChestBlockEntity::new,
                         chest(Blocks.OAK_PLANKS, Const.resloc("wood_chest"), WOOD, 3, tab),
                         chest(Blocks.PUMPKIN, Const.resloc("pumpkin_chest"), Const.resloc("pumpkin"), 3, tab),
@@ -76,7 +77,7 @@ public final class ModContent
                         .build(null));
         OLD_CHEST = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("old_cursed_chest"),
-                BlockEntityType.Builder.of(
+                FabricBlockEntityTypeBuilder.create(
                         OldChestBlockEntity::new,
                         old(Blocks.OAK_PLANKS, "wood_chest", WOOD, 3, tab),
                         old(Blocks.IRON_BLOCK, "iron_chest", IRON, 6, tab),
@@ -87,7 +88,7 @@ public final class ModContent
                         .build(null));
         BARREL = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("barrel"),
-                BlockEntityType.Builder.of(
+                FabricBlockEntityTypeBuilder.create(
                         BarrelBlockEntity::new,
                         barrel(1, 5, 6, Const.resloc("iron_barrel"), IRON, 6, tab),
                         barrel(2, 3, 6, Const.resloc("gold_barrel"), GOLD, 9, tab),

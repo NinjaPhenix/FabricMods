@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -14,6 +15,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +29,9 @@ import ninjaphenix.expandedstorage.client.screen.SelectContainerScreen;
 import ninjaphenix.expandedstorage.client.screen.SingleScreen;
 import ninjaphenix.expandedstorage.common.Const;
 import ninjaphenix.expandedstorage.common.ExpandedStorage;
+import ninjaphenix.expandedstorage.common.ModContent;
 import ninjaphenix.expandedstorage.common.Registries;
+import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.misc.CursedChestType;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -67,7 +72,9 @@ public final class ExpandedStorageClient implements ClientModInitializer
         ClientSpriteRegistryCallback.event(Sheets.CHEST_SHEET).register(
                 (atlas, registry) -> Registries.CHEST.stream().forEach(data -> Arrays.stream(CursedChestType.values())
                         .map(data::getChestTexture).forEach(registry::register)));
-        //BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, CursedChestBlockEntityRenderer::new);
+
+        BlockEntityRendererRegistry.INSTANCE.register(ModContent.CHEST, (BlockEntityRendererProvider<CursedChestBlockEntity>) CursedChestBlockEntityRenderer::new);
+        // todo: BER item models
         //ModContent.CHEST.validBlocks.forEach(block -> BuiltinItemRendererRegistry.INSTANCE.register(
         //        block.asItem(), (itemStack, type, stack, vertexConsumers, light, overlay) ->
         //        {
