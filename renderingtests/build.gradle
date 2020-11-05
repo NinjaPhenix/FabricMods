@@ -18,3 +18,7 @@ dependencies {
         withoutUnwanted
     }
 }
+
+loom {
+    accessWidener = file('src/main/resources/renderingtests.accesswidener')
+}

@@ -1,6 +1,5 @@
 package ninjaphenix.renderingtests;
 
-import com.mojang.datafixers.types.Func;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;

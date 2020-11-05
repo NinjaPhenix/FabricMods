@@ -29,10 +29,7 @@ public class BarrelModel implements UnbakedModel, BakedModel, FabricBakedModel
 {
     Mesh mesh;
 
-    public BarrelModel()
-    {
-
-    }
+    public BarrelModel() { }
 
     @Override
     public boolean isVanillaAdapter() { return false; }

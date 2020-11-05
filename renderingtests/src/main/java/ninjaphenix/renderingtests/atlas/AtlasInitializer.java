@@ -1,15 +1,10 @@
 package ninjaphenix.renderingtests.atlas;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.SimpleResource;
 import ninjaphenix.renderingtests.Initializer;
-import ninjaphenix.renderingtests.Main;
-import java.io.IOException;
 
 public class AtlasInitializer implements Initializer
 {

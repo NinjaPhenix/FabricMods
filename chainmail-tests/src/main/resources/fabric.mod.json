@@ -3,5 +3,6 @@
   "id": "chainmail-tests",
   "version": "${mod_version}",
   "name": "Chainmail Test Mod",
-  "entrypoints": { "main": [ "ninjaphenix.tests.chainmail.Main::INSTANCE" ] }
+  "entrypoints": { "main": [ "ninjaphenix.tests.chainmail.Main::INSTANCE" ] },
+  "accessWidener": "chainmail-tests.accesswidener"
 }

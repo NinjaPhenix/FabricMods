@@ -2,3 +2,7 @@ dependencies {
     compile project(path: ":chainmail")
     include project(path: ":chainmail")
 }
+
+loom {
+    accessWidener = file('src/main/resources/chainmail-tests.accesswidener')
+}

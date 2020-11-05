@@ -1,15 +1,11 @@
 package ninjaphenix.renderingtests.barrel;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -58,10 +54,13 @@ public class BarrelBlock extends BaseEntityBlock
         return InteractionResult.FAIL;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(final BlockGetter getter) { return new BarrelBlockEntity(); }
-
     @Override
     public RenderShape getRenderShape(final BlockState blockState) { return RenderShape.MODEL; }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state)
+    {
+        return new BarrelBlockEntity(pos, state);
+    }
 }

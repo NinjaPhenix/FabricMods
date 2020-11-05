@@ -8,10 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public class BarrelItem extends BlockItem
 {
-    public BarrelItem(final Block block, final Properties properties)
-    {
-        super(block, properties);
-    }
+    public BarrelItem(final Block block, final Properties properties) { super(block, properties); }
 
     @Override
     public ItemStack getDefaultInstance()

@@ -8,5 +8,6 @@
   "license": "MIT-0",
   "entrypoints": {
     "main": [ "ninjaphenix.renderingtests.Main::INSTANCE" ]
-  }
+  },
+  "accessWidener": "renderingtests.accesswidener"
 }
