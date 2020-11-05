@@ -11,7 +11,7 @@ public abstract class FixedSliderWidget extends AbstractSliderButton
 {
     private final float nudgeAmount;
 
-    protected FixedSliderWidget(int x, int y, int width, double progress, int permutations)
+    protected FixedSliderWidget(final int x, final int y, final int width, final double progress, final int permutations)
     {
         super(x, y, width, 20, new TextComponent(""), progress);
         nudgeAmount = 1.0F / permutations;
@@ -19,14 +19,14 @@ public abstract class FixedSliderWidget extends AbstractSliderButton
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers)
     {
         boolean pressedLeft = keyCode == 263;
         if (pressedLeft || keyCode == 262) { this.setValue(this.value + (pressedLeft ? -nudgeAmount : nudgeAmount)); }
         return false;
     }
 
-    private void setValue(double value)
+    private void setValue(final double value)
     {
         double currentValue = this.value;
         this.value = Mth.clamp(value, 0, 1);

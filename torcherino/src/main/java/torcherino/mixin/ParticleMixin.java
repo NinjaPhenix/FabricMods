@@ -18,9 +18,8 @@ public abstract class ParticleMixin
     protected abstract <T extends ParticleOptions> void register(final ParticleType<T> particleType, final ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration);
 
     @Inject(method = "registerProviders()V", at = @At("TAIL"))
-    private void registerAdditionalFactories(CallbackInfo ci)
+    private void registerAdditionalFactories(final CallbackInfo ci)
     {
         Torcherino.particles.forEach(pt -> register(pt, FlameParticle.Provider::new));
     }
-
 }

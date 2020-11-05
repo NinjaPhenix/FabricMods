@@ -26,18 +26,19 @@ import java.util.function.Consumer;
 
 public class TorcherinoLogic
 {
-
-    public static void scheduledTick(BlockState state, ServerLevel world, BlockPos pos, Random random)
+    public static void scheduledTick(final BlockState state, final ServerLevel level, final BlockPos pos, final Random random)
     {
-        if (world.isClientSide) { return; }
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof TorcherinoBlockEntity) { ((TorcherinoBlockEntity) blockEntity).tick(); }
+        if (level.isClientSide) { return; }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        // todo: figure out scheduled tick
+        //if (blockEntity instanceof TorcherinoBlockEntity) { ((TorcherinoBlockEntity) blockEntity).tick(); }
     }
 
-    public static InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+    public static InteractionResult onUse(final BlockState state, final Level level, final BlockPos pos, final Player player,
+                                          final InteractionHand hand, final BlockHitResult hit)
     {
-        if (world.isClientSide || hand == InteractionHand.OFF_HAND) { return InteractionResult.SUCCESS; }
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (level.isClientSide || hand == InteractionHand.OFF_HAND) { return InteractionResult.SUCCESS; }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof TorcherinoBlockEntity)
         {
             FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -47,18 +48,19 @@ public class TorcherinoLogic
         return InteractionResult.SUCCESS;
     }
 
-    public static void neighborUpdate(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean boolean_1,
-            Consumer<TorcherinoBlockEntity> func)
+    public static void neighborUpdate(final BlockState state, final Level level, final BlockPos pos, final Block neighborBlock,
+                                      final BlockPos neighborPos, final boolean boolean_1, final Consumer<TorcherinoBlockEntity> func)
     {
-        if (world.isClientSide) { return; }
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (level.isClientSide) { return; }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof TorcherinoBlockEntity) { func.accept((TorcherinoBlockEntity) blockEntity); }
     }
 
-    public static void onPlaced(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, Block block)
+    public static void onPlaced(final Level level, final BlockPos pos, final BlockState state, final LivingEntity placer,
+                                final ItemStack stack, final Block block)
     {
-        if (world.isClientSide) { return; }
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (level.isClientSide) { return; }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof TorcherinoBlockEntity)
         {
             TorcherinoBlockEntity be = (TorcherinoBlockEntity) blockEntity;

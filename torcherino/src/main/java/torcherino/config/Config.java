@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import ninjaphenix.chainmail.api.config.JanksonConfigParser;
 import org.apache.logging.log4j.MarkerManager;
 import torcherino.api.TorcherinoAPI;
-import torcherino.config.Config.Tier;
 
 public class Config
 {
@@ -36,7 +35,7 @@ public class Config
 
     public static void initialize()
     {
-        JanksonConfigParser parser = new JanksonConfigParser.Builder()
+        final JanksonConfigParser parser = new JanksonConfigParser.Builder()
                 .deSerializer(JsonPrimitive.class, ResourceLocation.class, (it, marshaller) -> new ResourceLocation(it.asString()),
                         ((identifier, marshaller) -> marshaller.serialize(identifier.toString())))
                 .deSerializer(JsonObject.class, Tier.class, (it, marshaller) -> {
@@ -63,8 +62,8 @@ public class Config
         online_mode = online_mode.toUpperCase();
         if (!(online_mode.equals("ONLINE") || online_mode.equals("RESTART"))) { online_mode = ""; }
         for (Tier tier : tiers) { TorcherinoAPI.INSTANCE.registerTier(new ResourceLocation("torcherino", tier.name), tier.max_speed, tier.xz_range, tier.y_range); }
-        for (ResourceLocation id : blacklisted_blocks) { TorcherinoAPI.INSTANCE.blacklistBlock(id); }
-        for (ResourceLocation id : blacklisted_blockentities) { TorcherinoAPI.INSTANCE.blacklistBlockEntity(id); }
+        for (ResourceLocation resloc : blacklisted_blocks) { TorcherinoAPI.INSTANCE.blacklistBlock(resloc); }
+        for (ResourceLocation resloc : blacklisted_blockentities) { TorcherinoAPI.INSTANCE.blacklistBlockEntity(resloc); }
     }
 
     static class Tier
@@ -74,7 +73,7 @@ public class Config
         final int xz_range;
         final int y_range;
 
-        Tier(String name, int max_speed, int xz_range, int y_range)
+        Tier(final String name, final int max_speed, final int xz_range, final int y_range)
         {
             this.name = name;
             this.max_speed = max_speed;

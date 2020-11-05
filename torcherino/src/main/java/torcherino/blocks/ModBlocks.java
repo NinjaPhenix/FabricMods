@@ -32,21 +32,21 @@ public class ModBlocks
 
     public void initialize()
     {
-        Map<ResourceLocation, Tier> tiers = TorcherinoAPI.INSTANCE.getTiers();
-        tiers.forEach((tierId, tier) ->
+        final Map<ResourceLocation, Tier> tiers = TorcherinoAPI.INSTANCE.getTiers();
+        tiers.forEach((tierRl, tier) ->
         {
-            if (!tierId.getNamespace().equals(Torcherino.MOD_ID)) { return; }
-            final ResourceLocation torcherinoId = id(tierId, "torcherino");
-            final ResourceLocation jackoLanterinoId = id(tierId, "lanterino");
-            final ResourceLocation lanterinoId = id(tierId, "lantern");
-            ParticleOptions particleEffect = (SimpleParticleType) Registry.PARTICLE_TYPE.get(id(tierId, "flame"));
-            TorcherinoBlock torcherinoBlock = new TorcherinoBlock(tierId, particleEffect);
+            if (!tierRl.getNamespace().equals(Torcherino.MOD_ID)) { return; }
+            final ResourceLocation torcherinoId = resloc(tierRl, "torcherino");
+            final ResourceLocation jackoLanterinoId = resloc(tierRl, "lanterino");
+            final ResourceLocation lanterinoId = resloc(tierRl, "lantern");
+            final ParticleOptions particleEffect = (SimpleParticleType) Registry.PARTICLE_TYPE.get(resloc(tierRl, "flame"));
+            final TorcherinoBlock torcherinoBlock = new TorcherinoBlock(tierRl, particleEffect);
             registerAndBlacklist(torcherinoId, torcherinoBlock);
-            WallTorcherinoBlock torcherinoWallBlock = new WallTorcherinoBlock(tierId, torcherinoBlock, particleEffect);
+            final WallTorcherinoBlock torcherinoWallBlock = new WallTorcherinoBlock(tierRl, torcherinoBlock, particleEffect);
             registerAndBlacklist(new ResourceLocation(torcherinoId.getNamespace(), "wall_" + torcherinoId.getPath()), torcherinoWallBlock);
-            JackoLanterinoBlock jackoLanterinoBlock = new JackoLanterinoBlock(tierId);
+            final JackoLanterinoBlock jackoLanterinoBlock = new JackoLanterinoBlock(tierRl);
             registerAndBlacklist(jackoLanterinoId, jackoLanterinoBlock);
-            LanterinoBlock lanterinoBlock = new LanterinoBlock(tierId);
+            final LanterinoBlock lanterinoBlock = new LanterinoBlock(tierRl);
             registerAndBlacklist(lanterinoId, lanterinoBlock);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
             {
@@ -54,12 +54,12 @@ public class ModBlocks
                 SetRenderLayer(torcherinoWallBlock);
                 SetRenderLayer(lanterinoBlock);
             }
-            StandingAndWallBlockItem torcherinoItem = new StandingAndWallBlockItem(torcherinoBlock, torcherinoWallBlock,
+            final StandingAndWallBlockItem torcherinoItem = new StandingAndWallBlockItem(torcherinoBlock, torcherinoWallBlock,
                     new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
             Registry.register(Registry.ITEM, torcherinoId, torcherinoItem);
-            BlockItem jackoLanterinoItem = new BlockItem(jackoLanterinoBlock, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+            final BlockItem jackoLanterinoItem = new BlockItem(jackoLanterinoBlock, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
             Registry.register(Registry.ITEM, jackoLanterinoId, jackoLanterinoItem);
-            BlockItem lanterinoItem = new BlockItem(lanterinoBlock, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+            final BlockItem lanterinoItem = new BlockItem(lanterinoBlock, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
             Registry.register(Registry.ITEM, lanterinoId, lanterinoItem);
         });
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(Torcherino.MOD_ID, "torcherino"),
@@ -67,17 +67,17 @@ public class ModBlocks
     }
 
     @Environment(EnvType.CLIENT)
-    private void SetRenderLayer(Block block) { BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()); }
+    private void SetRenderLayer(final Block block) { BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()); }
 
-    private void registerAndBlacklist(ResourceLocation id, Block block)
+    private void registerAndBlacklist(final ResourceLocation resloc, final Block block)
     {
-        Registry.register(Registry.BLOCK, id, block);
-        TorcherinoAPI.INSTANCE.blacklistBlock(id);
+        Registry.register(Registry.BLOCK, resloc, block);
+        TorcherinoAPI.INSTANCE.blacklistBlock(resloc);
     }
 
-    private ResourceLocation id(ResourceLocation tierID, String type)
+    private ResourceLocation resloc(final ResourceLocation tierRl, final String type)
     {
-        if (tierID.getPath().equals("normal")) { return new ResourceLocation(Torcherino.MOD_ID, type); }
-        return new ResourceLocation(Torcherino.MOD_ID, tierID.getPath() + '_' + type);
+        if (tierRl.getPath().equals("normal")) { return new ResourceLocation(Torcherino.MOD_ID, type); }
+        return new ResourceLocation(Torcherino.MOD_ID, tierRl.getPath() + '_' + type);
     }
 }

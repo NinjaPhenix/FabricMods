@@ -35,7 +35,7 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
     private static final HashSet<String> allowedUuids = new HashSet<>();
     public static ArrayList<SimpleParticleType> particles = new ArrayList<>();
 
-    public static boolean hasIsOnline(String uuid) { return allowedUuids.contains(uuid); }
+    public static boolean hasIsOnline(final String uuid) { return allowedUuids.contains(uuid); }
 
     @Override
     public void onInitialize()
@@ -51,8 +51,8 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
         ModBlocks.INSTANCE.initialize();
         ServerSidePacketRegistry.INSTANCE.register(new ResourceLocation(Torcherino.MOD_ID, "utv"), (PacketContext context, FriendlyByteBuf buffer) ->
         {
-            Level world = context.getPlayer().getCommandSenderWorld();
-            BlockPos pos = buffer.readBlockPos();
+            final Level world = context.getPlayer().getCommandSenderWorld();
+            final BlockPos pos = buffer.readBlockPos();
             buffer.retain();
             context.getTaskQueue().execute(() ->
             {
@@ -71,8 +71,8 @@ public class Torcherino implements ModInitializer, TorcherinoInitializer
         PlayerConnectCallback.EVENT.register(player ->
         {
             allowedUuids.add(player.getStringUUID());
-            ImmutableMap<ResourceLocation, Tier> tiers = TorcherinoAPI.INSTANCE.getTiers();
-            FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+            final ImmutableMap<ResourceLocation, Tier> tiers = TorcherinoAPI.INSTANCE.getTiers();
+            final FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
             packetBuffer.writeInt(tiers.size());
             tiers.forEach((id, tier) ->
             {

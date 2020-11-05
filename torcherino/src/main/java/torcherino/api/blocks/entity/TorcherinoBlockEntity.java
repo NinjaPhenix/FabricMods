@@ -11,19 +11,19 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import ninjaphenix.chainmail.api.blockentity.ExpandedBlockEntity;
-import torcherino.Torcherino;
 import torcherino.api.Tier;
 import torcherino.api.TierSupplier;
 import torcherino.api.TorcherinoAPI;
 import torcherino.config.Config;
 
-public class TorcherinoBlockEntity extends BlockEntity implements Nameable, TickableBlockEntity, TierSupplier, ExpandedBlockEntity
+public class TorcherinoBlockEntity extends BlockEntity implements Nameable, TierSupplier, ExpandedBlockEntity
 {
     private static final String onlineMode = Config.INSTANCE.online_mode;
     public static int randomTicks;
@@ -34,7 +34,10 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
     private ResourceLocation tierID;
     private String uuid = "";
 
-    public TorcherinoBlockEntity() { super(Registry.BLOCK_ENTITY_TYPE.get(new ResourceLocation("torcherino", "torcherino"))); }
+    public TorcherinoBlockEntity(final BlockPos pos, final BlockState state)
+    {
+        super(Registry.BLOCK_ENTITY_TYPE.get(new ResourceLocation("torcherino", "torcherino")), pos, state);
+    }
 
     @Override
     public boolean hasCustomName() { return customName != null; }
@@ -60,37 +63,48 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
         level.getServer().tell(new TickTask(level.getServer().getTickCount(), () -> getBlockState().neighborChanged(level, worldPosition, null, null, false)));
     }
 
-    @Override
-    public void tick()
-    {
-        if (!active || speed == 0 || (xRange == 0 && yRange == 0 && zRange == 0)) { return; }
-        if (!onlineMode.equals("") && !Torcherino.hasIsOnline(getOwner())) { return; }
-        randomTicks = level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
-        area.forEach(this::tickBlock);
-    }
+    // todo: move this to block code
+    //@Override
+    //public void tick()
+    //{
+    //    if (!active || speed == 0 || (xRange == 0 && yRange == 0 && zRange == 0)) { return; }
+    //    if (!onlineMode.equals("") && !Torcherino.hasIsOnline(getOwner())) { return; }
+    //    randomTicks = level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
+    //    area.forEach(this::tickBlock);
+    //}
 
-    private void tickBlock(BlockPos pos)
+    private void tickBlock(final BlockPos pos)
     {
-        BlockState blockState = level.getBlockState(pos);
-        Block block = blockState.getBlock();
+        final BlockState state = level.getBlockState(pos);
+        final Block block = state.getBlock();
         if (TorcherinoAPI.INSTANCE.isBlockBlacklisted(block)) { return; }
-        if (level instanceof ServerLevel && block.isRandomlyTicking(blockState) &&
+        if (level instanceof ServerLevel && block.isRandomlyTicking(state) &&
                 level.getRandom().nextInt(Mth.clamp(4096 / (speed * Config.INSTANCE.random_tick_rate), 1, 4096)) < randomTicks)
         {
-            blockState.randomTick((ServerLevel) level, pos, level.getRandom());
+            state.randomTick((ServerLevel) level, pos, level.getRandom());
         }
-        if (!block.isEntityBlock()) { return; }
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity == null || blockEntity.isRemoved() || TorcherinoAPI.INSTANCE.isBlockEntityBlacklisted(blockEntity.getType()) ||
-                !(blockEntity instanceof TickableBlockEntity)) { return; }
-        for (int i = 0; i < speed; i++)
+        // todo: can this be cached
+        final BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity != null && !blockEntity.isRemoved())
         {
-            if (blockEntity.isRemoved()) { break; }
-            ((TickableBlockEntity) blockEntity).tick();
+            final BlockEntityType<BlockEntity> type = (BlockEntityType<BlockEntity>) blockEntity.getType();
+            if(!TorcherinoAPI.INSTANCE.isBlockEntityBlacklisted(type))
+            {
+                final BlockEntityTicker<BlockEntity> ticker = state.getTicker(level, type);
+                if (ticker != null)
+                {
+                    for (int i = 0; i < speed; i++)
+                    {
+                        if (blockEntity.isRemoved()) { break; }
+                        ticker.tick(level, pos, state, blockEntity);
+                    }
+                }
+            }
+
         }
     }
 
-    public void writeClientData(FriendlyByteBuf buffer)
+    public void writeClientData(final FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(worldPosition);
         buffer.writeComponent(getName());
@@ -101,7 +115,7 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
         buffer.writeInt(redstoneMode);
     }
 
-    public void readClientData(FriendlyByteBuf buffer)
+    public void readClientData(final FriendlyByteBuf buffer)
     {
         Tier tier = TorcherinoAPI.INSTANCE.getTiers().get(getTier());
         this.xRange = Mth.clamp(buffer.readInt(), 0, tier.getXZRange());
@@ -125,7 +139,7 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
         return tierID;
     }
 
-    public void setPoweredByRedstone(boolean powered)
+    public void setPoweredByRedstone(final boolean powered)
     {
         switch (redstoneMode)
         {
@@ -145,7 +159,7 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag)
+    public CompoundTag save(final CompoundTag tag)
     {
         super.save(tag);
         if (hasCustomName()) { tag.putString("CustomName", Component.Serializer.toJson(getCustomName())); }
@@ -160,9 +174,9 @@ public class TorcherinoBlockEntity extends BlockEntity implements Nameable, Tick
     }
 
     @Override
-    public void load(BlockState state, CompoundTag tag)
+    public void load(final CompoundTag tag)
     {
-        super.load(state, tag);
+        super.load(tag);
         if (tag.contains("CustomName", 8)) { setCustomName(Component.Serializer.fromJson(tag.getString("CustomName"))); }
         xRange = tag.getInt("XRange");
         zRange = tag.getInt("ZRange");

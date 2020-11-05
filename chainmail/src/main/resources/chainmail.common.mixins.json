@@ -6,10 +6,9 @@
   "mixins": [
     "ItemGroupMixin",
     "PlayerManagerMixin",
-    "WorldMixin"
+    "LevelChunkMixin"
   ],
-  "client": [
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

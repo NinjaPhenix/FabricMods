@@ -28,61 +28,61 @@ public interface TorcherinoAPI
     /**
      * Returns the tier for the given tierName.
      *
-     * @param tierIdentifier The tier name to retrieve.
+     * @param tierRl The tier name to retrieve.
      * @return The tier or null if it does not exist.
      * @since 1.9.51
      */
-    Tier getTier(ResourceLocation tierIdentifier);
+    Tier getTier(final ResourceLocation tierRl);
 
     /**
-     * @param tierIdentifier Identifier for the new tier.
+     * @param tierRl ResourceLocation for the new tier.
      * @param maxSpeed The max speed blocks of this tier should have.
      * @param xzRange The max range horizontally blocks of this tier should have.
      * @param yRange The max range vertically blocks of this tier should have.
      * @return TRUE if the tier was registered, FALSE if tier with same name exists.
      * @since 1.9.51
      */
-    boolean registerTier(ResourceLocation tierIdentifier, int maxSpeed, int xzRange, int yRange);
+    boolean registerTier(final ResourceLocation tierRl, final int maxSpeed, final int xzRange, final int yRange);
 
     /**
-     * @param blockIdentifier The Identifier of the block to be blacklisted.
+     * @param block The ResourceLocation of the block to be blacklisted.
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlock(ResourceLocation blockIdentifier);
+    boolean blacklistBlock(final ResourceLocation block);
 
     /**
      * @param block The block to be blacklisted.
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlock(Block block);
+    boolean blacklistBlock(final Block block);
 
     /**
-     * @param blockEntityIdentifier The Identifier of the block entity to be blacklisted.
+     * @param blockEntity The ResourceLocation of the block entity to be blacklisted.
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlockEntity(ResourceLocation blockEntityIdentifier);
+    boolean blacklistBlockEntity(final ResourceLocation blockEntity);
 
     /**
      * @param blockEntityType The block entity type to be blacklisted.
      * @return TRUE if added to blacklist, FALSE if already on blacklist.
      * @since 1.9.51
      */
-    boolean blacklistBlockEntity(BlockEntityType<?> blockEntityType);
+    boolean blacklistBlockEntity(final BlockEntityType<?> blockEntityType);
 
     /**
      * @param block The block to check is blacklisted.
      * @return TRUE if blacklisted, FALSE otherwise.
      * @since 1.9.51
      */
-    boolean isBlockBlacklisted(Block block);
+    boolean isBlockBlacklisted(final Block block);
 
     /**
      * @param blockEntityType The block entity type to check is blacklisted.
      * @return TRUE if blacklisted, FALSE otherwise.
      * @since 1.9.51
      */
-    boolean isBlockEntityBlacklisted(BlockEntityType<?> blockEntityType);
+    boolean isBlockEntityBlacklisted(final BlockEntityType<?> blockEntityType);
 }

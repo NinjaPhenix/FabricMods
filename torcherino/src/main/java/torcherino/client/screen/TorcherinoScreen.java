@@ -32,10 +32,11 @@ public class TorcherinoScreen extends Screen
     private final Component cached_title;
     private int xRange, zRange, yRange, speed, redstoneMode, left, top;
 
-    public TorcherinoScreen(Component title, int xRange, int zRange, int yRange, int speed, int redstoneMode, BlockPos pos, ResourceLocation tierID)
+    public TorcherinoScreen(final Component title, final int xRange, final int zRange, final int yRange, final int speed,
+                            final int redstoneMode, final BlockPos pos, final ResourceLocation tierRl)
     {
         super(title);
-        this.tier = TorcherinoAPI.INSTANCE.getTier(tierID);
+        this.tier = TorcherinoAPI.INSTANCE.getTier(tierRl);
         this.blockPos = pos;
         this.xRange = xRange;
         this.zRange = zRange;
@@ -114,7 +115,7 @@ public class TorcherinoScreen extends Screen
 
             private void setButtonMessage()
             {
-                String translationKey;
+                final String translationKey;
                 switch (TorcherinoScreen.this.redstoneMode)
                 {
                     case 0:
@@ -141,19 +142,19 @@ public class TorcherinoScreen extends Screen
                 switch (TorcherinoScreen.this.redstoneMode)
                 {
                     case 0:
-                        this.buttonIcon = new ItemStack(Items.REDSTONE);
+                        buttonIcon = new ItemStack(Items.REDSTONE);
                         break;
                     case 1:
-                        this.buttonIcon = new ItemStack(Items.REDSTONE_TORCH);
+                        buttonIcon = new ItemStack(Items.REDSTONE_TORCH);
                         break;
                     case 2:
-                        this.buttonIcon = new ItemStack(Items.GUNPOWDER);
+                        buttonIcon = new ItemStack(Items.GUNPOWDER);
                         break;
                     case 3:
-                        this.buttonIcon = new ItemStack(Items.REDSTONE_LAMP);
+                        buttonIcon = new ItemStack(Items.REDSTONE_LAMP);
                         break;
                     default:
-                        this.buttonIcon = new ItemStack(Items.FURNACE);
+                        buttonIcon = new ItemStack(Items.FURNACE);
                         break;
                 }
             }
@@ -171,7 +172,7 @@ public class TorcherinoScreen extends Screen
     }
 
     @Override
-    public void render(PoseStack matrixStack, int x, int y, float partialTicks)
+    public void render(final PoseStack matrixStack, final int x, final int y, final float partialTicks)
     {
         fillGradient(matrixStack, 0, 0, this.width, this.height, -1072689136, -804253680);
         minecraft.getTextureManager().bind(SCREEN_TEXTURE);
@@ -182,7 +183,7 @@ public class TorcherinoScreen extends Screen
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers)
     {
         if (keyCode == 256 || minecraft.options.keyInventory.matches(keyCode, 0))
         {

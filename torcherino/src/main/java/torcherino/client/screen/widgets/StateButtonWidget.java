@@ -20,7 +20,7 @@ public abstract class StateButtonWidget extends Button
     private final Screen screen;
     private Component narrationMessage;
 
-    public StateButtonWidget(Screen screen, int x, int y)
+    public StateButtonWidget(final Screen screen, final int x, final int y)
     {
         super(x, y, 20, 20, new TextComponent(""), null);
         this.screen = screen;
@@ -34,7 +34,7 @@ public abstract class StateButtonWidget extends Button
     protected abstract ItemStack getButtonIcon();
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(final PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks)
     {
         if (visible)
         {
@@ -53,5 +53,5 @@ public abstract class StateButtonWidget extends Button
     @Override
     public MutableComponent createNarrationMessage() { return new TranslatableComponent("gui.narrate.button", narrationMessage); }
 
-    protected void setNarrationMessage(Component narrationMessage) { this.narrationMessage = narrationMessage; }
+    protected void setNarrationMessage(final Component narrationMessage) { this.narrationMessage = narrationMessage; }
 }

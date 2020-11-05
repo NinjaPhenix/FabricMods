@@ -9,7 +9,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,14 +26,13 @@ import torcherino.api.blocks.entity.TorcherinoBlockEntity;
 
 import java.util.Random;
 
-@SuppressWarnings({ "deprecation" })
 public class WallTorcherinoBlock extends WallTorchBlock implements EntityBlock, TierSupplier
 {
     private final ResourceLocation tierID;
 
-    public WallTorcherinoBlock(ResourceLocation tier, TorcherinoBlock torcherinoBlock, ParticleOptions particleEffect)
+    public WallTorcherinoBlock(final ResourceLocation tier, final TorcherinoBlock block, final ParticleOptions particleOpts)
     {
-        super(BlockBehaviour.Properties.copy(Blocks.WALL_TORCH).dropsLike(torcherinoBlock), particleEffect);
+        super(BlockBehaviour.Properties.copy(Blocks.WALL_TORCH).dropsLike(block), particleOpts);
         this.tierID = tier;
     }
 
@@ -42,39 +40,47 @@ public class WallTorcherinoBlock extends WallTorchBlock implements EntityBlock, 
     public ResourceLocation getTier() { return tierID; }
 
     @Override
-    public BlockEntity newBlockEntity(BlockGetter view) { return new TorcherinoBlockEntity(); }
+    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) { return new TorcherinoBlockEntity(pos, state); }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState state) { return PushReaction.IGNORE; }
+    @SuppressWarnings({ "deprecation" })
+    public PushReaction getPistonPushReaction(final BlockState state) { return PushReaction.IGNORE; }
 
     @Override
-    public void onPlace(BlockState newState, Level world, BlockPos pos, BlockState state, boolean boolean_1)
+    @SuppressWarnings({ "deprecation" })
+    public void onPlace(final BlockState newState, final Level level, final BlockPos pos, final BlockState state, final boolean boolean_1)
     {
-        neighborChanged(newState, world, pos, null, null, false);
+        neighborChanged(newState, level, pos, null, null, false);
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random)
+    @SuppressWarnings({ "deprecation" })
+    public void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final Random random)
     {
-        TorcherinoLogic.scheduledTick(state, world, pos, random);
+        TorcherinoLogic.scheduledTick(state, level, pos, random);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+    @SuppressWarnings({ "deprecation" })
+    public InteractionResult use(final BlockState state, final Level level, final BlockPos pos, final Player player,
+                                 final InteractionHand hand, final BlockHitResult hit)
     {
-        return TorcherinoLogic.onUse(state, world, pos, player, hand, hit);
+        return TorcherinoLogic.onUse(state, level, pos, player, hand, hit);
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean boolean_1)
+    @SuppressWarnings({ "deprecation" })
+    public void neighborChanged(final BlockState state, final Level level, final BlockPos pos, final Block neighborBlock,
+                                final BlockPos neighborPos, final boolean boolean_1)
     {
-        TorcherinoLogic.neighborUpdate(state, world, pos, neighborBlock, neighborPos, boolean_1, (be) -> be.setPoweredByRedstone(
-                world.hasSignal(pos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite()), state.getValue(BlockStateProperties.HORIZONTAL_FACING))));
+        TorcherinoLogic.neighborUpdate(state, level, pos, neighborBlock, neighborPos, boolean_1, (be) -> be.setPoweredByRedstone(
+                level.hasSignal(pos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite()),
+                                state.getValue(BlockStateProperties.HORIZONTAL_FACING))));
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, final LivingEntity placer, final ItemStack stack)
     {
-        TorcherinoLogic.onPlaced(world, pos, state, placer, stack, this);
+        TorcherinoLogic.onPlaced(level, pos, state, placer, stack, this);
     }
 }

@@ -29,17 +29,17 @@ public class TorcherinoClient implements ClientModInitializer
         // Open Torcherino Screen
         ClientSidePacketRegistry.INSTANCE.register(new ResourceLocation(MOD_ID, "ots"), (PacketContext context, FriendlyByteBuf buffer) ->
         {
-            Level world = Minecraft.getInstance().level;
-            BlockPos pos = buffer.readBlockPos();
-            Component title = buffer.readComponent();
-            int xRange = buffer.readInt();
-            int zRange = buffer.readInt();
-            int yRange = buffer.readInt();
-            int speed = buffer.readInt();
-            int redstoneMode = buffer.readInt();
+            final Level world = Minecraft.getInstance().level;
+            final BlockPos pos = buffer.readBlockPos();
+            final Component title = buffer.readComponent();
+            final int xRange = buffer.readInt();
+            final int zRange = buffer.readInt();
+            final int yRange = buffer.readInt();
+            final int speed = buffer.readInt();
+            final int redstoneMode = buffer.readInt();
             context.getTaskQueue().execute(() ->
             {
-                BlockEntity blockEntity = world.getBlockEntity(pos);
+                final BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof TorcherinoBlockEntity)
                 {
                     Minecraft.getInstance().setScreen(new TorcherinoScreen(title, xRange, zRange, yRange, speed, redstoneMode, pos,
@@ -50,14 +50,14 @@ public class TorcherinoClient implements ClientModInitializer
         // Torcherino Tier Sync
         ClientSidePacketRegistry.INSTANCE.register(new ResourceLocation(MOD_ID, "tts"), (PacketContext context, FriendlyByteBuf buffer) ->
         {
-            HashMap<ResourceLocation, Tier> tiers = new HashMap<>();
-            int count = buffer.readInt();
+            final HashMap<ResourceLocation, Tier> tiers = new HashMap<>();
+            final int count = buffer.readInt();
             for (int i = 0; i < count; i++)
             {
-                ResourceLocation id = buffer.readResourceLocation();
-                int maxSpeed = buffer.readInt();
-                int xzRange = buffer.readInt();
-                int yRange = buffer.readInt();
+                final ResourceLocation id = buffer.readResourceLocation();
+                final int maxSpeed = buffer.readInt();
+                final int xzRange = buffer.readInt();
+                final int yRange = buffer.readInt();
                 tiers.put(id, new Tier(maxSpeed, xzRange, yRange));
             }
             context.getTaskQueue().execute(() -> ((TorcherinoImpl) TorcherinoAPI.INSTANCE).setRemoteTiers(tiers));

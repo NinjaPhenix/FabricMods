@@ -6,7 +6,7 @@ public class Tier
     private final int XZ_RANGE;
     private final int Y_RANGE;
 
-    public Tier(int maxSpeed, int xzRange, int yRange)
+    public Tier(final int maxSpeed, final int xzRange, final int yRange)
     {
         this.MAX_SPEED = maxSpeed;
         this.XZ_RANGE = xzRange;

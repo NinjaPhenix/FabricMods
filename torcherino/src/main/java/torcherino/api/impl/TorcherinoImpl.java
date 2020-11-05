@@ -38,90 +38,90 @@ public class TorcherinoImpl implements TorcherinoAPI
     public ImmutableMap<ResourceLocation, Tier> getTiers() { return ImmutableMap.copyOf(localTiers); }
 
     @Override
-    public Tier getTier(ResourceLocation tierIdentifier) { return remoteTiers.getOrDefault(tierIdentifier, null); }
+    public Tier getTier(final ResourceLocation tierRl) { return remoteTiers.getOrDefault(tierRl, null); }
 
     @Override
-    public boolean registerTier(ResourceLocation tierIdentifier, int maxSpeed, int xzRange, int yRange)
+    public boolean registerTier(final ResourceLocation tierRl, final int maxSpeed, final int xzRange, final int yRange)
     {
         Tier tier = new Tier(maxSpeed, xzRange, yRange);
-        if (localTiers.containsKey(tierIdentifier))
+        if (localTiers.containsKey(tierRl))
         {
-            LOGGER.error("[Torcherino] Tier with id {} has already been declared.", tierIdentifier);
+            LOGGER.error("[Torcherino] Tier with id {} has already been declared.", tierRl);
             return false;
         }
-        localTiers.put(tierIdentifier, tier);
+        localTiers.put(tierRl, tier);
         return true;
     }
 
     @Override
-    public boolean blacklistBlock(ResourceLocation blockIdentifier)
+    public boolean blacklistBlock(final ResourceLocation block)
     {
-        if (blacklistedBlocks.contains(blockIdentifier))
+        if (blacklistedBlocks.contains(block))
         {
-            LOGGER.warn("[Torcherino] Block with id {} has already been blacklisted.", blockIdentifier);
+            LOGGER.warn("[Torcherino] Block with id {} has already been blacklisted.", block);
             return false;
         }
-        blacklistedBlocks.add(blockIdentifier);
+        blacklistedBlocks.add(block);
         return true;
     }
 
     @Override
-    public boolean blacklistBlock(Block block)
+    public boolean blacklistBlock(final Block block)
     {
-        ResourceLocation blockIdentifier = Registry.BLOCK.getKey(block);
-        if (Registry.BLOCK.get(blockIdentifier) != block)
+        ResourceLocation blockRl = Registry.BLOCK.getKey(block);
+        if (Registry.BLOCK.get(blockRl) != block)
         {
             LOGGER.error("[Torcherino] Please register your block before attempting to blacklist.");
             return false;
         }
-        else if (blacklistedBlocks.contains(blockIdentifier))
+        else if (blacklistedBlocks.contains(blockRl))
         {
-            LOGGER.warn("[Torcherino] Block with id {} has already been blacklisted.", blockIdentifier);
+            LOGGER.warn("[Torcherino] Block with id {} has already been blacklisted.", blockRl);
             return false;
         }
-        blacklistedBlocks.add(blockIdentifier);
+        blacklistedBlocks.add(blockRl);
         return true;
     }
 
     @Override
-    public boolean blacklistBlockEntity(ResourceLocation blockEntityIdentifier)
+    public boolean blacklistBlockEntity(final ResourceLocation blockEntity)
     {
-        if (blacklistedBlockEntities.contains(blockEntityIdentifier))
+        if (blacklistedBlockEntities.contains(blockEntity))
         {
-            LOGGER.warn("[Torcherino] Block entity with id {} has already been blacklisted.", blockEntityIdentifier);
+            LOGGER.warn("[Torcherino] Block entity with id {} has already been blacklisted.", blockEntity);
             return false;
         }
-        blacklistedBlockEntities.add(blockEntityIdentifier);
+        blacklistedBlockEntities.add(blockEntity);
         return true;
     }
 
     @Override
-    public boolean blacklistBlockEntity(BlockEntityType<?> blockEntityType)
+    public boolean blacklistBlockEntity(final BlockEntityType<?> blockEntityType)
     {
-        ResourceLocation blockEntityTypeIdentifier = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
-        if (blockEntityTypeIdentifier == null)
+        ResourceLocation blockEntity = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
+        if (blockEntity == null)
         {
             LOGGER.error("[Torcherino] Please register your block entity type before attempting to blacklist.");
             return false;
         }
-        else if (blacklistedBlockEntities.contains(blockEntityTypeIdentifier))
+        else if (blacklistedBlockEntities.contains(blockEntity))
         {
-            LOGGER.warn("[Torcherino] Block entity with id {} has already been blacklisted.", blockEntityTypeIdentifier);
+            LOGGER.warn("[Torcherino] Block entity with id {} has already been blacklisted.", blockEntity);
             return false;
         }
-        blacklistedBlockEntities.add(blockEntityTypeIdentifier);
+        blacklistedBlockEntities.add(blockEntity);
         return true;
     }
 
     @Override
-    public boolean isBlockBlacklisted(Block block) { return blacklistedBlocks.contains(Registry.BLOCK.getKey(block)); }
+    public boolean isBlockBlacklisted(final Block block) { return blacklistedBlocks.contains(Registry.BLOCK.getKey(block)); }
 
     @Override
-    public boolean isBlockEntityBlacklisted(BlockEntityType<?> blockEntityType)
+    public boolean isBlockEntityBlacklisted(final BlockEntityType<?> blockEntityType)
     {
         return blacklistedBlockEntities.contains(BlockEntityType.getKey(blockEntityType));
     }
 
     // Internal do not use.
-    public void setRemoteTiers(HashMap<ResourceLocation, Tier> tiers) { remoteTiers = tiers; }
+    public void setRemoteTiers(final HashMap<ResourceLocation, Tier> tiers) { remoteTiers = tiers; }
 }
