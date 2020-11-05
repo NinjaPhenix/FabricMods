@@ -30,9 +30,9 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     private final ChestLidController chestLidController;
     private final ContainerOpenersCounter openersCounter;
 
-    public CursedChestBlockEntity(final BlockPos pos, final BlockState state)
+    public CursedChestBlockEntity(final BlockPos pos, final BlockState state, final ResourceLocation tier)
     {
-        super(ModContent.CHEST, pos, state);
+        super(ModContent.CHEST, pos, state, tier);
         openersCounter = new ContainerOpenersCounter()
         {
             @Override
@@ -80,7 +80,7 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
 
     @Override
     @SuppressWarnings({"ConstantConditions"})
-    public void initialize(final ResourceLocation block)
+    protected void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.CHEST.get(block).CONTAINER_NAME;

@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import ninjaphenix.expandedstorage.common.block.StorageBlock;
 
 public abstract class StorageBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer
 {
@@ -24,12 +23,14 @@ public abstract class StorageBlockEntity extends RandomizableContainerBlockEntit
     protected int[] SLOTS;
     protected ResourceLocation block;
 
-    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final BlockPos pos, final BlockState state)
+    protected StorageBlockEntity(final BlockEntityType<?> blockEntityType, final BlockPos pos, final BlockState state,
+                                 final ResourceLocation tier)
     {
         super(blockEntityType, pos, state);
+        if (tier != null) { initialize(tier); }
     }
 
-    public abstract void initialize(final ResourceLocation block);
+    protected abstract void initialize(final ResourceLocation block);
 
     @Override
     protected NonNullList<ItemStack> getItems() { return inventory; }

@@ -10,11 +10,14 @@ import ninjaphenix.expandedstorage.common.Registries;
 
 public final class OldChestBlockEntity extends StorageBlockEntity
 {
-    public OldChestBlockEntity(final BlockPos pos, final BlockState state) { super(ModContent.OLD_CHEST, pos, state); }
+    public OldChestBlockEntity(final BlockPos pos, final BlockState state, final ResourceLocation tier)
+    {
+        super(ModContent.OLD_CHEST, pos, state, tier);
+    }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void initialize(final ResourceLocation block)
+    protected void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.OLD_CHEST.get(block).CONTAINER_NAME;

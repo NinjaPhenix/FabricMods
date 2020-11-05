@@ -147,7 +147,7 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
         return LayerDefinition.create(meshDefinition, 64, 48);
     }
 
-    public static LayerDefinition createVanillaRightBodyLayer()
+    public static LayerDefinition createVanillaLeftBodyLayer()
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
@@ -157,7 +157,7 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
         return LayerDefinition.create(meshDefinition, 64, 48);
     }
 
-    public static LayerDefinition createVanillaLeftBodyLayer()
+    public static LayerDefinition createVanillaRightBodyLayer()
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
@@ -171,9 +171,9 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
-        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 15, 10, 14), PartPose.ZERO);
-        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 15, 5, 14), PartPose.offset(0, 9, 1));
-        partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(15, -1, 15, 1, 4, 1), PartPose.offset(0, 8, 0));
+        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 14, 10, 14), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 14, 5, 14), PartPose.offset(0, 9, 1));
+        partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7, -1, 15, 2, 4, 1), PartPose.offset(0, 8, 0));
         return LayerDefinition.create(meshDefinition, 64, 48);
     }
 
@@ -181,7 +181,7 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
-        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 15, 10, 14), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 1, 14, 16, 14), PartPose.ZERO);
         return LayerDefinition.create(meshDefinition, 64, 32);
     }
 
@@ -189,9 +189,9 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
-        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 15, 10, 14), PartPose.ZERO);
-        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 15, 5, 14), PartPose.offset(0, 9, 1));
-        partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(15, -1, 15, 1, 4, 1), PartPose.offset(0, 8, 0));
+        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 20).addBox(1, 0, 0, 14, 10, 15), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 15, 14, 5, 15), PartPose.offset(0, 9, -15));
+        partDefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7, -1, 31, 2, 4, 1), PartPose.offset(0, 8, -16));
         return LayerDefinition.create(meshDefinition, 64, 48);
     }
 
@@ -199,8 +199,8 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
-        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1, 0, 1, 15, 10, 14), PartPose.ZERO);
-        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 15, 5, 14), PartPose.offset(0, 9, 1));
+        partDefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 20).addBox(1, 0, 1, 14, 10, 15), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1, 0, 0, 14, 5, 15), PartPose.offset(0, 9, 1));
         return LayerDefinition.create(meshDefinition, 48, 48);
     }
 }

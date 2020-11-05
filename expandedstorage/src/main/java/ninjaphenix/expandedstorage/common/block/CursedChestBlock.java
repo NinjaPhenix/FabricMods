@@ -47,9 +47,7 @@ public final class CursedChestBlock extends FluidLoggableChestBlock<CursedChestB
     @Override
     public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state)
     {
-        final CursedChestBlockEntity entity = new CursedChestBlockEntity(pos, state);
-        entity.initialize(TIER_ID);
-        return entity;
+        return new CursedChestBlockEntity(pos, state, TIER_ID);
     }
 
     @Nullable

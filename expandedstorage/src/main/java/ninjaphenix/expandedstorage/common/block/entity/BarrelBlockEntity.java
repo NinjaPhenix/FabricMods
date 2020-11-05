@@ -24,9 +24,9 @@ public class BarrelBlockEntity extends StorageBlockEntity
 {
     private final ContainerOpenersCounter openersCounter;
 
-    public BarrelBlockEntity(final BlockPos pos, final BlockState state)
+    public BarrelBlockEntity(final BlockPos pos, final BlockState state, final ResourceLocation tier)
     {
-        super(ModContent.BARREL, pos, state);
+        super(ModContent.BARREL, pos, state, tier);
         openersCounter = new ContainerOpenersCounter()
         {
             @Override
@@ -60,7 +60,7 @@ public class BarrelBlockEntity extends StorageBlockEntity
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public void initialize(final ResourceLocation block)
+    protected void initialize(final ResourceLocation block)
     {
         this.block = block;
         defaultContainerName = Registries.BARREL.get(block).CONTAINER_NAME;

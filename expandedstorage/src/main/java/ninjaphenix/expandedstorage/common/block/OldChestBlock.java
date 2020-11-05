@@ -19,12 +19,7 @@ public final class OldChestBlock extends ChestBlock<OldChestBlockEntity>
     public OldChestBlock(final Properties settings, final ResourceLocation tierId) { super(settings, tierId, () -> ModContent.OLD_CHEST); }
 
     @Override
-    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state)
-    {
-        final OldChestBlockEntity entity = new OldChestBlockEntity(pos, state);
-        entity.initialize(TIER_ID);
-        return entity;
-    }
+    public BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) { return new OldChestBlockEntity(pos, state, TIER_ID); }
 
     @Override
     protected boolean isBlocked(final LevelAccessor world, final BlockPos pos)
