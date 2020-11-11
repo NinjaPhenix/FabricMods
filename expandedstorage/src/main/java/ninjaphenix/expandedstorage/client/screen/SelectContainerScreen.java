@@ -113,7 +113,7 @@ public final class SelectContainerScreen extends Screen
             if (active)
             {
                 if (isHovered) { renderToolTip(matrices, mouseX, mouseY); }
-                else if (isHovered()) { renderToolTip(matrices, x, y); }
+                else if (isFocused()) { renderToolTip(matrices, x, y); }
             }
         }
     }

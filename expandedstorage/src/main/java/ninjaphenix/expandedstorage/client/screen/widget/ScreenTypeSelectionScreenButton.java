@@ -33,6 +33,7 @@ public final class ScreenTypeSelectionScreenButton extends Button
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         blit(matrices, x, y, 0, isHovered() ? height : 0, width, height, 32, 48);
-        if (isHovered()) { renderToolTip(matrices, mouseX, mouseY); }
+        if (isHovered) { renderToolTip(matrices, mouseX, mouseY);}
+        else if (isFocused()) { renderToolTip(matrices, x, y); }
     }
 }
