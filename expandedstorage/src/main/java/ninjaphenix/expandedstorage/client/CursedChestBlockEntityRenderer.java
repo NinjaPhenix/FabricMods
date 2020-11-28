@@ -16,10 +16,8 @@ import net.minecraft.client.renderer.blockentity.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.DoubleBlockCombiner.Combiner;
 import net.minecraft.world.level.block.DoubleBlockCombiner.NeighborCombineResult;
-import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import ninjaphenix.expandedstorage.common.Const;
@@ -44,29 +42,29 @@ public final class CursedChestBlockEntityRenderer implements BlockEntityRenderer
     public CursedChestBlockEntityRenderer(final Context context)
     {
         ChestRenderer.createDoubleBodyLeftLayer();
-        final ModelPart single = context.getLayer(Const.SINGLE_LAYER);
+        final ModelPart single = context.bakeLayer(Const.SINGLE_LAYER);
         singleBottom = single.getChild("bottom");
         singleLid = single.getChild("lid");
         singleLock = single.getChild("lock");
-        final ModelPart vanillaLeft = context.getLayer(Const.VANILLA_LEFT_LAYER);
+        final ModelPart vanillaLeft = context.bakeLayer(Const.VANILLA_LEFT_LAYER);
         vanillaLeftBottom = vanillaLeft.getChild("bottom");
         vanillaLeftLid = vanillaLeft.getChild("lid");
         vanillaLeftLock = vanillaLeft.getChild("lock");
-        final ModelPart vanillaRight = context.getLayer(Const.VANILLA_RIGHT_LAYER);
+        final ModelPart vanillaRight = context.bakeLayer(Const.VANILLA_RIGHT_LAYER);
         vanillaRightBottom = vanillaRight.getChild("bottom");
         vanillaRightLid = vanillaRight.getChild("lid");
         vanillaRightLock = vanillaRight.getChild("lock");
-        final ModelPart tallTop = context.getLayer(Const.TALL_TOP_LAYER);
+        final ModelPart tallTop = context.bakeLayer(Const.TALL_TOP_LAYER);
         tallTopBottom = tallTop.getChild("bottom");
         tallTopLid = tallTop.getChild("lid");
         tallTopLock = tallTop.getChild("lock");
-        final ModelPart tallBottom = context.getLayer(Const.TALL_BOTTOM_LAYER);
+        final ModelPart tallBottom = context.bakeLayer(Const.TALL_BOTTOM_LAYER);
         tallBottomBottom = tallBottom.getChild("bottom");
-        final ModelPart longFront = context.getLayer(Const.LONG_FRONT_LAYER);
+        final ModelPart longFront = context.bakeLayer(Const.LONG_FRONT_LAYER);
         longFrontBottom = longFront.getChild("bottom");
         longFrontLid = longFront.getChild("lid");
         longFrontLock = longFront.getChild("lock");
-        final ModelPart longBack = context.getLayer(Const.LONG_BACK_LAYER);
+        final ModelPart longBack = context.bakeLayer(Const.LONG_BACK_LAYER);
         longBackBottom = longBack.getChild("bottom");
         longBackLid = longBack.getChild("lid");
     }
