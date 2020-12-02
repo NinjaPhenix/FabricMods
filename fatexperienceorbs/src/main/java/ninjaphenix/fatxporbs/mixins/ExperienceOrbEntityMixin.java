@@ -33,9 +33,11 @@ public abstract class ExperienceOrbEntityMixin extends Entity
                     new AABB(pos.west(2).north(2).above(2), pos.east(2).south(2).below(2)), e -> e.isAlive() && !e.getUUID().equals(uuid));
             if (entities.isEmpty()) { return; }
             final ExperienceOrb orb = entities.get(0);
-            value += orb.getValue();
-            orb.remove();
-            health = 0;
+            if (orb.getValue() + value > value) {
+                value += orb.getValue();
+                orb.remove();
+                health = 0;
+            }
         }
     }
 }
