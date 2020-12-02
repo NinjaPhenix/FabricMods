@@ -34,10 +34,13 @@ public abstract class ExperienceOrbEntityMixin extends Entity
             if (entities.isEmpty()) { return; }
             final ExperienceOrb orb = entities.get(0);
             if (orb.getValue() + value > value) {
-                value += orb.getValue();
-                orb.remove();
-                health = 0;
+                value = Integer.MAX_VALUE;
             }
+            else {
+                value += orb.getValue();
+            }
+            orb.remove();
+            health = 0;
         }
     }
 }
