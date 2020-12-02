@@ -26,7 +26,6 @@ import ninjaphenix.chainmail.api.ChainmailCommonApi;
 import ninjaphenix.expandedstorage.common.block.BarrelBlock;
 import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.block.OldChestBlock;
-import ninjaphenix.expandedstorage.common.block.StorageBlock;
 import ninjaphenix.expandedstorage.common.block.entity.BarrelBlockEntity;
 import ninjaphenix.expandedstorage.common.block.entity.CursedChestBlockEntity;
 import ninjaphenix.expandedstorage.common.block.entity.OldChestBlockEntity;
@@ -113,7 +112,6 @@ public final class ModContent
     {
         final BlockBehaviour.Properties settings = FabricBlockSettings.copyOf(Blocks.BARREL).breakByTool(FabricToolTags.AXES, miningLevel)
                 .strength(hardness, resistance).requiresCorrectToolForDrops();
-
         final BarrelBlock block = new BarrelBlock(settings, tierLocation);
         Registry.register(Registry.BLOCK, location, block);
         Registry.register(Registry.ITEM, location, new BlockItem(block, new Item.Properties().tab(tab)));

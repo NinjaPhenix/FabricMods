@@ -121,13 +121,13 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
     @Override
     public void startOpen(final Player player)
     {
-        if (!player.isSpectator()) { openersCounter.incrementOpeners(getLevel(), getBlockPos(), getBlockState()); }
+        if (!player.isSpectator()) { openersCounter.incrementOpeners(player, getLevel(), getBlockPos(), getBlockState()); }
     }
 
     @Override
     public void stopOpen(final Player player)
     {
-        if (!player.isSpectator()) { openersCounter.decrementOpeners(getLevel(), getBlockPos(), getBlockState()); }
+        if (!player.isSpectator()) { openersCounter.decrementOpeners(player, getLevel(), getBlockPos(), getBlockState()); }
     }
 
     protected void signalOpenCount(final Level level, final BlockPos pos, final BlockState state, int i, int j)

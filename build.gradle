@@ -46,9 +46,6 @@ allprojects {
         modImplementation("net.fabricmc:fabric-loader:${loader_version}")
         modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}") {
             if (fabric_api_jar_old == 'true') {
-                exclude(module: "fabric-item-api-v1")
-                exclude(module: "fabric-events-lifecycle-v0")
-                exclude(module: "fabric-loot-tables-v1")
             }
         }
         modCompileOnly "me.shedaniel:RoughlyEnoughItems:${rei_version}", withoutUnwanted
