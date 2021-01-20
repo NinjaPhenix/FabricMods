@@ -6,17 +6,14 @@ repositories {
     flatDir {
         dirs file('runtime_mods')
     }
-    maven {
-        name = "JitPack"
-        url = "https://jitpack.io"
-    }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     compile project(path: ":chainmail"), withoutUnwanted
 
     include project(path: ":chainmail")
-    include "io.github.cottonmc:Jankson-Fabric:${jankson_version}"
+    include "com.github.CottonMC:Jankson-Fabric:${jankson_version}"
 
     modApi("com.github.Virtuoel:Towelette:${towelette_commit}", withoutUnwanted)
     modApi("com.github.Virtuoel:Statement:${statement_commit}", withoutUnwanted)

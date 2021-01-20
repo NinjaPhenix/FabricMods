@@ -37,7 +37,7 @@ allprojects {
 
     repositories {
         mavenLocal()
-        maven { url 'http://server.bbkr.space:8081/artifactory/libs-release/' }
+        maven { url "https://jitpack.io" }
         maven { url "https://maven.fabricmc.net" }
     }
 
@@ -55,7 +55,7 @@ allprojects {
 
         modCompile "io.github.prospector:modmenu:${modmenu_version}", withoutUnwanted
 
-        modImplementation "io.github.cottonmc:Jankson-Fabric:${jankson_version}", withoutUnwanted
+        modImplementation "com.github.CottonMC:Jankson-Fabric:${jankson_version}", withoutUnwanted
 
         compileOnly('com.google.code.findbugs:jsr305:3.0.2')
     }
