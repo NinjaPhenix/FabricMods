@@ -65,35 +65,35 @@ public final class ModContent
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("cursed_chest"),
                 BlockEntityType.Builder.of(
                         () -> new CursedChestBlockEntity(null),
-                        chest(Blocks.OAK_PLANKS, Const.resloc("wood_chest"), WOOD, 3, tab),
-                        chest(Blocks.PUMPKIN, Const.resloc("pumpkin_chest"), Const.resloc("pumpkin"), 3, tab),
-                        chest(Blocks.OAK_PLANKS, Const.resloc("christmas_chest"), Const.resloc("christmas"), 3, tab),
-                        chest(Blocks.IRON_BLOCK, Const.resloc("iron_chest"), IRON, 6, tab),
-                        chest(Blocks.GOLD_BLOCK, Const.resloc("gold_chest"), GOLD, 9, tab),
-                        DIAMOND_CHEST = chest(Blocks.DIAMOND_BLOCK, Const.resloc("diamond_chest"), DIAMOND, 12, tab),
-                        chest(Blocks.OBSIDIAN, Const.resloc("obsidian_chest"), OBSIDIAN, 12, tab),
-                        chest(Blocks.NETHERITE_BLOCK, Const.resloc("netherite_chest"), NETHERITE, 15, tab))
+                        chest(Blocks.OAK_PLANKS, Const.resloc("wood_chest"), WOOD, 3, tab, false),
+                        chest(Blocks.PUMPKIN, Const.resloc("pumpkin_chest"), Const.resloc("pumpkin"), 3, tab, false),
+                        chest(Blocks.OAK_PLANKS, Const.resloc("christmas_chest"), Const.resloc("christmas"), 3, tab, false),
+                        chest(Blocks.IRON_BLOCK, Const.resloc("iron_chest"), IRON, 6, tab, false),
+                        chest(Blocks.GOLD_BLOCK, Const.resloc("gold_chest"), GOLD, 9, tab, false),
+                        DIAMOND_CHEST = chest(Blocks.DIAMOND_BLOCK, Const.resloc("diamond_chest"), DIAMOND, 12, tab, false),
+                        chest(Blocks.OBSIDIAN, Const.resloc("obsidian_chest"), OBSIDIAN, 12, tab, false),
+                        chest(Blocks.NETHERITE_BLOCK, Const.resloc("netherite_chest"), NETHERITE, 15, tab, true))
                         .build(null));
         OLD_CHEST = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("old_cursed_chest"),
                 BlockEntityType.Builder.of(
                         () -> new OldChestBlockEntity(null),
-                        old(Blocks.OAK_PLANKS, "wood_chest", WOOD, 3, tab),
-                        old(Blocks.IRON_BLOCK, "iron_chest", IRON, 6, tab),
-                        old(Blocks.GOLD_BLOCK, "gold_chest", GOLD, 9, tab),
-                        old(Blocks.DIAMOND_BLOCK, "diamond_chest", DIAMOND, 12, tab),
-                        old(Blocks.OBSIDIAN, "obsidian_chest", OBSIDIAN, 12, tab),
-                        old(Blocks.NETHERITE_BLOCK, "netherite_chest", NETHERITE, 15, tab))
+                        old(Blocks.OAK_PLANKS, "wood_chest", WOOD, 3, tab, false),
+                        old(Blocks.IRON_BLOCK, "iron_chest", IRON, 6, tab, false),
+                        old(Blocks.GOLD_BLOCK, "gold_chest", GOLD, 9, tab, false),
+                        old(Blocks.DIAMOND_BLOCK, "diamond_chest", DIAMOND, 12, tab, false),
+                        old(Blocks.OBSIDIAN, "obsidian_chest", OBSIDIAN, 12, tab, false),
+                        old(Blocks.NETHERITE_BLOCK, "netherite_chest", NETHERITE, 15, tab, true))
                         .build(null));
         BARREL = Registry.register(
                 Registry.BLOCK_ENTITY_TYPE, Const.resloc("barrel"),
                 BlockEntityType.Builder.of(
                         () -> new BarrelBlockEntity(null),
-                        barrel(1, 5, 6, Const.resloc("iron_barrel"), IRON, 6, tab),
-                        barrel(2, 3, 6, Const.resloc("gold_barrel"), GOLD, 9, tab),
-                        barrel(2, 5, 6, Const.resloc("diamond_barrel"), DIAMOND, 12, tab),
-                        barrel(3, 50, 1200, Const.resloc("obsidian_barrel"), OBSIDIAN, 12, tab),
-                        barrel(4, 50, 1200, Const.resloc("netherite_barrel"), NETHERITE, 15, tab)).build(null));
+                        barrel(1, 5, 6, Const.resloc("iron_barrel"), IRON, 6, tab, false),
+                        barrel(2, 3, 6, Const.resloc("gold_barrel"), GOLD, 9, tab, false),
+                        barrel(2, 5, 6, Const.resloc("diamond_barrel"), DIAMOND, 12, tab, false),
+                        barrel(3, 50, 1200, Const.resloc("obsidian_barrel"), OBSIDIAN, 12, tab, false),
+                        barrel(4, 50, 1200, Const.resloc("netherite_barrel"), NETHERITE, 15, tab, true)).build(null));
         registerConversionPath(
                 tab,
                 new Tuple<>(WOOD, "wood"),
@@ -107,14 +107,16 @@ public final class ModContent
 
     private static BarrelBlock barrel(final int miningLevel, final float hardness, final float resistance,
                                       final ResourceLocation location, final ResourceLocation tierLocation, final int rows,
-                                      final CreativeModeTab tab)
+                                      final CreativeModeTab tab, final boolean isFireResistant)
     {
         final BlockBehaviour.Properties settings = FabricBlockSettings.copyOf(Blocks.BARREL).breakByTool(FabricToolTags.AXES, miningLevel)
                 .strength(hardness, resistance).requiresCorrectToolForDrops();
 
         final BarrelBlock block = new BarrelBlock(settings, tierLocation);
         Registry.register(Registry.BLOCK, location, block);
-        Registry.register(Registry.ITEM, location, new BlockItem(block, new Item.Properties().tab(tab)));
+        final Item.Properties properties = new Item.Properties().tab(tab);
+        if (isFireResistant) { properties.fireResistant(); }
+        Registry.register(Registry.ITEM, location, new BlockItem(block, properties));
         Registry.register(Registries.BARREL, tierLocation, new Registries.TierData(
                 rows * 9, new TranslatableComponent("container.expandedstorage." + location.getPath()), location));
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
@@ -128,23 +130,27 @@ public final class ModContent
     public static void register() { }
 
     private static OldChestBlock old(final Block material, final String name, final ResourceLocation tierLocation, final int rows,
-                                     final CreativeModeTab tab)
+                                     final CreativeModeTab tab, final boolean isFireResistant)
     {
         final ResourceLocation registryId = Const.resloc("old_" + name);
         final OldChestBlock block = new OldChestBlock(FabricBlockSettings.copyOf(material), tierLocation);
         Registry.register(Registry.BLOCK, registryId, block);
-        Registry.register(Registry.ITEM, registryId, new BlockItem(block, new Item.Properties().tab(tab)));
+        final Item.Properties properties = new Item.Properties().tab(tab);
+        if (isFireResistant) { properties.fireResistant(); }
+        Registry.register(Registry.ITEM, registryId, new BlockItem(block, properties));
         Registry.register(Registries.OLD_CHEST, tierLocation, new Registries.TierData(
                 rows * 9, new TranslatableComponent("container.expandedstorage." + name), registryId));
         return block;
     }
 
     private static CursedChestBlock chest(final Block material, final ResourceLocation location, final ResourceLocation tierLocation,
-                                          final int rows, final CreativeModeTab tab)
+                                          final int rows, final CreativeModeTab tab, final boolean isFireResistant)
     {
         final CursedChestBlock block = new CursedChestBlock(FabricBlockSettings.copyOf(material), tierLocation);
         Registry.register(Registry.BLOCK, location, block);
-        Registry.register(Registry.ITEM, location, new BlockItem(block, new Item.Properties().tab(tab)));
+        final Item.Properties properties = new Item.Properties().tab(tab);
+        if (isFireResistant) { properties.fireResistant(); }
+        Registry.register(Registry.ITEM, location, new BlockItem(block, properties));
         Registry.register(Registries.CHEST, tierLocation, new Registries.ChestTierData(
                 rows * 9, new TranslatableComponent("container.expandedstorage." + location.getPath()), location,
                 type -> Const.resloc(String.format("entity/%s/%s", location.getPath(), type.getSerializedName()))));
@@ -155,6 +161,7 @@ public final class ModContent
     private static void registerConversionPath(final CreativeModeTab tab, final Tuple<ResourceLocation, String>... path)
     {
         final int length = path.length;
+        final ResourceLocation netherite = Const.resloc("netherite");
         for (int i = 0; i < length - 1; i++)
         {
             for (int x = i + 1; x < length; x++)
@@ -162,7 +169,12 @@ public final class ModContent
                 final Tuple<ResourceLocation, String> from = path[i];
                 final Tuple<ResourceLocation, String> to = path[x];
                 final ResourceLocation id = Const.resloc(from.getB() + "_to_" + to.getB() + "_conversion_kit");
-                Registry.register(Registry.ITEM, id, new ConversionItem(new Item.Properties().tab(tab).stacksTo(16), from, to));
+                final Item.Properties properties = new Item.Properties().tab(tab).stacksTo(16);
+                if (to.getA().equals(netherite))
+                {
+                    properties.fireResistant();
+                }
+                Registry.register(Registry.ITEM, id, new ConversionItem(properties, from, to));
             }
         }
     }
