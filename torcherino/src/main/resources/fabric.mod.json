@@ -21,6 +21,8 @@
   "accessWidener": "torcherino.accesswidener",
   "depends": {
     "chainmail": ">=${dep_chainmail_version}",
-    "fabric": "~${dep_fabric_version}"
+    "fabric": "${dep_fabric_version}",
+    "fabricloader": "${dep_fabric_loader_version}",
+    "minecraft": "${dep_minecraft_version}"
   }
 }

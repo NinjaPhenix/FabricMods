@@ -12,8 +12,8 @@
   "license": "MIT-0",
   "mixins": [ "chainmail.common.mixins.json" ],
   "depends": {
-    "fabric": ">=${dep_fabric_version}",
-    "minecraft": "~${dep_minecraft_version}"
+    "fabric": "${dep_fabric_version}",
+    "minecraft": "${dep_minecraft_version}"
   },
   "custom": {
     "modmenu:api": true

@@ -12,5 +12,5 @@
   },
   "license": "MIT-0",
   "mixins": [ "fatxporbs.mixins.json" ],
-  "depends": { "fabricloader": ">=${dep_loader_version}" }
+  "depends": { "fabricloader": "${dep_fabric_loader_version}" }
 }

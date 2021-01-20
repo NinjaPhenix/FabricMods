@@ -1,1 +1,0 @@
-- Fixed upgrades not being consumed when used on vanilla double chests.
