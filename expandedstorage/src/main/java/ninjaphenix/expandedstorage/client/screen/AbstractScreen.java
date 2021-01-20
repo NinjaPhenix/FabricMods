@@ -37,6 +37,7 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
     @Override
     public void render(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
     {
+        if (matrices == null) { return; } // Not sure why this can be null, but don't render in case it is.
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         renderTooltip(matrices, mouseX, mouseY);

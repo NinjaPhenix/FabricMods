@@ -69,6 +69,7 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
     @Override
     public void render(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
     {
+        if (matrices == null) { return; } // Not sure why this can be null, but don't render in case it is.
         super.render(matrices, mouseX, mouseY, delta);
         if (SCREEN_META.PAGES != 1)
         {
