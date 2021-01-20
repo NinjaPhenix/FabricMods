@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,7 +19,7 @@ public final class ScreenTypeSelectionScreenButton extends Button
     public ScreenTypeSelectionScreenButton(final int x, final int y, final OnTooltip onTooltip)
     {
         super(x, y, 22, 22, new TranslatableComponent("screen.expandedstorage.change_screen_button"), button ->
-                      ClientSidePacketRegistry.INSTANCE.sendToServer(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())), onTooltip);
+                ClientPlayNetworking.send(Const.OPEN_SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())), onTooltip);
         TEXTURE = Const.resloc("textures/gui/select_screen_button.png");
     }
 

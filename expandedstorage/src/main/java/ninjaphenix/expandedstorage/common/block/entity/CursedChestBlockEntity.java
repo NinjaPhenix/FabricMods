@@ -36,8 +36,6 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
 
     public CursedChestBlockEntity(final ResourceLocation block) { super(ModContent.CHEST, block); }
 
-    public ResourceLocation getBlock() { return block; }
-
     public static int countViewers(final Level world, final WorldlyContainer instance, final int x, final int y, final int z)
     {
         return world.getEntitiesOfClass(Player.class, new AABB(x - 5, y - 5, z - 5, x + 6, y + 6, z + 6)).stream()
@@ -57,6 +55,8 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
         }
         return viewCount;
     }
+
+    public ResourceLocation getBlock() { return block; }
 
     @Environment(EnvType.CLIENT)
     public void setBlock(final ResourceLocation block) { this.block = block; }

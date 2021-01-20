@@ -181,12 +181,12 @@ public abstract class ChestBlock<T extends StorageBlockEntity> extends StorageBl
     }
 
     public final NeighborCombineResult<? extends T> combine(final BlockState state, final LevelAccessor world, final BlockPos pos,
-                                                     final boolean alwaysOpen)
+                                                            final boolean alwaysOpen)
     {
         final BiPredicate<LevelAccessor, BlockPos> isChestBlocked = alwaysOpen ? (_world, _pos) -> false : this::isBlocked;
         return DoubleBlockCombiner.combineWithNeigbour(blockEntityType.get(), ChestBlock::getBlockType,
-                                                      ChestBlock::getDirectionToAttached, HORIZONTAL_FACING, state, world, pos,
-                                                      isChestBlocked);
+                                                       ChestBlock::getDirectionToAttached, HORIZONTAL_FACING, state, world, pos,
+                                                       isChestBlocked);
     }
 
     protected boolean isBlocked(final LevelAccessor world, final BlockPos pos) { return net.minecraft.world.level.block.ChestBlock.isChestBlockedAt(world, pos); }
@@ -260,7 +260,7 @@ public abstract class ChestBlock<T extends StorageBlockEntity> extends StorageBl
     @Override
     @SuppressWarnings("deprecation")
     public BlockState updateShape(final BlockState state, final Direction offset, final BlockState offsetState,
-                                                final LevelAccessor world, final BlockPos pos, final BlockPos offsetPos)
+                                  final LevelAccessor world, final BlockPos pos, final BlockPos offsetPos)
     {
         final DoubleBlockCombiner.BlockType mergeType = getBlockType(state);
         if (mergeType == DoubleBlockCombiner.BlockType.SINGLE)

@@ -30,6 +30,11 @@ public abstract class AbstractScreenHandler<T extends ScreenMeta> extends Abstra
         inventory.startOpen(player);
     }
 
+    public static ResourceLocation getTexture(final String type, final int width, final int height)
+    {
+        return new ResourceLocation(Const.MOD_ID, String.format("textures/gui/container/%s_%d_%d.png", type, width, height));
+    }
+
     @Override
     public boolean stillValid(final Player player) { return INVENTORY.stillValid(player); }
 
@@ -63,9 +68,4 @@ public abstract class AbstractScreenHandler<T extends ScreenMeta> extends Abstra
     }
 
     public Container getInventory() { return INVENTORY; }
-
-    public static ResourceLocation getTexture(final String type, final int width, final int height)
-    {
-        return new ResourceLocation(Const.MOD_ID, String.format("textures/gui/container/%s_%d_%d.png", type, width, height));
-    }
 }

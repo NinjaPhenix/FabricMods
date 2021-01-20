@@ -54,7 +54,7 @@ public final class CursedChestBlockEntityRenderer extends BlockEntityRenderer<Cu
                 ((CursedChestBlock) state.getBlock()).combine(state, blockEntity.getLevel(), blockEntity.getBlockPos(), true) :
                 DoubleBlockCombiner.Combiner::acceptNone;
         model.render(stack, new Material(Sheets.CHEST_SHEET,
-                                                 Registries.CHEST.get(blockEntity.getBlock()).getChestTexture(chestType))
+                                         Registries.CHEST.get(blockEntity.getBlock()).getChestTexture(chestType))
                              .buffer(vertexConsumerProvider, RenderType::entityCutout),
                      wrapper.apply(new BrightnessCombiner<>()).applyAsInt(light), overlay);
         stack.popPose();

@@ -6,13 +6,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.network.FriendlyByteBuf;
@@ -41,8 +41,8 @@ public final class ExpandedStorageClient implements ClientModInitializer
 {
     @SuppressWarnings({"unused", "RedundantSuppression"})
     public static final ExpandedStorageClient INSTANCE = new ExpandedStorageClient();
-    private static final CursedChestBlockEntity CURSED_CHEST_RENDER_ENTITY = new CursedChestBlockEntity(null);
     public static final ContainerConfig CONFIG = getConfigParser().load(ContainerConfig.class, ContainerConfig::new, getConfigPath(), new MarkerManager.Log4jMarker(Const.MOD_ID));
+    private static final CursedChestBlockEntity CURSED_CHEST_RENDER_ENTITY = new CursedChestBlockEntity(null);
 
     static
     {
@@ -52,23 +52,54 @@ public final class ExpandedStorageClient implements ClientModInitializer
         }
     }
 
+    private static JanksonConfigParser getConfigParser()
+    {
+        return new JanksonConfigParser.Builder().deSerializer(
+                JsonPrimitive.class, ResourceLocation.class, (it, marshaller) -> new ResourceLocation(it.asString()),
+                ((identifier, marshaller) -> marshaller.serialize(identifier.toString()))).build();
+    }
+
+    private static Path getConfigPath() { return FabricLoader.getInstance().getConfigDir().resolve("ninjaphenix-container-library.json"); }
+
+    public static void sendPreferencesToServer()
+    {
+        ClientPlayNetworking.send(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
+                .writeResourceLocation(CONFIG.preferred_container_type));
+    }
+
+    public static void sendCallbackRemoveToServer()
+    {
+        ClientPlayNetworking.send(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
+                .writeResourceLocation(Const.resloc("auto")));
+    }
+
+    public static void setPreference(final ResourceLocation handlerType)
+    {
+        CONFIG.preferred_container_type = handlerType;
+        getConfigParser().save(CONFIG, getConfigPath(), new MarkerManager.Log4jMarker(Const.MOD_ID));
+    }
+
     @Override
     public void onInitializeClient()
     {
-        ClientSidePacketRegistry.INSTANCE.register(Const.SCREEN_SELECT, (context, buffer) ->
-        {
-            final int count = buffer.readInt();
-            final HashMap<ResourceLocation, Tuple<ResourceLocation, Component>> allowed = new HashMap<>();
-            for (int i = 0; i < count; i++)
-            {
-                final ResourceLocation containerFactoryId = buffer.readResourceLocation();
-                if (ExpandedStorage.INSTANCE.isContainerTypeDeclared(containerFactoryId))
-                {
-                    allowed.put(containerFactoryId, ExpandedStorage.INSTANCE.getScreenSettings(containerFactoryId));
-                }
-            }
-            Minecraft.getInstance().setScreen(new SelectContainerScreen(allowed));
-        });
+        //noinspection CodeBlock2Expr
+        ClientPlayConnectionEvents.INIT.register((handler, client) ->
+                                                 {
+                                                     ClientPlayNetworking.registerReceiver(Const.SCREEN_SELECT, ((minecraft, listener, buffer, sender) ->
+                                                     {
+                                                         final int count = buffer.readInt();
+                                                         final HashMap<ResourceLocation, Tuple<ResourceLocation, Component>> allowed = new HashMap<>();
+                                                         for (int i = 0; i < count; i++)
+                                                         {
+                                                             final ResourceLocation containerFactoryId = buffer.readResourceLocation();
+                                                             if (ExpandedStorage.INSTANCE.isContainerTypeDeclared(containerFactoryId))
+                                                             {
+                                                                 allowed.put(containerFactoryId, ExpandedStorage.INSTANCE.getScreenSettings(containerFactoryId));
+                                                             }
+                                                         }
+                                                         minecraft.setScreen(new SelectContainerScreen(allowed));
+                                                     }));
+                                                 });
         ClientSpriteRegistryCallback.event(Sheets.CHEST_SHEET).register(
                 (atlas, registry) -> Registries.CHEST.stream().forEach(data -> Arrays.stream(CursedChestType.values())
                         .map(data::getChestTexture).forEach(registry::register)));
@@ -83,32 +114,5 @@ public final class ExpandedStorageClient implements ClientModInitializer
         ScreenRegistry.register(SCROLLABLE_HANDLER_TYPE, ScrollableScreen::new);
         ScreenRegistry.register(PAGED_HANDLER_TYPE, PagedScreen::new);
         ScreenRegistry.register(SINGLE_HANDLER_TYPE, SingleScreen::new);
-    }
-
-    private static JanksonConfigParser getConfigParser()
-    {
-        return new JanksonConfigParser.Builder().deSerializer(
-                JsonPrimitive.class, ResourceLocation.class, (it, marshaller) -> new ResourceLocation(it.asString()),
-                ((identifier, marshaller) -> marshaller.serialize(identifier.toString()))).build();
-    }
-
-    private static Path getConfigPath() { return FabricLoader.getInstance().getConfigDir().resolve("ninjaphenix-container-library.json"); }
-
-    public static void sendPreferencesToServer()
-    {
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
-                .writeResourceLocation(CONFIG.preferred_container_type));
-    }
-
-    public static void sendCallbackRemoveToServer()
-    {
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Const.SCREEN_SELECT, new FriendlyByteBuf(Unpooled.buffer())
-                .writeResourceLocation(Const.resloc("auto")));
-    }
-
-    public static void setPreference(final ResourceLocation handlerType)
-    {
-        CONFIG.preferred_container_type = handlerType;
-        getConfigParser().save(CONFIG, getConfigPath(), new MarkerManager.Log4jMarker(Const.MOD_ID));
     }
 }

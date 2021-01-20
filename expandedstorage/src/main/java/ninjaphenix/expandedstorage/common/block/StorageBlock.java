@@ -43,7 +43,7 @@ public abstract class StorageBlock extends BaseEntityBlock implements WorldlyCon
     protected ExtendedScreenHandlerFactory createContainerFactory(final BlockState state, final LevelAccessor world, final BlockPos pos)
     {
         final BlockEntity entity = world.getBlockEntity(pos);
-        if(!(entity instanceof StorageBlockEntity)) { return null; }
+        if (!(entity instanceof StorageBlockEntity)) { return null; }
         final StorageBlockEntity container = (StorageBlockEntity) entity;
         return new ExtendedScreenHandlerFactory()
         {
@@ -83,7 +83,7 @@ public abstract class StorageBlock extends BaseEntityBlock implements WorldlyCon
     @Override
     @SuppressWarnings("deprecation")
     public void onRemove(final BlockState state, final Level world, final BlockPos pos, final BlockState newState,
-                                final boolean moved)
+                         final boolean moved)
     {
         if (state.getBlock() != newState.getBlock())
         {
@@ -106,7 +106,7 @@ public abstract class StorageBlock extends BaseEntityBlock implements WorldlyCon
 
     @Override
     public void setPlacedBy(final Level world, final BlockPos pos, final BlockState state, @Nullable final LivingEntity placer,
-                         final ItemStack stack)
+                            final ItemStack stack)
     {
         if (stack.hasCustomHoverName())
         {
@@ -128,14 +128,14 @@ public abstract class StorageBlock extends BaseEntityBlock implements WorldlyCon
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(final BlockState state, final Level world, final BlockPos pos, final Player player, final InteractionHand hand,
-                              final BlockHitResult hit)
+                                 final BlockHitResult hit)
     {
         if (!world.isClientSide)
         {
             final ExtendedScreenHandlerFactory factory = createContainerFactory(state, world, pos);
-            if (factory != null)
+            if (factory != null && player instanceof ServerPlayer)
             {
-                ExpandedStorage.INSTANCE.openContainer(player, factory);
+                ExpandedStorage.INSTANCE.openContainer((ServerPlayer) player, factory);
                 player.awardStat(getOpenStat());
                 PiglinAi.angerNearbyPiglins(player, true);
             }

@@ -50,7 +50,7 @@ public abstract class FluidLoggableChestBlock<T extends StorageBlockEntity> exte
 
     @Override
     public BlockState updateShape(final BlockState state, final Direction direction, final BlockState neighborState,
-                                                final LevelAccessor world, final BlockPos pos, final BlockPos neighborPos)
+                                  final LevelAccessor world, final BlockPos pos, final BlockPos neighborPos)
     {
         if (state.getValue(WATERLOGGED)) { world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world)); }
         return super.updateShape(state, direction, neighborState, world, pos, neighborPos);

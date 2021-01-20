@@ -5,7 +5,13 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 
 public enum CursedChestType implements StringRepresentable
 {
-    SINGLE("single", -1), TOP("top", -1), BACK("back", 2), RIGHT("right", 3), BOTTOM("bottom", -1), FRONT("front", 0), LEFT("left", 1);
+    SINGLE("single", -1),
+    TOP("top", -1),
+    BACK("back", 2),
+    RIGHT("right", 3),
+    BOTTOM("bottom", -1),
+    FRONT("front", 0),
+    LEFT("left", 1);
 
     private final String name;
     private final int offset;

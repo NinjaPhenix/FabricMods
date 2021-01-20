@@ -138,7 +138,7 @@ public final class PagedScreen extends AbstractScreen<PagedScreenHandler, PagedS
         if (currentPageText != null)
         {
             font.draw(matrices, currentPageText.getVisualOrderText(), pageTextX - leftPos, imageHeight - 94,
-                              0x404040);
+                      0x404040);
         }
     }
 

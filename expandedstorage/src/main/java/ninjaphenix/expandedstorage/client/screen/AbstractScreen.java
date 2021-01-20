@@ -65,6 +65,11 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
 
     public abstract List<me.shedaniel.math.Rectangle> getReiRectangles();
 
+    protected final void renderButtonTooltip(final AbstractButton widget, final PoseStack stack, final int x, final int y)
+    {
+        renderTooltip(stack, widget.getMessage(), x, y);
+    }
+
     protected static class Image
     {
         public final int X, Y, WIDTH, HEIGHT, TEXTURE_X, TEXTURE_Y, TEXTURE_WIDTH, TEXTURE_HEIGHT;
@@ -86,10 +91,5 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
         {
             blit(stack, X, Y, TEXTURE_X, TEXTURE_Y, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
-    }
-
-    protected final void renderButtonTooltip(final AbstractButton widget, final PoseStack stack, final int x, final int y)
-    {
-        renderTooltip(stack, widget.getMessage(), x, y);
     }
 }

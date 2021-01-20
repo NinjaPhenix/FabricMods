@@ -27,7 +27,7 @@ public final class OldChestBlock extends ChestBlock<OldChestBlockEntity>
         final BlockState upState = world.getBlockState(upPos);
         return (upState.isRedstoneConductor(world, upPos) && upState.getBlock() != this) ||
                 world.getEntitiesOfClass(Cat.class, new AABB(pos.getX(), pos.getY() + 1, pos.getZ(), pos.getX() + 1,
-                                                                        pos.getY() + 2, pos.getZ() + 1))
+                                                             pos.getY() + 2, pos.getZ() + 1))
                         .stream().anyMatch(Cat::isInSittingPose);
     }
 

@@ -168,7 +168,7 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
                 menu.setSlotRange(setOutBegin, setOutBegin + setAmount, index -> -2000);
                 menu.moveSlotRange(movableBegin, setInBegin, -18 * rows);
                 menu.setSlotRange(setInBegin, Math.min(setInBegin + setAmount, SCREEN_META.TOTAL_SLOTS),
-                                     index -> 18 * Mth.intFloorDiv(index - movableBegin + SCREEN_META.WIDTH, SCREEN_META.WIDTH));
+                                  index -> 18 * Mth.intFloorDiv(index - movableBegin + SCREEN_META.WIDTH, SCREEN_META.WIDTH));
             }
             else
             {
@@ -176,7 +176,7 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
                 final int movableBegin = oldTopRow * SCREEN_META.WIDTH;
                 final int setOutBegin = movableBegin + movableAmount;
                 menu.setSlotRange(setInBegin, setInBegin + setAmount,
-                                     index -> 18 * Mth.intFloorDiv(index - setInBegin + SCREEN_META.WIDTH, SCREEN_META.WIDTH));
+                                  index -> 18 * Mth.intFloorDiv(index - setInBegin + SCREEN_META.WIDTH, SCREEN_META.WIDTH));
                 menu.moveSlotRange(movableBegin, setOutBegin, 18 * rows);
                 menu.setSlotRange(setOutBegin, Math.min(setOutBegin + setAmount, SCREEN_META.TOTAL_SLOTS), index -> -2000);
             }
@@ -187,7 +187,7 @@ public final class ScrollableScreen extends AbstractScreen<ScrollableScreenHandl
             menu.setSlotRange(oldMin, Math.min(oldMin + SCREEN_META.WIDTH * SCREEN_META.HEIGHT, SCREEN_META.TOTAL_SLOTS), index -> -2000);
             final int newMin = newTopRow * SCREEN_META.WIDTH;
             menu.setSlotRange(newMin, newMin + SCREEN_META.WIDTH * SCREEN_META.HEIGHT,
-                                 index -> 18 + 18 * Mth.intFloorDiv(index - newMin, SCREEN_META.WIDTH));
+                              index -> 18 + 18 * Mth.intFloorDiv(index - newMin, SCREEN_META.WIDTH));
         }
 
         if (newTopRow == SCREEN_META.TOTAL_ROWS - SCREEN_META.HEIGHT)

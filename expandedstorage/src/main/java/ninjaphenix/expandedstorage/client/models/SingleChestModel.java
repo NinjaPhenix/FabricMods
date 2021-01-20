@@ -43,7 +43,7 @@ public class SingleChestModel extends Model
 
     @Override
     public void renderToBuffer(final PoseStack matrices, final VertexConsumer consumer, final int i, final int j, final float r, final float g,
-                       final float b, final float f)
+                               final float b, final float f)
     {
         base.render(matrices, consumer, i, j);
         lid.render(matrices, consumer, i, j);

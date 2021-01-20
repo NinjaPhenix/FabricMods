@@ -10,8 +10,9 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,8 +55,11 @@ public final class ExpandedStorage implements ModInitializer
         declareContainerType(Const.resloc("single"), Const.resloc("textures/gui/single_button.png"), nameFunc.apply("single_screen"));
         declareContainerType(Const.resloc("scrollable"), Const.resloc("textures/gui/scrollable_button.png"), nameFunc.apply("scrollable_screen"));
         declareContainerType(Const.resloc("paged"), Const.resloc("textures/gui/paged_button.png"), nameFunc.apply("paged_screen"));
-        ServerSidePacketRegistry.INSTANCE.register(Const.OPEN_SCREEN_SELECT, this::onReceiveOpenSelectScreenPacket);
-        ServerSidePacketRegistry.INSTANCE.register(Const.SCREEN_SELECT, this::onReceivePlayerPreference);
+        ServerPlayConnectionEvents.INIT.register((listener_init, server_unused) ->
+                                                 {
+                                                     ServerPlayNetworking.registerReceiver(listener_init, Const.OPEN_SCREEN_SELECT, this::onReceiveOpenSelectScreenPacket);
+                                                     ServerPlayNetworking.registerReceiver(listener_init, Const.SCREEN_SELECT, this::onReceivePlayerPreference);
+                                                 });
         PlayerDisconnectCallback.EVENT.register(player -> setPlayerPreference(player, null));
     }
 
@@ -74,7 +80,7 @@ public final class ExpandedStorage implements ModInitializer
         }
     }
 
-    public void openContainer(final Player player, final ExtendedScreenHandlerFactory handlerFactory)
+    public void openContainer(final ServerPlayer player, final ExtendedScreenHandlerFactory handlerFactory)
     {
         final UUID uuid = player.getUUID();
         if (playerPreferences.containsKey(uuid) && handlerFactories.containsKey(playerPreferences.get(uuid)))
@@ -84,13 +90,13 @@ public final class ExpandedStorage implements ModInitializer
         else { openSelectScreen(player, (type) -> openContainer(player, handlerFactory)); }
     }
 
-    public void openSelectScreen(final Player player, final Consumer<ResourceLocation> playerPreferenceCallback)
+    public void openSelectScreen(final ServerPlayer player, final Consumer<ResourceLocation> playerPreferenceCallback)
     {
         if (playerPreferenceCallback != null) { preferenceCallbacks.put(player.getUUID(), playerPreferenceCallback); }
         final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeInt(declaredContainerTypes.size());
         declaredContainerTypes.forEach(buffer::writeResourceLocation);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Const.SCREEN_SELECT, buffer);
+        ServerPlayNetworking.send(player, Const.SCREEN_SELECT, buffer);
     }
 
     public void declareContainerType(final ResourceLocation containerTypeId, final ResourceLocation selectTextureId, final Component narrationMessage)
@@ -104,21 +110,21 @@ public final class ExpandedStorage implements ModInitializer
 
     public Tuple<ResourceLocation, Component> getScreenSettings(final ResourceLocation containerTypeId) { return screenMiscSettings.get(containerTypeId); }
 
-    private void onReceivePlayerPreference(final PacketContext context, final FriendlyByteBuf buffer)
+    private void onReceivePlayerPreference(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl listener,
+                                           FriendlyByteBuf buffer, PacketSender sender)
     {
-        final Player player = context.getPlayer();
         final ResourceLocation containerType = buffer.readResourceLocation();
-        context.getTaskQueue().submit(() -> INSTANCE.setPlayerPreference(player, containerType));
+        server.submit(() -> INSTANCE.setPlayerPreference(player, containerType));
     }
 
-    private void onReceiveOpenSelectScreenPacket(final PacketContext context, final FriendlyByteBuf rOpenBuffer)
+    private void onReceiveOpenSelectScreenPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl listener,
+                                                 FriendlyByteBuf buffer, PacketSender sender)
     {
-        final ServerPlayer sender = (ServerPlayer) context.getPlayer();
-        final AbstractContainerMenu currentScreenHandler = sender.containerMenu;
+        final AbstractContainerMenu currentScreenHandler = player.containerMenu;
         if (currentScreenHandler instanceof AbstractScreenHandler)
         {
             final AbstractScreenHandler<?> screenHandler = (AbstractScreenHandler<?>) currentScreenHandler;
-            context.getTaskQueue().submit(() -> openSelectScreen(sender, (type) -> sender.openMenu(new ExtendedScreenHandlerFactory()
+            server.submit(() -> openSelectScreen(player, (type) -> player.openMenu(new ExtendedScreenHandlerFactory()
             {
                 @Nullable
                 @Override
@@ -138,11 +144,11 @@ public final class ExpandedStorage implements ModInitializer
                 }
             })));
         }
-        else { context.getTaskQueue().submit(() -> INSTANCE.openSelectScreen(sender, null)); }
+        else { server.submit(() -> INSTANCE.openSelectScreen(player, null)); }
     }
 
     public AbstractContainerMenu getScreenHandler(final int syncId, final BlockPos pos, final Container inventory, final Player player,
-                                          final Component displayName)
+                                                  final Component displayName)
     {
         final UUID uuid = player.getUUID();
         final ResourceLocation playerPreference;

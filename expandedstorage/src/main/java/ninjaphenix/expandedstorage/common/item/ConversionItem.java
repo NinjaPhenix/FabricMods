@@ -37,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ConversionItem extends ModifierItem
 {
+    private static final Component DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2").withStyle(ChatFormatting.GRAY);
     private final Component TOOLTIP;
     private final ResourceLocation FROM, TO;
-    private static final Component DOUBLE_REQUIRES_2 = new TranslatableComponent("tooltip.expandedstorage.conversion_kit_double_requires_2").withStyle(ChatFormatting.GRAY);
 
     public ConversionItem(final Item.Properties settings, final Tuple<ResourceLocation, String> from, final Tuple<ResourceLocation, String> to)
     {
