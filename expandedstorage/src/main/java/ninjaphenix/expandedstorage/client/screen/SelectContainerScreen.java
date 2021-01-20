@@ -1,7 +1,10 @@
 package ninjaphenix.expandedstorage.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -82,9 +85,13 @@ public final class SelectContainerScreen extends Screen
     {
         setBlitOffset(0);
         renderBackground(matrices);
-        for (final AbstractWidget button : buttons) { button.render(matrices, mouseX, mouseY, delta); }
-        for (final AbstractWidget button : buttons)
+        int buttonsSize = buttons.size();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < buttonsSize; i++) { buttons.get(i).render(matrices, mouseX, mouseY, delta); }
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < buttonsSize; i++)
         {
+            AbstractWidget button = buttons.get(i);
             if (button instanceof ScreenTypeButton) { ((ScreenTypeButton) button).renderTooltip(matrices, mouseX, mouseY); }
         }
         drawCenteredString(matrices, font, title, width / 2, Math.max(TOP - 2 * PADDING, 0), 0xFFFFFFFF);
