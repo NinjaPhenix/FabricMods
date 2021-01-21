@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile project(path: ":chainmail"), withoutUnwanted
+    implementation project(path: ":chainmail"), withoutUnwanted
 
     include project(path: ":chainmail")
     include "com.github.CottonMC:Jankson-Fabric:${jankson_version}"
