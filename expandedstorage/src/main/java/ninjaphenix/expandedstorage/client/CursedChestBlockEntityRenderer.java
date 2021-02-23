@@ -48,7 +48,7 @@ public final class CursedChestBlockEntityRenderer extends BlockEntityRenderer<Cu
         stack.translate(0.5D, 0.5D, 0.5D);
         stack.mulPose(Vector3f.YP.rotationDegrees(-state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()));
         stack.translate(-0.5D, -0.5D, -0.5D);
-        model.setLidPitch(blockEntity.getOpenNess(tickDelta));
+        model.setLidPitch(blockEntity.getLidOpenness(tickDelta));
 
         final DoubleBlockCombiner.NeighborCombineResult<? extends CursedChestBlockEntity> wrapper = blockEntity.hasLevel() ?
                 ((CursedChestBlock) state.getBlock()).combine(state, blockEntity.getLevel(), blockEntity.getBlockPos(), true) :

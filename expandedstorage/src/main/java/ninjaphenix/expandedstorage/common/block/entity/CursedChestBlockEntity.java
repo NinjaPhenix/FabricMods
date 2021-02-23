@@ -2,8 +2,6 @@ package ninjaphenix.expandedstorage.common.block.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.api.EnvironmentInterfaces;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -16,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -28,8 +25,7 @@ import ninjaphenix.expandedstorage.common.block.CursedChestBlock;
 import ninjaphenix.expandedstorage.common.inventory.AbstractScreenHandler;
 import ninjaphenix.expandedstorage.common.inventory.DoubleSidedInventory;
 
-@EnvironmentInterfaces({@EnvironmentInterface(value = EnvType.CLIENT, itf = LidBlockEntity.class)})
-public final class CursedChestBlockEntity extends StorageBlockEntity implements LidBlockEntity, TickableBlockEntity
+public final class CursedChestBlockEntity extends StorageBlockEntity implements TickableBlockEntity
 {
     private float animationAngle, lastAnimationAngle;
     private int viewerCount, ticksOpen;
@@ -84,8 +80,8 @@ public final class CursedChestBlockEntity extends StorageBlockEntity implements 
         else { return super.triggerEvent(actionId, value); }
     }
 
-    @Override
-    public float getOpenNess(final float f) { return Mth.lerp(f, lastAnimationAngle, animationAngle); }
+    // Client only
+    public float getLidOpenness(final float f) { return Mth.lerp(f, lastAnimationAngle, animationAngle); }
 
     @Override
     @SuppressWarnings("ConstantConditions")
