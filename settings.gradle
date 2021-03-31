@@ -16,3 +16,4 @@ include 'expandedstorage'
 include 'ninjatips'
 // Non-mods
 include 'renderingtests'
+include 'test_project'

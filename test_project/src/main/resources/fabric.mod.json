@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "test",
+  "version": "${mod_version}",
+  "name": "Test Mod",
+  "entrypoints": {
+    "main": [ "test.Main" ]
+  },
+  "mixins": [ "test.mixins.json" ],
+  "accessWidener": "test.accesswidener"
+}
