@@ -26,12 +26,16 @@ Please open one of the following "spoilers", if you contribute to Yarn please av
 <summary>Yarn</summary>
 
 To register your test class simply call `TestFunctions.method_36068(SampleTests.class);`, replace SampleTests with your class name.
+
+Until Fabric API has a functional test API you will need to set `SharedConstants.isDevelopment` to `true` before running any tests.
 </details>
 
 <details>
 <summary>MojMap</summary>
 
 To register your test class simply call `GameTestRegistry.register(SampleTests.class);`, replace SampleTests with your class name.
+
+Until Fabric API has a functional test API you will need to set `SharedConstants.IS_RUNNING_IN_IDE` to `true` before running any tests.
 </details>
 
 
