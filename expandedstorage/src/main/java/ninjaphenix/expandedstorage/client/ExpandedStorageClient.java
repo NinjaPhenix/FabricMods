@@ -73,7 +73,8 @@ public final class ExpandedStorageClient implements ClientModInitializer
                     allowed.put(containerFactoryId, ExpandedStorage.INSTANCE.getScreenSettings(containerFactoryId));
                 }
             }
-            Minecraft.getInstance().setScreen(new SelectContainerScreen(allowed));
+            final Minecraft minecraft = Minecraft.getInstance();
+            minecraft.submit(() -> minecraft.setScreen(new SelectContainerScreen(allowed)));
         });
         ClientSpriteRegistryCallback.event(Sheets.CHEST_SHEET).register(
                 (atlas, registry) -> Registries.CHEST.stream().forEach(data -> Arrays.stream(CursedChestType.values())
