@@ -71,3 +71,5 @@ public void sandFalls(StartupParameter arg) {
     });
 }
 ```
+
+**PLEASE CONSIDER THIS DOCUMENT & LINKED IMAGES TO BE PUBLIC DOMAIN, CC0.**
