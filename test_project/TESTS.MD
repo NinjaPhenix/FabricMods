@@ -16,7 +16,7 @@ Creating a test class is easy as it's just the same as any other java class.
 
 The name of the test class will in conjunction with the test method to create the test name.
 ```java
-public class SampleTests {
+public class SampleTest {
     
 }
 ```
@@ -48,7 +48,7 @@ Creating a test method is also easy, it just needs to be a `public void` method 
 
 ```java
 @class_6302
-public void sandFallsTest(StartupParameter arg) {
+public void sandFalls(StartupParameter arg) {
 
 }
 ```
@@ -61,7 +61,7 @@ Creating a test method is also easy, it just needs to be a `public void` method 
 
 ```java
 @GameTest
-public void sandFallsTest(GameTestHelper helper) {
+public void sandFalls(GameTestHelper helper) {
 
 }
 ```
@@ -106,7 +106,7 @@ Please open one of the following "spoilers", if you contribute to Yarn please av
 
 ```java
 @class_6302
-public void sandFallsTest(StartupParameter arg) {
+public void sandFalls(StartupParameter arg) {
     arg.method_36044(new BlockPos(1, 9, 1)); // Break stone block
     arg.method_36003(100, () -> { // After 5 seconds
         arg.method_35972(Blocks.SAND, new BlockPos(1, 2, 1)); // Pass if a Sand block is at 1,2,1 ( which is where it should fall )
@@ -120,7 +120,7 @@ public void sandFallsTest(StartupParameter arg) {
 
 ```java
 @GameTest
-public void sandFallsTest(GameTestHelper helper) {
+public void sandFalls(GameTestHelper helper) {
     helper.destroyBlock(new BlockPos(1, 9, 1)); // Break stone block
     helper.runAfterDelay(100, () -> { // After 5 seconds
         helper.assertBlockPresent(Blocks.SAND, new BlockPos(1, 2, 1)); // Pass if a Sand block is at 1,2,1 ( which is where it should fall )
