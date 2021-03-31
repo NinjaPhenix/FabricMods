@@ -1,5 +1,6 @@
 package ninjaphenix.expandedstorage.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashMap;
 import net.minecraft.client.Minecraft;
@@ -104,7 +105,8 @@ public final class SelectContainerScreen extends Screen
         @Override
         public void renderButton(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
         {
-            Minecraft.getInstance().getTextureManager().bind(TEXTURE);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
             blit(matrices, x, y, 0, isHovered() ? height : 0, width, height, width, height * 2);
         }
 

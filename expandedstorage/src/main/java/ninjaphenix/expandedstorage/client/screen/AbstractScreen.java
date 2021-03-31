@@ -26,11 +26,10 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
     }
 
     @Override
-    @SuppressWarnings({"ConstantConditions", "deprecation"})
     protected void renderBg(final PoseStack matrices, final float delta, final int mouseX, final int mouseY)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        minecraft.getTextureManager().bind(SCREEN_META.TEXTURE);
+        RenderSystem.setShaderTexture(0, SCREEN_META.TEXTURE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrices, leftPos, topPos, 0, 0, imageWidth, imageHeight, SCREEN_META.TEXTURE_WIDTH, SCREEN_META.TEXTURE_HEIGHT);
     }
 
@@ -46,7 +45,7 @@ public abstract class AbstractScreen<T extends AbstractScreenHandler<R>, R exten
     protected void renderLabels(final PoseStack matrices, final int mouseX, final int mouseY)
     {
         font.draw(matrices, title, 8, 6, 4210752);
-        font.draw(matrices, inventory.getDisplayName(), INVENTORY_LABEL_LEFT, imageHeight - 96 + 2, 4210752);
+        font.draw(matrices, playerInventoryTitle, INVENTORY_LABEL_LEFT, imageHeight - 96 + 2, 4210752);
     }
 
     @Override

@@ -28,12 +28,10 @@ public class PageButtonWidget extends Button
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void renderButton(final PoseStack matrices, final int mouseX, final int mouseY, final float delta)
     {
-        final Minecraft minecraftClient = Minecraft.getInstance();
-        minecraftClient.getTextureManager().bind(TEXTURE);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);

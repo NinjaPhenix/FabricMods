@@ -14,7 +14,7 @@ dependencies {
     modRuntime('com.github.Brandcraf06:Blockus:1.16-SNAPSHOT') {
         withoutUnwanted
     }
-    compile project(":ninjatips") {
+    implementation project(":ninjatips") {
         withoutUnwanted
     }
 }

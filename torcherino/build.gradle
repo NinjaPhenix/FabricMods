@@ -3,7 +3,7 @@ loom {
 }
 
 dependencies {
-    compile project(path: ":chainmail"), withoutUnwanted
+    implementation project(path: ":chainmail"), withoutUnwanted
     include project(path: ":chainmail")
 
     include "io.github.cottonmc:Jankson-Fabric:${jankson_version}", withoutUnwanted
