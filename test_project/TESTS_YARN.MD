@@ -12,7 +12,7 @@ public class SampleTest {
     
 }
 ```
-To register your test class simply call `TestFunctions.method_36068(SampleTests.class);`, replace SampleTests with your class name.
+To register your test class simply call `TestFunctions.method_36068(SampleTest.class);`, replace SampleTest with your class name.
 
 Until Fabric API has a functional test API you will need to set `SharedConstants.isDevelopment` to `true` before running any tests.
 
