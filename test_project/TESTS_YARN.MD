@@ -35,7 +35,7 @@ Once in game run the command `/test create [Test Class Name in lowercase].[Test 
 
 For the example gave in previous sections I would run:
 
-`/test create sampletests.sandfallstest 3 10 3`
+`/test create sampletests.sandfalls 3 10 3`
 ![Image of Empty Sand Falls Structure](TEST_STRUCTURE.png)
 
 Next save the structure, use the structure (purple) block and click the `SAVE` button on the right of the screen.
